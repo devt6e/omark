@@ -1,2 +1,0 @@
-C:\coding\Unity\proto_omark\omark\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\CMakeLists.txt
-C:\coding\Unity\proto_omark\omark\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt
