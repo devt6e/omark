@@ -6,8 +6,6 @@ public class MarkerData
     public string Id { get; private set; }
     public string Name { get; set; }
     public string ColorCode { get; set; }
-    public bool IsFavorite { get; set; }
-    public string DetailInformation { get; set; }
     public bool IsPlusButton { get; private set; }
 
     public MarkerData(string name, string colorCode)
@@ -15,8 +13,6 @@ public class MarkerData
         this.Id = Guid.NewGuid().ToString();
         this.Name = name;
         this.ColorCode = colorCode;
-        this.IsFavorite = false;
-        this.DetailInformation = "";
         this.IsPlusButton = false;
     }
 
