@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 public class SplashFlow : MonoBehaviour
 {
@@ -19,7 +22,7 @@ public class SplashFlow : MonoBehaviour
     [SerializeField] bool tapToSkip = true;
 
     [Header("Next Scene")]
-    [SerializeField] string nextScene = "sc_main";
+    [SerializeField] string nextScene = "sc_login";
 
     void Start()
     {
@@ -36,12 +39,27 @@ public class SplashFlow : MonoBehaviour
         while (t < introHold)
         {
             t += Time.deltaTime;
-            if (tapToSkip && (Input.anyKeyDown || Input.touchCount > 0 || Input.GetKeyDown(KeyCode.Escape))) break;
+            if (tapToSkip && IsSkipPressed()) break;
             yield return null;
         }
         if (panelIntro) panelIntro.SetActive(false);
         if (panelLoading) panelLoading.SetActive(true);
-        yield return StartCoroutine(LoadMainAsync());
+        yield return LoadMainAsync();
+    }
+
+    bool IsSkipPressed()
+    {
+#if ENABLE_LEGACY_INPUT_MANAGER
+        if (Input.GetMouseButtonDown(0)) return true;
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) return true;
+        if (Input.anyKeyDown || Input.GetKeyDown(KeyCode.Escape)) return true;
+#endif
+#if ENABLE_INPUT_SYSTEM
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame) return true;
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame) return true;
+        if (Keyboard.current != null && (Keyboard.current.anyKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)) return true;
+#endif
+        return false;
     }
 
     IEnumerator LoadMainAsync()
@@ -84,14 +102,8 @@ public class SplashFlow : MonoBehaviour
             var go = GameObject.Find("PanelLoading");
             if (go) panelLoading = go;
         }
-        if (!loadingSlider && panelLoading)
-        {
-            loadingSlider = panelLoading.GetComponentInChildren<Slider>(true);
-        }
-        if (!percentText && panelLoading)
-        {
-            percentText = panelLoading.GetComponentInChildren<TextMeshProUGUI>(true);
-        }
+        if (!loadingSlider && panelLoading) loadingSlider = panelLoading.GetComponentInChildren<Slider>(true);
+        if (!percentText && panelLoading) percentText = panelLoading.GetComponentInChildren<TextMeshProUGUI>(true);
     }
 #endif
 }
