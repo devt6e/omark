@@ -1,9 +1,9 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 
 public class MarkerCreator : MonoBehaviour
 {
-    [Header("UI ¿¬°á")]
+    [Header("UI ì—°ê²°")]
     public Button AddMarkerToolbarButton;
 
     private static int inventoryItemCount = 0;
@@ -20,9 +20,9 @@ public class MarkerCreator : MonoBehaviour
     {
         inventoryItemCount++;
 
-        MarkerData newTempMarker = new MarkerData($"¸¶Ä¿ {inventoryItemCount}", "Red");
+        MarkerData newTempMarker = new MarkerData($"ë§ˆì»¤ {inventoryItemCount}", "#000000");
 
-        MarkerListUIController uiController = FindObjectOfType<MarkerListUIController>();
+        MarkerListUIController uiController = FindFirstObjectByType<MarkerListUIController>();
 
         if (uiController != null)
         {
@@ -30,9 +30,10 @@ public class MarkerCreator : MonoBehaviour
         }
         else
         {
-            Debug.LogError("MarkerListUIController¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù. UI °ü¸® °´Ã¼¿¡ ½ºÅ©¸³Æ®¸¦ ºÙ¿©ÁÖ¼¼¿ä.");
+            Debug.LogError("MarkerListUIControllerë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. UI ê´€ë¦¬ ê°ì²´ì— ìŠ¤í¬ë¦½íŠ¸ë¥¼ ë¶™ì—¬ì£¼ì„¸ìš”.");
         }
 
-        Debug.Log($"[Creator] Åø¹Ù ¹öÆ° Å¬¸¯µÊ. ÇöÀç ÃÑ ¸¶Ä¿ ¼ö: {inventoryItemCount}");
+        Debug.Log($"[Creator] íˆ´ë°” ë²„íŠ¼ í´ë¦­ë¨. í˜„ì¬ ì´ ë§ˆì»¤ ìˆ˜: {inventoryItemCount}");
+        Debug.Log($"[Creator] UI ë§ˆì»¤ ìƒì„± ìš”ì²­ë¨. ID: {newTempMarker.Id}");
     }
 }
