@@ -6,7 +6,7 @@ using System.IO;
 using GLTFast;
 using System.Threading.Tasks;
 
-public class ModelUploader : MonoBehaviour
+public class ModelUploader_ori : MonoBehaviour
 {
     [Header("UI")]
     public Button uploadButton;
@@ -104,7 +104,7 @@ public class ModelUploader : MonoBehaviour
         // 새로운 권장 방식
         bool instantiated = await gltf.InstantiateMainSceneAsync(modelParent);
 
-        modelParent.localScale = new Vector3(10f, 10f, 10f);
+        modelParent.localScale = new Vector3(300f, 300f, 300f);
 
 
         if (!instantiated)
