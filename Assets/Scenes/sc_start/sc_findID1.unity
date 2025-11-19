@@ -679,7 +679,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 23658125938636868, guid: 4dbd8953a4706b849bd30b1f871fa955, type: 3}
       propertyPath: baseUrl
-      value: https://kemini-aws.duckdns.org
+      value: http://localhost:8080
       objectReference: {fileID: 0}
     - target: {fileID: 2148758354137516295, guid: 4dbd8953a4706b849bd30b1f871fa955, type: 3}
       propertyPath: m_LocalPosition.x
@@ -725,10 +725,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Api
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 23658125938636868, guid: 4dbd8953a4706b849bd30b1f871fa955, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7600577137919895528, guid: 4dbd8953a4706b849bd30b1f871fa955, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2092408546}
   m_SourcePrefab: {fileID: 100100000, guid: 4dbd8953a4706b849bd30b1f871fa955, type: 3}
 --- !u!1 &285307200
 GameObject:
@@ -1468,7 +1472,6 @@ GameObject:
   - component: {fileID: 896349113}
   - component: {fileID: 896349112}
   - component: {fileID: 896349111}
-  - component: {fileID: 896349110}
   m_Layer: 5
   m_Name: Btn_Next
   m_TagString: Untagged
@@ -1496,19 +1499,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 1000}
   m_SizeDelta: {x: 500, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &896349110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896349108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f15770130a246b4c848ed8bafdb391f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SceneNav
-  sceneName: sc_findID2
 --- !u!114 &896349111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1553,9 +1543,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 896349110}
-        m_TargetAssemblyTypeName: SceneNav, Assembly-CSharp
-        m_MethodName: Load
+      - m_Target: {fileID: 1769431404}
+        m_TargetAssemblyTypeName: sc_findID1, Assembly-CSharp
+        m_MethodName: OnClickNext
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2646,6 +2636,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1769431403}
+  - component: {fileID: 1769431404}
   m_Layer: 0
   m_Name: FindUI_Hub
   m_TagString: Untagged
@@ -2668,6 +2659,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1769431404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769431401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12453e55a8a1ba240b5cf9d06b11e949, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::sc_findID1
+  inputPhone: {fileID: 285307203}
+  txtError: {fileID: 1237453992}
+  api: {fileID: 2092408546}
 --- !u!1 &1790896852
 GameObject:
   m_ObjectHideFlags: 0
@@ -2900,6 +2906,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &2092408542 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7600577137919895528, guid: 4dbd8953a4706b849bd30b1f871fa955, type: 3}
+  m_PrefabInstance: {fileID: 250111214}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2092408546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092408542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a0623b7f74bd742aa9aa76ff3bc865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AccountRecoveryApi
+  baseUrl: https://kemini-aws.duckdns.org
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

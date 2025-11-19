@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using System.Collections;
 using UnityEngine;
@@ -8,6 +8,37 @@ public class AccountRecoveryApi : MonoBehaviour
 {
     [SerializeField] private string baseUrl = "http://localhost:8080";
 
+    // -----------------------------------------------------------
+    // 공통 API 응답 구조
+    // -----------------------------------------------------------
+    [Serializable]
+    public class ApiResponse
+    {
+        public string status;   // "success" or "fail"
+        public string message;  // 안내문
+        public ResponseData data;
+    }
+
+    // data 안에 askId 또는 email이 들어오기 때문에 둘 다 포함
+    [Serializable]
+    public class ResponseData
+    {
+        public int askId;     // 1단계에서 사용
+        public string email;  // 2단계에서 사용
+    }
+
+    // -----------------------------------------------------------
+    // 1단계 요청 DTO
+    // -----------------------------------------------------------
+    [Serializable]
+    public class FindAskIdRequest
+    {
+        public string phoneNumber;
+    }
+
+    // -----------------------------------------------------------
+    // 2단계 요청 DTO
+    // -----------------------------------------------------------
     [Serializable]
     public class FindEmailRequest
     {
@@ -16,22 +47,27 @@ public class AccountRecoveryApi : MonoBehaviour
         public string askAnswer;
     }
 
-    [Serializable]
-    public class FindEmailResponseData
+    // -----------------------------------------------------------
+    // 1단계: 전화번호로 askId 요청
+    // -----------------------------------------------------------
+    public void FindAskId(string phoneNumber,
+        Action<ApiResponse> onCompleted,
+        Action<string> onError)
     {
-        public string email;
+        FindAskIdRequest req = new FindAskIdRequest
+        {
+            phoneNumber = phoneNumber
+        };
+
+        StartCoroutine(PostJson("/api/v1/auth/find-ask-id", req, onCompleted, onError));
     }
 
-    [Serializable]
-    public class FindEmailResponse
-    {
-        public string status;
-        public string message;
-        public FindEmailResponseData data;
-        public string error;
-    }
-
-    public void FindEmail(string phoneNumber, int askId, string askAnswer, Action<FindEmailResponse> onCompleted, Action<string> onError)
+    // -----------------------------------------------------------
+    // 2단계: 질문답변으로 email 요청
+    // -----------------------------------------------------------
+    public void FindEmail(string phoneNumber, int askId, string askAnswer,
+        Action<ApiResponse> onCompleted,
+        Action<string> onError)
     {
         FindEmailRequest req = new FindEmailRequest
         {
@@ -43,14 +79,18 @@ public class AccountRecoveryApi : MonoBehaviour
         StartCoroutine(PostJson("/api/v1/auth/find-email", req, onCompleted, onError));
     }
 
-    IEnumerator PostJson(string path, FindEmailRequest body, Action<FindEmailResponse> onCompleted, Action<string> onError)
+    // -----------------------------------------------------------
+    // 공통 POST JSON 처리
+    // -----------------------------------------------------------
+    IEnumerator PostJson(string path, object body,
+        Action<ApiResponse> onCompleted,
+        Action<string> onError)
     {
         string url = baseUrl + path;
         string json = JsonUtility.ToJson(body);
 
-        UnityWebRequest request = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST);
-        byte[] bytes = Encoding.UTF8.GetBytes(json);
-        request.uploadHandler = new UploadHandlerRaw(bytes);
+        UnityWebRequest request = new UnityWebRequest(url, "POST");
+        request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
 
@@ -62,12 +102,12 @@ public class AccountRecoveryApi : MonoBehaviour
             yield break;
         }
 
-        string text = request.downloadHandler.text;
-        FindEmailResponse res = null;
+        string responseText = request.downloadHandler.text;
+        ApiResponse res;
 
         try
         {
-            res = JsonUtility.FromJson<FindEmailResponse>(text);
+            res = JsonUtility.FromJson<ApiResponse>(responseText);
         }
         catch (Exception e)
         {

@@ -287,7 +287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1392,7 +1392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.9647059, b: 0.9372549, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2217,21 +2217,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5468d1c6b44e2f24d873ac938c4a5b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainListUI
+  spaceApi: {fileID: 748592914}
   popupCreateRoom: {fileID: 1874879997}
   inputRoomName: {fileID: 890234573}
-  btnCancel: {fileID: 875775439}
-  btnOK: {fileID: 1933777816}
+  popupCreateCancel: {fileID: 875775439}
+  popupCreateOK: {fileID: 1933777816}
   listContent: {fileID: 1258090692}
   roomItemPrefab: {fileID: 4354674075233327009, guid: d81d44060cd79474d8a7b5b72bb36f9a, type: 3}
   panelListNormal: {fileID: 768698302}
   panelListEdit: {fileID: 1244781922}
-  btnOpenCreatePopup: {fileID: 1256496548}
+  btnOpenCreate: {fileID: 1256496548}
   btnOpenEdit: {fileID: 1611317658}
   btnCloseEdit: {fileID: 753630229}
   btnDeleteChecked: {fileID: 2147324845}
   txtEmpty: {fileID: 1673617894}
   popupConfirm: {fileID: 348361100}
-  popupConfirmOk: {fileID: 917263761}
+  popupConfirmOK: {fileID: 917263761}
   popupConfirmCancel: {fileID: 1554579686}
   popupConfirmTitle: {fileID: 572460197}
 --- !u!4 &672871595
@@ -2306,6 +2307,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4dbd8953a4706b849bd30b1f871fa955, type: 3}
+--- !u!114 &748592914 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 374500971202553504, guid: 4dbd8953a4706b849bd30b1f871fa955, type: 3}
+  m_PrefabInstance: {fileID: 748592911}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 709e4c2b8f4b5cf47bbe48aee8e1b40b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpaceApi
 --- !u!1 &750631164
 GameObject:
   m_ObjectHideFlags: 0
@@ -2465,19 +2477,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 753630230}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 672871594}
-        m_TargetAssemblyTypeName: MainListUI, Assembly-CSharp
-        m_MethodName: set_runInEditMode
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &753630230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4479,7 +4479,6 @@ GameObject:
   - component: {fileID: 1256496550}
   - component: {fileID: 1256496549}
   - component: {fileID: 1256496548}
-  - component: {fileID: 1256496547}
   m_Layer: 5
   m_Name: Btn_Create
   m_TagString: Untagged
@@ -4507,19 +4506,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 148}
   m_SizeDelta: {x: -600, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1256496547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1256496545}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f15770130a246b4c848ed8bafdb391f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SceneNav
-  sceneName: 
 --- !u!114 &1256496548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5580,19 +5566,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1611317659}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 672871594}
-        m_TargetAssemblyTypeName: MainListUI, Assembly-CSharp
-        m_MethodName: set_runInEditMode
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1611317659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6300,7 +6274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
