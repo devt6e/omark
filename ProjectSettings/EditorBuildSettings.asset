@@ -53,6 +53,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/sc_AITest.unity
     guid: 3ebdcafab0360ee4a8db5c4f40f82e4f
+  - enabled: 1
+    path: Assets/Scenes/sc_AR.unity
+    guid: 20a1f61cb978dc54eaeafa15f1e3471d
+  - enabled: 1
+    path: Assets/Scenes/Scene_3DSample.unity
+    guid: d54416f6527d6194f95c214e27d27473
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: f1b5e40eddeea344698409e89cb2ba9a, type: 2}
   m_UseUCBPForAssetBundles: 0
