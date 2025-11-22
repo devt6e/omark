@@ -41,6 +41,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/sc_start/sc_main.unity
     guid: 1aec0b96c7e5d054e8cd133cd5421ca4
+  - enabled: 1
+    path: Assets/Scenes/sc_roomitem/sample.unity
+    guid: 9ae00114521042c41ba3ba8ec84af95e
   - enabled: 0
     path: Assets/Scenes/sc_in_build.unity
     guid: 3dd1b8770022ad74f875c19898844de0
