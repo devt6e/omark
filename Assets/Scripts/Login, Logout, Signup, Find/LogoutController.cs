@@ -12,14 +12,14 @@ public class LogoutController : MonoBehaviour
 
     public void OnClickLogout()
     {
-        if (!auth) auth = FindObjectOfType<AuthService>();
+        if (!auth) auth = FindAnyObjectByType<AuthService>();
         StopAllCoroutines();
         StartCoroutine(CoLogout());
     }
 
     IEnumerator CoLogout()
     {
-        if (txtFeedback) txtFeedback.text = "·Î±×¾Æ¿ô ÁßÀÔ´Ï´Ù...";
+        if (txtFeedback) txtFeedback.text = "ï¿½Î±×¾Æ¿ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½...";
         if (loading) loading.SetActive(true);
 
         bool ok = false;
@@ -36,7 +36,7 @@ public class LogoutController : MonoBehaviour
         if (!ok && txtFeedback)
         {
             txtFeedback.text = string.IsNullOrEmpty(msg)
-                ? "¼­¹ö ·Î±×¾Æ¿ô¿¡ ½ÇÆÐÇß½À´Ï´Ù. ´Ù½Ã ½ÃµµÇØ ÁÖ¼¼¿ä."
+                ? "ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¾Æ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½. ï¿½Ù½ï¿½ ï¿½Ãµï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½."
                 : msg;
         }
 

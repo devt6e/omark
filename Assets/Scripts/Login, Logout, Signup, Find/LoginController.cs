@@ -16,7 +16,7 @@ public class LoginController : MonoBehaviour
 
     void Awake()
     {
-        if (!auth) auth = FindObjectOfType<AuthService>();
+        if (!auth) auth = FindAnyObjectByType<AuthService>();
         if (toggleAuto) toggleAuto.isOn = PlayerPrefs.GetInt("AUTO_LOGIN", 0) == 1;
     }
 
@@ -55,7 +55,7 @@ public class LoginController : MonoBehaviour
 
         if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(pw))
         {
-            if (errorText) errorText.text = "¾ÆÀÌµð¿Í ºñ¹Ð¹øÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä.";
+            if (errorText) errorText.text = "ï¿½ï¿½ï¿½Ìµï¿½ï¿½ ï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.";
             yield break;
         }
 
@@ -96,7 +96,7 @@ public class LoginController : MonoBehaviour
 
     IEnumerator CoAutoLogin(string email, string refreshToken)
     {
-        if (errorText) errorText.text = "ÀÚµ¿ ·Î±×ÀÎ ÁßÀÔ´Ï´Ù...";
+        if (errorText) errorText.text = "ï¿½Úµï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½...";
         if (loading) loading.SetActive(true);
 
         bool ok = false;
@@ -113,7 +113,7 @@ public class LoginController : MonoBehaviour
         if (!ok)
         {
             if (errorText) errorText.text = string.IsNullOrEmpty(msg)
-                ? "ÀÚµ¿ ·Î±×ÀÎ¿¡ ½ÇÆÐÇß½À´Ï´Ù. ´Ù½Ã ·Î±×ÀÎÇØ ÁÖ¼¼¿ä."
+                ? "ï¿½Úµï¿½ ï¿½Î±ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½. ï¿½Ù½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½."
                 : msg;
 
             PlayerPrefs.SetInt("AUTO_LOGIN", 0);
