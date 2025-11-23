@@ -48,12 +48,26 @@ public class UIPopupManager : MonoBehaviour
     public Button deleteNoButton;           // 삭제 확인 팝업의 '아니오' 버튼
 
     // ======================================================================
-    // 5. 내부 상태 변수
+    // 5. 검색 확인 팝업 UI 요소 연결
+    // ======================================================================
+    [Header("5. 검색 패널 요소")]
+    public GameObject searchPanel;              // 검색 패널 전체 (활성화/비활성화용)
+    public TMP_InputField searchInputField;     // 마커 이름을 입력할 필드
+    public Button searchConfirmButton;          // 검색 '확인' 버튼
+    [Header("6. 검색 실패 패널 요소")]
+    public GameObject failedPanel;              // 실패 메시지 패널
+    public Button failedConfirmButton;          // 실패 패널의 '확인' 버튼
+
+    // ======================================================================
+    // 6. 내부 상태 변수
     // ======================================================================
     private MarkerData currentMarkerData;    // 현재 팝업에 표시 중인 마커 데이터
     private string selectedColorCode;       // 편집 중 선택된 색상
     private bool tempIsFavorite;
     private ColorButtonTag[] colorButtons;
+
+    private CameraFocusController focusController; // 카메라 포커싱 스크립트 인스턴스
+    private MarkerListUIController uiController;   // 마커 리스트 관리 스크립트 인스턴스
 
     void Start()
     {
@@ -78,6 +92,22 @@ public class UIPopupManager : MonoBehaviour
 
         // 초기 색상 설정 (예시)
         selectedColorCode = "#FFFFFF";
+
+        // [카메라 포커싱 스크립트 및 UI 컨트롤러 참조]
+        focusController = FindObjectOfType<CameraFocusController>();
+        uiController = FindObjectOfType<MarkerListUIController>();
+
+        // [검색 버튼 연결]
+        if (searchConfirmButton != null)
+        {
+            searchConfirmButton.onClick.AddListener(OnSearchConfirmClicked);
+        }
+
+        // 실패 패널의 '확인' 버튼 연결
+        if (failedConfirmButton != null)
+        {
+            failedConfirmButton.onClick.AddListener(OnFailedConfirmClicked);
+        }
     }
 
     // ======================================================================
@@ -327,6 +357,100 @@ public class UIPopupManager : MonoBehaviour
     {
         // 편집을 취소하고 편집 패널을 닫습니다.
         HideEditPanel();
+    }
+
+    // ======================================================================
+    // **6. 검색 기능 로직**
+    // ======================================================================
+
+    private void OnSearchConfirmClicked()
+    {
+        if (searchInputField == null || string.IsNullOrEmpty(searchInputField.text))
+        {
+            Debug.LogWarning("검색어를 입력해주세요.");
+            return;
+        }
+
+        string searchName = searchInputField.text.Trim();
+
+        if (uiController == null)
+        {
+            Debug.LogError("MarkerListUIController를 찾을 수 없습니다.");
+            return;
+        }
+
+        // 1. **검색 이름과 일치하는 3D 마커를 찾습니다.**
+        GameObject targetMarker = Find3DMarkerByName(searchName);
+
+        if (targetMarker != null)
+        {
+            Debug.Log($"[Search Success] 마커 '{searchName}'을 찾았습니다. 카메라 이동 요청.");
+
+            // 2. **[핵심]** 카메라 포커싱 요청
+            if (focusController != null)
+            {
+                focusController.FocusOnMarker(targetMarker.transform);
+                // 검색 후 패널 닫기 (선택 사항)
+                if (searchPanel != null) searchPanel.SetActive(false);
+                if (searchInputField != null) searchInputField.text = "";
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[Search Fail] '{searchName}' 이름을 가진 마커를 찾을 수 없습니다.");
+            ShowFailedPanel();
+            // TODO: 사용자에게 마커를 찾을 수 없다는 메시지 출력 UI 로직 추가
+        }
+    }
+
+    // ======================================================================
+    // 7. 검색 실패 흐름 제어 로직 (추가)
+    // ======================================================================
+
+    // 검색 실패 시 호출 (실패 패널 띄우기)
+    private void ShowFailedPanel()
+    {
+        if (failedPanel != null)
+        {
+            // 검색 패널을 숨기고 실패 패널을 띄웁니다.
+            if (searchPanel != null) searchPanel.SetActive(false);
+            failedPanel.SetActive(true);
+        }
+    }
+
+    // 실패 패널에서 '확인' 버튼 클릭 시 호출
+    private void OnFailedConfirmClicked()
+    {
+        // 실패 패널을 닫고
+        if (failedPanel != null) failedPanel.SetActive(false);
+        // 검색 패널을 다시 띄웁니다.
+        if (searchPanel != null) searchPanel.SetActive(true);
+        // 입력 필드 초기화
+        if (searchInputField != null) searchInputField.text = "";
+    }
+
+    // Helper 함수: 이름으로 3D 마커를 찾는 함수
+    private GameObject Find3DMarkerByName(string name)
+    {
+        // ARMarkerData가 붙어있는 모든 3D 마커를 순회합니다.
+        ARMarkerData[] allMarkers = FindObjectsOfType<ARMarkerData>();
+
+        foreach (var arData in allMarkers)
+        {
+            // ARMarkerData에 저장된 이름(fullMarkerData.Name)을 사용하여 검색합니다.
+            // 대소문자 구분 없이 검색 (OrdinalIgnoreCase)
+            if (arData.fullMarkerData != null && arData.fullMarkerData.Name.Equals(name, System.StringComparison.OrdinalIgnoreCase))
+            {
+                // **3D 오브젝트가 배치되었는지 확인 (linked3DMarker를 사용하지 않는 방식)**
+                // arData가 붙어있는 GameObject가 3D 마커입니다.
+                if (arData.gameObject.activeInHierarchy)
+                {
+                    return arData.gameObject;
+                }
+            }
+        }
+
+        return null;
     }
 
     public void HideEditPanel()
