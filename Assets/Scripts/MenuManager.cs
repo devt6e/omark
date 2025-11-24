@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class MenuManager : MonoBehaviour
 {
@@ -9,6 +10,12 @@ public class MenuManager : MonoBehaviour
     [Header("Move and Marker Panel Settings")]
     [SerializeField]
     private GameObject movePanel; // Hierarchy의 move_panel을 연결할 필드
+
+    [SerializeField]
+    private GameObject researchPanel; // 검색어 입력 패널을 연결할 필드
+
+    [SerializeField]
+    private TMP_InputField researchInputField; // 검색어 입력창 (TMP_InputField)
 
     [SerializeField]
     private GameObject makrerPanel; // Hierarchy의 Makrer 패널을 연결할 필드
@@ -50,5 +57,29 @@ public class MenuManager : MonoBehaviour
         // 3. makrerPanel의 상태를 movePanel의 새로운 상태와 정반대로 설정합니다.
         //    (즉, movePanel이 열리면 MakrerPanel은 닫히고, movePanel이 닫히면 MakrerPanel은 열립니다.)
         makrerPanel.SetActive(!isMovePanelOpening);
+    }
+
+    // 돋보기 버튼에 연결할 함수
+    public void OpenResearchPanel()
+    {
+        if (researchPanel != null)
+        {
+            researchPanel.SetActive(true);
+        }
+    }
+
+    // 취소 버튼에 연결할 함수 (패널 비활성화)
+    public void CloseResearchPanel()
+    {
+        if (researchPanel != null)
+        {
+            researchPanel.SetActive(false);
+        }
+
+        if (researchInputField != null)
+        {
+            // Input Field의 텍스트를 빈 문자열로 설정합니다.
+            researchInputField.text = string.Empty;
+        }
     }
 }

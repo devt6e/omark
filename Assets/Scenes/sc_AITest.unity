@@ -284,7 +284,6 @@ GameObject:
   m_Component:
   - component: {fileID: 576439900}
   - component: {fileID: 576439901}
-  - component: {fileID: 576439902}
   m_Layer: 0
   m_Name: send_manager
   m_TagString: Untagged
@@ -323,69 +322,6 @@ MonoBehaviour:
   previewImage: {fileID: 1520160812}
   modelParent: {fileID: 2141438799}
   serverUrl: https://kemini-aws.duckdns.org/api/v1/ai/generate-model
---- !u!114 &576439902
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 576439898}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18f17813dfaa54148a9ff2c32a4a3251, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ModelUploader_ori
-  uploadButton: {fileID: 1917505479}
-  previewImage: {fileID: 1520160812}
-  modelParent: {fileID: 2141438799}
-  serverUrl: https://kemini-aws.duckdns.org/api/v1/ai/generate-model
---- !u!1 &617318418
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 617318420}
-  - component: {fileID: 617318422}
-  m_Layer: 0
-  m_Name: gallery_opener
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &617318420
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 617318418}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 561.8892, y: 0, z: 7827.382}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &617318422
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 617318418}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 817fc8f765f727645ad6a60c1e2609f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GalleryHandler
-  displayImage: {fileID: 1520160812}
-  feedbackText: {fileID: 1582335869}
-  imagepath: {fileID: 390544778}
 --- !u!1 &684384016
 GameObject:
   m_ObjectHideFlags: 0
@@ -1543,7 +1479,7 @@ Transform:
   m_GameObject: {fileID: 2141438798}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: 10}
+  m_LocalPosition: {x: 1, y: -1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1557,6 +1493,5 @@ SceneRoots:
   - {fileID: 1542405574}
   - {fileID: 813310985}
   - {fileID: 820804973}
-  - {fileID: 617318420}
   - {fileID: 576439900}
   - {fileID: 2141438799}

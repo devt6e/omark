@@ -32,7 +32,7 @@ public class SignupController : MonoBehaviour
 
     void Start()
     {
-        if (!auth) auth = FindObjectOfType<AuthService>();
+        if (!auth) auth = FindAnyObjectByType<AuthService>();
         StartCoroutine(LoadQuestions());
     }
 
@@ -88,7 +88,7 @@ public class SignupController : MonoBehaviour
 
     public void CheckId()
     {
-        if (!auth) auth = FindObjectOfType<AuthService>();
+        if (!auth) auth = FindAnyObjectByType<AuthService>();
         StopCoroutine(nameof(CoCheckId));
         StartCoroutine(CoCheckId());
     }

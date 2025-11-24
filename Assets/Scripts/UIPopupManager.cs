@@ -1,96 +1,126 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // TextMeshPro¸¦ »ç¿ëÇÏ±â À§ÇØ ÇÊ¿äÇÕ´Ï´Ù.
+using TMPro; // TextMeshProï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Õ´Ï´ï¿½.
 
 public class UIPopupManager : MonoBehaviour
 {
     // ======================================================================
-    // 1. ¸ÞÀÎ ÆË¾÷ ¹× ÆÐ³Î ¿¬°á (Unity Inspector¿¡ ¿¬°á)
+    // 1. ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½ï¿½ï¿½ (Unity Inspectorï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
     // ======================================================================
-    [Header("1. ¸ÞÀÎ ÆË¾÷ ¹× ÆÐ³Î")]
-    public GameObject markerDetailPopup;    // ¸¶Ä¿ »ó¼¼ Á¤º¸ ÆË¾÷ (SCENE3-3 ÃÊ±â È­¸é)
-    public GameObject deleteConfirmPopup;   // "Á¤¸» »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?" ÆÐ³Î (»èÁ¦ È®ÀÎ)
-    public GameObject detailEditPanel;      // ÆíÁý »ó¼¼ Á¤º¸ ÀÔ·Â ÆÐ³Î
+    [Header("1. ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ ï¿½ï¿½ ï¿½Ð³ï¿½")]
+    public GameObject markerDetailPopup;    // ï¿½ï¿½Ä¿ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ (SCENE3-3 ï¿½Ê±ï¿½ È­ï¿½ï¿½)
+    public GameObject deleteConfirmPopup;   // "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï½Ã°Ú½ï¿½ï¿½Ï±ï¿½?" ï¿½Ð³ï¿½ (ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½)
+    public GameObject detailEditPanel;      // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½Ð³ï¿½
 
     // ======================================================================
-    // 2. ¸ÞÀÎ ÆË¾÷ UI ¿ä¼Ò ¿¬°á
+    // 2. ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ UI ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     // ======================================================================
-    [Header("2. ¸ÞÀÎ ÆË¾÷ ³»ºÎ ¿ä¼Ò")]
-    public TextMeshProUGUI nameText;        // ¸¶Ä¿ ÀÌ¸§ Ç¥½Ã
-    public TextMeshProUGUI detailInfoText;  // »ó¼¼ Á¤º¸ Ç¥½Ã
+    [Header("2. ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½")]
+    public TextMeshProUGUI nameText;        // ï¿½ï¿½Ä¿ ï¿½Ì¸ï¿½ Ç¥ï¿½ï¿½
+    public TextMeshProUGUI detailInfoText;  // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
 
-    // ºÏ¸¶Å© (Áñ°ÜÃ£±â) »óÅÂ Ç¥½Ã ¹× Á¦¾î
-    public Button bookmarkButton;           // Áñ°ÜÃ£±â(Bookmark) ¹öÆ°
-    public Image bookmarkImageComponent;     // Áñ°ÜÃ£±â ¹öÆ°ÀÇ Image ÄÄÆ÷³ÍÆ®
-    public Sprite filledStarSprite;           // ³ë¶õ»ö Ã¤¿öÁø º° ÀÌ¹ÌÁö (Áñ°ÜÃ£±â O)
-    public Sprite emptyStarSprite;            // ºó º° ÀÌ¹ÌÁö (Áñ°ÜÃ£±â X)
+    // ï¿½Ï¸ï¿½Å© (ï¿½ï¿½ï¿½Ã£ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    public Button bookmarkButton;           // ï¿½ï¿½ï¿½Ã£ï¿½ï¿½(Bookmark) ï¿½ï¿½Æ°
+    public Image bookmarkImageComponent;     // ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ Image ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    public Sprite filledStarSprite;           // ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ O)
+    public Sprite emptyStarSprite;            // ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ X)
 
-    public Button deleteButton;             // '»èÁ¦' ¹öÆ° (-> »èÁ¦ È®ÀÎ ÆË¾÷)
-    public Button editButton;               // 'ÆíÁý' ¹öÆ° (-> ÆíÁý »ó¼¼ ÆÐ³Î)
-    public Button closeButton;              // ´Ý±â/Ãë¼Ò ¹öÆ°
-
-    // ======================================================================
-    // 3. ÆíÁý ÆÐ³Î UI ¿ä¼Ò ¿¬°á
-    // ======================================================================
-    [Header("3. ÆíÁý ÆÐ³Î ³»ºÎ ¿ä¼Ò")]
-    public TMP_InputField nameInputField;   // **(ÇÊ¼ö) ¸¶Ä¿ ÀÌ¸§ ÀÔ·Â ÇÊµå**
-    public TMP_InputField detailInputField; // **(ÇÊ¼ö) »õ·Î Ãß°¡µÈ »ó¼¼ Á¤º¸ ÀÔ·Â ÇÊµå**
-    public GameObject colorButtonContainer; // »ö»ó ¹öÆ°µéÀ» ´ã´Â ºÎ¸ð ¿ÀºêÁ§Æ® (¼±ÅÃÀû)
-    public Button editConfirmButton;        // ÆíÁý ÆÐ³ÎÀÇ 'È®ÀÎ' ¹öÆ°
-    public Button editCancelButton;         // ÆíÁý ÆÐ³ÎÀÇ 'Ãë¼Ò' ¹öÆ°
-    // Âü°í: »ö»ó ¹öÆ°µéÀº °³º°ÀûÀ¸·Î ÀÌ ½ºÅ©¸³Æ®ÀÇ OnColorSelected ÇÔ¼ö¿¡ ¿¬°áÇØ¾ß ÇÕ´Ï´Ù.
+    public Button deleteButton;             // 'ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° (-> ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ë¾ï¿½)
+    public Button editButton;               // 'ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° (-> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ð³ï¿½)
+    public Button closeButton;              // ï¿½Ý±ï¿½/ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
 
     // ======================================================================
-    // 4. »èÁ¦ È®ÀÎ ÆË¾÷ UI ¿ä¼Ò ¿¬°á
+    // 3. ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ UI ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     // ======================================================================
-    [Header("4. »èÁ¦ È®ÀÎ ÆË¾÷ ³»ºÎ ¿ä¼Ò")]
-    public Button deleteYesButton;          // »èÁ¦ È®ÀÎ ÆË¾÷ÀÇ '¿¹' ¹öÆ°
-    public Button deleteNoButton;           // »èÁ¦ È®ÀÎ ÆË¾÷ÀÇ '¾Æ´Ï¿À' ¹öÆ°
+    [Header("3. ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½")]
+    public TMP_InputField nameInputField;   // **(ï¿½Ê¼ï¿½) ï¿½ï¿½Ä¿ ï¿½Ì¸ï¿½ ï¿½Ô·ï¿½ ï¿½Êµï¿½**
+    public TMP_InputField detailInputField; // **(ï¿½Ê¼ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½Êµï¿½**
+    public GameObject colorButtonContainer; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+    public Button editConfirmButton;        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ 'È®ï¿½ï¿½' ï¿½ï¿½Æ°
+    public Button editCancelButton;         // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½' ï¿½ï¿½Æ°
+    // ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ OnColorSelected ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Õ´Ï´ï¿½.
 
     // ======================================================================
-    // 5. ³»ºÎ »óÅÂ º¯¼ö
+    // 4. ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ë¾ï¿½ UI ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     // ======================================================================
-    private MarkerData currentMarkerData;    // ÇöÀç ÆË¾÷¿¡ Ç¥½Ã ÁßÀÎ ¸¶Ä¿ µ¥ÀÌÅÍ
-    private string selectedColorCode;       // ÆíÁý Áß ¼±ÅÃµÈ »ö»ó
+    [Header("4. ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ë¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½")]
+    public Button deleteYesButton;          // ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ 'ï¿½ï¿½' ï¿½ï¿½Æ°
+    public Button deleteNoButton;           // ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ 'ï¿½Æ´Ï¿ï¿½' ï¿½ï¿½Æ°
+
+    // ======================================================================
+    // 5. ï¿½Ë»ï¿½ È®ï¿½ï¿½ ï¿½Ë¾ï¿½ UI ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // ======================================================================
+    [Header("5. ï¿½Ë»ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½ï¿½")]
+    public GameObject searchPanel;              // ï¿½Ë»ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½Ã¼ (È°ï¿½ï¿½È­/ï¿½ï¿½È°ï¿½ï¿½È­ï¿½ï¿½)
+    public TMP_InputField searchInputField;     // ï¿½ï¿½Ä¿ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½Êµï¿½
+    public Button searchConfirmButton;          // ï¿½Ë»ï¿½ 'È®ï¿½ï¿½' ï¿½ï¿½Æ°
+    [Header("6. ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½ï¿½")]
+    public GameObject failedPanel;              // ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½
+    public Button failedConfirmButton;          // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ 'È®ï¿½ï¿½' ï¿½ï¿½Æ°
+
+    // ======================================================================
+    // 6. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // ======================================================================
+    private MarkerData currentMarkerData;    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    private string selectedColorCode;       // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½
     private bool tempIsFavorite;
     private ColorButtonTag[] colorButtons;
 
+    private CameraFocusController focusController; // Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½Î½ï¿½ï¿½Ï½ï¿½
+    private MarkerListUIController uiController;   // ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½Î½ï¿½ï¿½Ï½ï¿½
+
     void Start()
     {
-        // 1. ¸ðµç ÆÐ³Î ½ÃÀÛ ½Ã ¼û±â±â
+        // 1. ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
         if (markerDetailPopup != null) markerDetailPopup.SetActive(false);
         if (deleteConfirmPopup != null) deleteConfirmPopup.SetActive(false);
         if (detailEditPanel != null) detailEditPanel.SetActive(false);
 
-        // 2. ¸ÞÀÎ ÆË¾÷ ¹öÆ° ¿¬°á
+        // 2. ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
         if (bookmarkButton != null) bookmarkButton.onClick.AddListener(OnBookmarkToggled);
         if (deleteButton != null) deleteButton.onClick.AddListener(OnDeleteClicked);
         if (editButton != null) editButton.onClick.AddListener(OnEditClicked);
         if (closeButton != null) closeButton.onClick.AddListener(HideMarkerDetailPopup);
 
-        // 3. ÆíÁý ÆÐ³Î ¹öÆ° ¿¬°á
+        // 3. ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
         if (editConfirmButton != null) editConfirmButton.onClick.AddListener(OnEditConfirmed);
         if (editCancelButton != null) editCancelButton.onClick.AddListener(OnEditCancelled);
 
-        // 4. »èÁ¦ È®ÀÎ ÆË¾÷ ¹öÆ° ¿¬°á
+        // 4. ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ë¾ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
         if (deleteYesButton != null) deleteYesButton.onClick.AddListener(OnDeleteFinalConfirmed);
         if (deleteNoButton != null) deleteNoButton.onClick.AddListener(HideDeleteConfirmPopup);
 
-        // ÃÊ±â »ö»ó ¼³Á¤ (¿¹½Ã)
+        // ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½)
         selectedColorCode = "#FFFFFF";
+
+        // [Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ UI ï¿½ï¿½Æ®ï¿½Ñ·ï¿½ ï¿½ï¿½ï¿½ï¿½]
+        focusController = FindAnyObjectByType<CameraFocusController>();
+        uiController = FindAnyObjectByType<MarkerListUIController>();
+
+        // [ï¿½Ë»ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½]
+        if (searchConfirmButton != null)
+        {
+            searchConfirmButton.onClick.AddListener(OnSearchConfirmClicked);
+        }
+
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ 'È®ï¿½ï¿½' ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
+        if (failedConfirmButton != null)
+        {
+            failedConfirmButton.onClick.AddListener(OnFailedConfirmClicked);
+        }
     }
 
     // ======================================================================
-    // ¸¶Ä¿ »ó¼¼ ÆË¾÷ Ç¥½Ã/¼û±â±â (Marker Icon Clicked)
+    // ï¿½ï¿½Ä¿ ï¿½ï¿½ ï¿½Ë¾ï¿½ Ç¥ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ (Marker Icon Clicked)
     // ======================================================================
 
-    // UIMarkerItemData.cs¿¡¼­ È£ÃâÇÏ´Â ÇÔ¼ö
+    // UIMarkerItemData.csï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
     public void ShowMarkerDetailPopup(MarkerData data)
     {
         currentMarkerData = data;
         tempIsFavorite = data.IsFavorite;
 
-        // ÆË¾÷¿¡ µ¥ÀÌÅÍ ¹Ý¿µ
+        // ï¿½Ë¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½
         if (nameText != null)
         {
             nameText.text = data.Name;
@@ -98,20 +128,20 @@ public class UIPopupManager : MonoBehaviour
 
         if (detailInfoText != null)
         {
-            // DetailInformationÀÌ nullÀÌ°Å³ª ºñ¾îÀÖÀ¸¸é ±âº»°ª(¿¹: "¼³¸í ¾øÀ½")À» Ç¥½ÃÇÒ ¼ö ÀÖ½À´Ï´Ù.
+            // DetailInformationï¿½ï¿½ nullï¿½Ì°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½(ï¿½ï¿½: "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.
             detailInfoText.text = string.IsNullOrEmpty(data.DetailInformation)
-                                  ? "¸¶Ä¿ »ó¼¼ ¼³¸íÀÌ ¾ø½À´Ï´Ù."
+                                  ? "ï¿½ï¿½Ä¿ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."
                                   : data.DetailInformation;
         }
 
         UpdateBookmarkVisual(tempIsFavorite);
 
-        // ÆË¾÷ Ç¥½Ã
+        // ï¿½Ë¾ï¿½ Ç¥ï¿½ï¿½
         if (markerDetailPopup != null)
         {
             markerDetailPopup.SetActive(true);
         }
-        Debug.Log($"[Popup] »ó¼¼ ÆË¾÷ Ç¥½Ã. ¸¶Ä¿ ID: {data.Id}");
+        Debug.Log($"[Popup] ï¿½ï¿½ ï¿½Ë¾ï¿½ Ç¥ï¿½ï¿½. ï¿½ï¿½Ä¿ ID: {data.Id}");
     }
 
     private void UpdateBookmarkVisual(bool isFavorite)
@@ -129,7 +159,7 @@ public class UIPopupManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Áñ°ÜÃ£±â ÀÌ¹ÌÁö ÄÄÆ÷³ÍÆ® ¶Ç´Â ½ºÇÁ¶óÀÌÆ® ¿¬°áÀÌ ´©¶ôµÇ¾ú½À´Ï´Ù.");
+            Debug.LogWarning("ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
         }
     }
 
@@ -143,50 +173,50 @@ public class UIPopupManager : MonoBehaviour
     }
 
     // ======================================================================
-    // 1. Áñ°ÜÃ£±â (Bookmark) Åä±Û ·ÎÁ÷
+    // 1. ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ (Bookmark) ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     // ======================================================================
     private void OnBookmarkToggled()
     {
         if (currentMarkerData != null)
         {
-            // 1. µ¥ÀÌÅÍ ¾÷µ¥ÀÌÆ®
+            // 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
             tempIsFavorite = !tempIsFavorite;
 
-            // 2. ÆË¾÷ UI ¹Ý¿µ (º° ÀÌ¹ÌÁö Áï½Ã º¯°æ)
+            // 2. ï¿½Ë¾ï¿½ UI ï¿½Ý¿ï¿½ (ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
             UpdateBookmarkVisual(tempIsFavorite);
 
-            Debug.Log($"[Action] Áñ°ÜÃ£±â »óÅÂ º¯°æ: ID {currentMarkerData.Id} -> {currentMarkerData.IsFavorite}");
+            Debug.Log($"[Action] ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: ID {currentMarkerData.Id} -> {currentMarkerData.IsFavorite}");
         }
     }
 
     // ======================================================================
-    // 2. »èÁ¦ ·ÎÁ÷ (Delete Button)
+    // 2. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (Delete Button)
     // ======================================================================
 
-    // ¸ÞÀÎ ÆË¾÷¿¡¼­ '»èÁ¦' ¹öÆ° Å¬¸¯ ½Ã (»èÁ¦ È®ÀÎ ÆÐ³Î ¿äÃ»)
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½Ã»)
     private void OnDeleteClicked()
     {
         if (currentMarkerData != null && deleteConfirmPopup != null)
         {
-            // "Á¤¸» »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?" ÆÐ³Î ¶ç¿ì±â
+            // "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï½Ã°Ú½ï¿½ï¿½Ï±ï¿½?" ï¿½Ð³ï¿½ ï¿½ï¿½ï¿½ï¿½
             deleteConfirmPopup.SetActive(true);
-            //HideMarkerDetailPopup(); // »ó¼¼ Á¤º¸ ÆË¾÷
+            //HideMarkerDetailPopup(); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½
         }
     }
 
-    // »èÁ¦ È®ÀÎ ÆÐ³Î¿¡¼­ '¿¹' ¹öÆ° Å¬¸¯ ½Ã (ÃÖÁ¾ »èÁ¦ ½ÇÇà)
+    // ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ð³Î¿ï¿½ï¿½ï¿½ 'ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
     private void OnDeleteFinalConfirmed()
     {
         if (currentMarkerData != null)
         {
             string deletedId = currentMarkerData.Id;
 
-            Debug.Log($"[Action] ÃÖÁ¾ ¸¶Ä¿ »èÁ¦ ½ÇÇà: ID {deletedId}");
+            Debug.Log($"[Action] ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: ID {deletedId}");
 
-            // TODO: 1. ¼­¹ö¿¡ »èÁ¦ ¿äÃ»
-            // TODO: 2. AR °ø°£¿¡¼­ 3D ¸¶Ä¿ ¿ÀºêÁ§Æ® ÆÄ±«
+            // TODO: 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
+            // TODO: 2. AR ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3D ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ä±ï¿½
 
-            // 3. UI ¸®½ºÆ®¿¡¼­ ¸¶Ä¿ ¾ÆÀÌÄÜ ¿ÀºêÁ§Æ® Á¦°Å (Ãß°¡µÈ ÇÙ½É ·ÎÁ÷)
+            // 3. UI ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ (ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½)
             MarkerListUIController uiController = FindFirstObjectByType<MarkerListUIController>();
             if (uiController != null)
             {
@@ -199,7 +229,7 @@ public class UIPopupManager : MonoBehaviour
         }
     }
 
-    // »èÁ¦ È®ÀÎ ÆÐ³Î ´Ý±â (Ãë¼Ò/¾Æ´Ï¿À ¹öÆ° Å¬¸¯ ½Ã)
+    // ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½Ý±ï¿½ (ï¿½ï¿½ï¿½/ï¿½Æ´Ï¿ï¿½ ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½)
     public void HideDeleteConfirmPopup()
     {
         if (deleteConfirmPopup != null)
@@ -209,7 +239,7 @@ public class UIPopupManager : MonoBehaviour
     }
 
     // ======================================================================
-    // 3. ÆíÁý ·ÎÁ÷ (Edit Button)
+    // 3. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (Edit Button)
     // ======================================================================
 
     private void UpdateColorSelectionVisual()
@@ -220,10 +250,10 @@ public class UIPopupManager : MonoBehaviour
         {
             if (tag.selectionHighlight != null)
             {
-                // ÇöÀç ¼±ÅÃµÈ »ö»ó ÄÚµå¿Í ¹öÆ°ÀÇ »ö»ó ÄÚµå°¡ ÀÏÄ¡ÇÏ´ÂÁö È®ÀÎ
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµå°¡ ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
                 bool isSelected = tag.buttonColorCode == selectedColorCode;
 
-                // ÀÏÄ¡ÇÏ¸é °­Á¶ ¿ÀºêÁ§Æ®¸¦ ÄÑ°í, ¾Æ´Ï¸é ²ü´Ï´Ù.
+                // ï¿½ï¿½Ä¡ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ñ°ï¿½, ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½.
                 tag.selectionHighlight.SetActive(isSelected);
 
                 Debug.Log($"Checking {tag.buttonColorCode}. Selected: {isSelected}");
@@ -231,50 +261,50 @@ public class UIPopupManager : MonoBehaviour
         }
     }
 
-    // ¸ÞÀÎ ÆË¾÷¿¡¼­ 'ÆíÁý' ¹öÆ° Å¬¸¯ ½Ã
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½
     private void OnEditClicked()
     {
         if (currentMarkerData != null && detailEditPanel != null)
         {
-            // 1. ÆíÁý ÆÐ³Î¿¡ ÇöÀç ÀÌ¸§ µ¥ÀÌÅÍ ¹Ì¸® Ã¤¿ì±â
+            // 1. ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ Ã¤ï¿½ï¿½ï¿½
             if (nameInputField != null)
             {
                 nameInputField.text = currentMarkerData.Name;
             }
 
-            // 2. **»ó¼¼ Á¤º¸ µ¥ÀÌÅÍ ¹Ì¸® Ã¤¿ì±â (Ãß°¡)**
+            // 2. **ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ Ã¤ï¿½ï¿½ï¿½ (ï¿½ß°ï¿½)**
             if (detailInputField != null)
             {
                 detailInputField.text = currentMarkerData.DetailInformation;
             }
 
-            // 3. »ö»ó ÃÊ±âÈ­
+            // 3. ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
             selectedColorCode = currentMarkerData.ColorCode;
-            // colorButtonContainer ÇÏÀ§ÀÇ ¸ðµç ColorButtonTag ÄÄÆ÷³ÍÆ®¸¦ °¡Á®¿É´Ï´Ù.
+            // colorButtonContainer ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ColorButtonTag ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½É´Ï´ï¿½.
             if (colorButtonContainer != null)
             {
                 colorButtons = colorButtonContainer.GetComponentsInChildren<ColorButtonTag>();
             }
             UpdateColorSelectionVisual();
-            // TODO: ±âÁ¸ »ö»ó ¹öÆ°ÀÌ ¼±ÅÃµÈ »óÅÂ·Î ½Ã°¢ÀûÀ¸·Î Ç¥½ÃµÇµµ·Ï ÇÏ´Â ·ÎÁ÷ Ãß°¡
+            // TODO: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ÃµÇµï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
 
-            // 4. ÆÐ³Î Ç¥½Ã
+            // 4. ï¿½Ð³ï¿½ Ç¥ï¿½ï¿½
             detailEditPanel.SetActive(true);
-            //HideMarkerDetailPopup(); // »ó¼¼ Á¤º¸ ÆË¾÷Àº ¼û±è
+            //HideMarkerDetailPopup(); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
     }
 
-    // ÆíÁý ÆÐ³Î ³» »ö»ó ¹öÆ° Å¬¸¯ ½Ã È£Ãâ (°¢ »ö»ó ¹öÆ°ÀÇ OnClick¿¡ ¿¬°á)
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½ (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ OnClickï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
     public void OnColorSelected(string colorCode)
     {
         selectedColorCode = colorCode;
 
         UpdateColorSelectionVisual();
 
-        Debug.Log($"[Edit] »õ »ö»ó ¼±ÅÃ: {colorCode}");
+        Debug.Log($"[Edit] ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {colorCode}");
     }
 
-    // ÆíÁý ÆÐ³ÎÀÇ 'È®ÀÎ' ¹öÆ° Å¬¸¯ ½Ã (ÆíÁý ÀúÀå)
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ 'È®ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
     private void OnEditConfirmed()
     {
         if (currentMarkerData != null)
@@ -284,49 +314,143 @@ public class UIPopupManager : MonoBehaviour
             MarkerListUIController uiController = FindFirstObjectByType<MarkerListUIController>();
             if (uiController != null)
             {
-                // UpdateMarkerIconStatus ³»ºÎ¿¡¼­ °»½ÅµÈ currentMarkerData¸¦ »ç¿ëÇÕ´Ï´Ù.
+                // UpdateMarkerIconStatus ï¿½ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Åµï¿½ currentMarkerDataï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
                 uiController.UpdateMarkerIconStatus(currentMarkerData);
             }
 
-            // 1. ÀÌ¸§ º¯°æ (Detail information ÀÔ·Â)
+            // 1. ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ (Detail information ï¿½Ô·ï¿½)
             string newName = nameInputField.text;
             if (nameInputField != null && !string.IsNullOrEmpty(newName))
             {
                 currentMarkerData.Name = newName;
             }
 
-            // 2. **»ó¼¼ Á¤º¸ ÀúÀå (Ãß°¡)**
+            // 2. **ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ß°ï¿½)**
             string newDetail = detailInputField.text;
-            if (detailInputField != null) // ºñ¾î ÀÖ¾îµµ ÀúÀå (»ç¿ëÀÚ°¡ Áö¿ï ¼ö ÀÖÀ½)
+            if (detailInputField != null) // ï¿½ï¿½ï¿½ ï¿½Ö¾îµµ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
             {
                 currentMarkerData.DetailInformation = newDetail;
             }
 
-            // 3. »ö»ó º¯°æ
+            // 3. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (!string.IsNullOrEmpty(selectedColorCode))
             {
                 currentMarkerData.ColorCode = selectedColorCode;
             }
 
-            // TODO: ¼­¹ö¿¡ ¾÷µ¥ÀÌÆ® ¿äÃ» ¹× UI ¸®½ºÆ® °»½Å ¿äÃ»
+            // TODO: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ã» ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
 
-            // 4. **UI ¸®½ºÆ® °»½Å ¿äÃ» (ÇÙ½É ´©¶ô/¿À·ù ÁöÁ¡)**
+            // 4. **UI ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» (ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)**
             if (uiController != null)
             {
-                uiController.UpdateMarkerIconStatus(currentMarkerData); // currentMarkerData¸¦ Àü´ÞÇÏ¿© ¸®½ºÆ® UIÀÇ ÀÌ¸§, »ö»ó µîÀ» °»½ÅÇÕ´Ï´Ù.
+                uiController.UpdateMarkerIconStatus(currentMarkerData); // currentMarkerDataï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® UIï¿½ï¿½ ï¿½Ì¸ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
             }
 
-            Debug.Log($"[Action] ÆíÁý ÀúÀå ¿Ï·á. Name: {currentMarkerData.Name}, Detail: {currentMarkerData.DetailInformation}");
+            Debug.Log($"[Action] ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½. Name: {currentMarkerData.Name}, Detail: {currentMarkerData.DetailInformation}");
             HideMarkerDetailPopup();
-            HideEditPanel(); // ÆíÁý ÆÐ³Î ´Ý±â
+            HideEditPanel(); // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½Ý±ï¿½
         }
     }
 
-    // ÆíÁý ÆÐ³ÎÀÇ 'Ãë¼Ò' ¹öÆ° Å¬¸¯ ½Ã (¸¶Ä¿ ÆíÁý ¸®½ºÆ®·Î µ¹¾Æ¿È)
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½ (ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Æ¿ï¿½)
     private void OnEditCancelled()
     {
-        // ÆíÁýÀ» Ãë¼ÒÇÏ°í ÆíÁý ÆÐ³ÎÀ» ´Ý½À´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ ï¿½Ý½ï¿½ï¿½Ï´ï¿½.
         HideEditPanel();
+    }
+
+    // ======================================================================
+    // **6. ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½**
+    // ======================================================================
+
+    private void OnSearchConfirmClicked()
+    {
+        if (searchInputField == null || string.IsNullOrEmpty(searchInputField.text))
+        {
+            Debug.LogWarning("ï¿½Ë»ï¿½ï¿½î¸¦ ï¿½Ô·ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½.");
+            return;
+        }
+
+        string searchName = searchInputField.text.Trim();
+
+        if (uiController == null)
+        {
+            Debug.LogError("MarkerListUIControllerï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
+            return;
+        }
+
+        // 1. **ï¿½Ë»ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ 3D ï¿½ï¿½Ä¿ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½Ï´ï¿½.**
+        GameObject targetMarker = Find3DMarkerByName(searchName);
+
+        if (targetMarker != null)
+        {
+            Debug.Log($"[Search Success] ï¿½ï¿½Ä¿ '{searchName}'ï¿½ï¿½ Ã£ï¿½Ò½ï¿½ï¿½Ï´ï¿½. Ä«ï¿½Þ¶ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½Ã».");
+
+            // 2. **[ï¿½Ù½ï¿½]** Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½Ã»
+            if (focusController != null)
+            {
+                focusController.FocusOnMarker(targetMarker.transform);
+                // ï¿½Ë»ï¿½ ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½Ý±ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+                if (searchPanel != null) searchPanel.SetActive(false);
+                if (searchInputField != null) searchInputField.text = "";
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[Search Fail] '{searchName}' ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¿ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
+            ShowFailedPanel();
+            // TODO: ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¿ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ù´ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
+        }
+    }
+
+    // ======================================================================
+    // 7. ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½å¸§ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ß°ï¿½)
+    // ======================================================================
+
+    // ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½ï¿½ï¿½)
+    private void ShowFailedPanel()
+    {
+        if (failedPanel != null)
+        {
+            // ï¿½Ë»ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½.
+            if (searchPanel != null) searchPanel.SetActive(false);
+            failedPanel.SetActive(true);
+        }
+    }
+
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³Î¿ï¿½ï¿½ï¿½ 'È®ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½
+    private void OnFailedConfirmClicked()
+    {
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ ï¿½Ý°ï¿½
+        if (failedPanel != null) failedPanel.SetActive(false);
+        // ï¿½Ë»ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½.
+        if (searchPanel != null) searchPanel.SetActive(true);
+        // ï¿½Ô·ï¿½ ï¿½Êµï¿½ ï¿½Ê±ï¿½È­
+        if (searchInputField != null) searchInputField.text = "";
+    }
+
+    // Helper ï¿½Ô¼ï¿½: ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ 3D ï¿½ï¿½Ä¿ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½Ô¼ï¿½
+    private GameObject Find3DMarkerByName(string name)
+    {
+        // ARMarkerDataï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ 3D ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½È¸ï¿½Õ´Ï´ï¿½.
+        ARMarkerData[] allMarkers = FindObjectsByType<ARMarkerData>(FindObjectsSortMode.None);
+
+        foreach (var arData in allMarkers)
+        {
+            // ARMarkerDataï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½(fullMarkerData.Name)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ë»ï¿½ï¿½Õ´Ï´ï¿½.
+            // ï¿½ï¿½Ò¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ (OrdinalIgnoreCase)
+            if (arData.fullMarkerData != null && arData.fullMarkerData.Name.Equals(name, System.StringComparison.OrdinalIgnoreCase))
+            {
+                // **3D ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ (linked3DMarkerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½)**
+                // arDataï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½Ö´ï¿½ GameObjectï¿½ï¿½ 3D ï¿½ï¿½Ä¿ï¿½Ô´Ï´ï¿½.
+                if (arData.gameObject.activeInHierarchy)
+                {
+                    return arData.gameObject;
+                }
+            }
+        }
+
+        return null;
     }
 
     public void HideEditPanel()
