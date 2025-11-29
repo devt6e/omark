@@ -20,12 +20,19 @@ public class MenuManager : MonoBehaviour
     [SerializeField]
     private GameObject makrerPanel; // Hierarchy의 Makrer 패널을 연결할 필드
 
+    [SerializeField]
+    private GameObject ImagePanel;
+
+    [SerializeField]
+    private GameObject StatisticsPanel;
+
     // Menu 버튼에 연결할 함수: 패널을 활성화(보이게) 합니다.
     public void OpenPanel()
     {
         if (hiddenPanel != null)
         {
             hiddenPanel.SetActive(true);
+            ImagePanel.SetActive(false);
         }
     }
 
@@ -35,6 +42,7 @@ public class MenuManager : MonoBehaviour
         if (hiddenPanel != null)
         {
             hiddenPanel.SetActive(false);
+            ImagePanel.SetActive(true);
         }
     }
 
@@ -80,6 +88,22 @@ public class MenuManager : MonoBehaviour
         {
             // Input Field의 텍스트를 빈 문자열로 설정합니다.
             researchInputField.text = string.Empty;
+        }
+    }
+
+    public void OpenStatisticsPanel()
+    {
+        if (StatisticsPanel != null)
+        {
+            StatisticsPanel.SetActive(true);
+        }
+    }
+
+    public void CloseStatisticsPanel()
+    {
+        if (StatisticsPanel != null)
+        {
+            StatisticsPanel.SetActive(false);
         }
     }
 }

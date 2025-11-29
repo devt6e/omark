@@ -2,12 +2,68 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using TMPro;
 
 public class MarkerPlacer : MonoBehaviour, IDropHandler
 {
     [Header("3D 오브젝트 설정")]
     public GameObject marker3DPrefab;
     public LayerMask placementLayer;
+
+    [Header("3D 배치 미리보기")]
+    public GameObject marker3DGhostPrefab; // 고스트 프리팹
+    private GameObject currentGhost;       // 현재 씬에 있는 고스트 오브젝트
+
+    void Update()
+    {
+        // 마커 데이터가 드래그 중인 경우에만 작동
+        if (UIMarkerItemData.markerDataToPlace != null && marker3DGhostPrefab != null)
+        {
+            // 1. 고스트가 없으면 생성
+            if (currentGhost == null)
+            {
+                // 고스트 생성 (3D 씬으로 바로 이동시킬 필요 없음)
+                currentGhost = Instantiate(marker3DGhostPrefab, Vector3.zero, Quaternion.identity);
+                currentGhost.name = "Ghost_Marker_Preview";
+
+                SyncGhostVisuals(currentGhost, UIMarkerItemData.markerDataToPlace);
+            }
+
+            // 2. Raycast 수행 (OnDrop과 동일)
+            Vector2 mousePosition = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, 100f, placementLayer))
+            {
+                // 3. 충돌 지점에 고스트 이동 (높이 자동 조정 포함)
+                Renderer renderer = currentGhost.GetComponentInChildren<Renderer>();
+                Vector3 finalPosition = hit.point;
+
+                if (renderer != null)
+                {
+                    float offsetY = renderer.bounds.extents.y;
+                    finalPosition = new Vector3(hit.point.x, hit.point.y + offsetY, hit.point.z);
+                }
+
+                currentGhost.transform.position = finalPosition;
+
+                // 4. 고스트를 활성화 (보이게)
+                currentGhost.SetActive(true);
+            }
+            else
+            {
+                // 충돌 표면이 없으면 고스트 숨김
+                if (currentGhost.activeSelf) currentGhost.SetActive(false);
+            }
+        }
+        else if (currentGhost != null)
+        {
+            // 드래그가 끝났으면 고스트 파괴
+            Destroy(currentGhost);
+            currentGhost = null;
+        }
+    }
 
     // 드롭 이벤트 수신 (IDropHandler)
     public void OnDrop(PointerEventData eventData)
@@ -89,6 +145,29 @@ public class MarkerPlacer : MonoBehaviour, IDropHandler
 
         // 5. 사용 후 데이터 초기화
         UIMarkerItemData.markerDataToPlace = null;
+    }
+
+    private void SyncGhostVisuals(GameObject ghost, MarkerData data)
+    {
+        // 1. Color Synchronization
+        Renderer renderer = ghost.GetComponentInChildren<Renderer>();
+        if (renderer != null)
+        {
+            Color newColor;
+            if (ColorUtility.TryParseHtmlString(data.ColorCode, out newColor))
+            {
+                // Material의 Alpha 값만 낮추어 반투명하게 만듭니다. (Alpha 0.3)
+                newColor.a = 0.3f;
+                renderer.material.color = newColor;
+            }
+        }
+
+        // 2. Text Synchronization (3D TextMeshPro 사용 가정)
+        TextMeshPro nameTag = ghost.GetComponentInChildren<TextMeshPro>();
+        if (nameTag != null)
+        {
+            nameTag.text = data.Name;
+        }
     }
 
     // Helper 함수 (ID로 2D 마커 찾기)
