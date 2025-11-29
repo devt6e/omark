@@ -94,8 +94,8 @@ public class UIPopupManager : MonoBehaviour
         selectedColorCode = "#FFFFFF";
 
         // [카메라 포커싱 스크립트 및 UI 컨트롤러 참조]
-        focusController = FindFirstObjectByType<CameraFocusController>();
-        uiController = FindFirstObjectByType<MarkerListUIController>();
+        focusController = FindObjectOfType<CameraFocusController>();
+        uiController = FindObjectOfType<MarkerListUIController>();
 
         // [검색 버튼 연결]
         if (searchConfirmButton != null)
@@ -433,7 +433,7 @@ public class UIPopupManager : MonoBehaviour
     private GameObject Find3DMarkerByName(string name)
     {
         // ARMarkerData가 붙어있는 모든 3D 마커를 순회합니다.
-        ARMarkerData[] allMarkers = FindObjectsByType<ARMarkerData>(FindObjectsSortMode.None);
+        ARMarkerData[] allMarkers = FindObjectsOfType<ARMarkerData>();
 
         foreach (var arData in allMarkers)
         {
