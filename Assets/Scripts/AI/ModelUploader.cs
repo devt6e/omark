@@ -62,7 +62,7 @@ public class ModelUploader : MonoBehaviour
 
         UnityWebRequest request = UnityWebRequest.Post(serverUrl, form);
 
-        string accessToken = "eyJraWQiOiJFQk1jMXlEaXVOQTlsNTIwd00wK2VqZTk2RmxtN2JJS0lzUm1VOXhheGJBPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI1NGM4YmQ2Yy02MDMxLTcwY2UtYWRjMS03ZGM3ZDcwOTRjNjMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfWXBTMHpwMDlLIiwiY2xpZW50X2lkIjoiM2xyMW1zcGJtYzZwcmU4amtyaWZjMGFqajYiLCJvcmlnaW5fanRpIjoiMWYyMGNkM2MtMjgzZS00MDZkLWI4MTUtOGIyMTFjNTVlZGVmIiwiZXZlbnRfaWQiOiJjN2M2ZDlhNi01NWNhLTQ1ZGQtYjk0OS02YTk1MGQ1OWM4ZWYiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIiwiYXV0aF90aW1lIjoxNzYzODg0NDAyLCJleHAiOjE3NjM4ODgwMDIsImlhdCI6MTc2Mzg4NDQwMiwianRpIjoiMmEzZWJjZjktZmFmZi00Mjg0LWI0MzQtMDI0YjEyZmY5YzU1IiwidXNlcm5hbWUiOiJkZXZ0NmVAZ21haWwuY29tIn0.c_mk4gnJnZl79XbaR_raT1u4uC_Sr3WhevmRbV-rOwQ2YglMk7HcaCX4lHJZ1RDITr4xQP62aeytDVcSEooYDJOfeyyQMq6GAptt2RS0ENGGCClfWepOJNarBuQw2FTHpBwmbyQMxvcpMtgVSNu8p--_JI2H_pa3DpOluh2ZKv6ks1ac8TFjuB0p76JuH5Sez91oA-oBBHq6wh7bh5M9-DzylOBjGxqzherOvKEuxUAA0T350qjYzie3MIhRWQYe3cswFd72shvDpRfd3xU942IQqFYod2KJL7gxk8yEdQPz8s1V99aiqnLT8ZD1bnUwJ7-wzkpEDxDbsaGtux-Zwg";
+        string accessToken = "eyJraWQiOiJFQk1jMXlEaXVOQTlsNTIwd00wK2VqZTk2RmxtN2JJS0lzUm1VOXhheGJBPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI1NGM4YmQ2Yy02MDMxLTcwY2UtYWRjMS03ZGM3ZDcwOTRjNjMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbVwvYXAtbm9ydGhlYXN0LTJfWXBTMHpwMDlLIiwiY2xpZW50X2lkIjoiM2xyMW1zcGJtYzZwcmU4amtyaWZjMGFqajYiLCJvcmlnaW5fanRpIjoiZjcyM2U1NzYtYmI3ZS00NTVjLWE2MmItMTVmNzRkNzkwNjdmIiwiZXZlbnRfaWQiOiI1ZDAwYWZlYy1lM2M0LTQzN2ItYjk4MC1kOGJhYjlkNzUwZWUiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIiwiYXV0aF90aW1lIjoxNzYzOTIyMDUyLCJleHAiOjE3NjM5MjU2NTIsImlhdCI6MTc2MzkyMjA1MiwianRpIjoiZjgxODMyNjUtYmM4Yy00NmVhLTg2MDQtYTgwMzE0OWRiZDRlIiwidXNlcm5hbWUiOiJkZXZ0NmVAZ21haWwuY29tIn0.trcwSceGxFCXoLN0uKlDvQXW74GaSvWrF2ifNZvPi41ci_9aI5TXgVmppIzmRMiX8C-EDK1jn7Fv8jeNrJOWnxD_B4ocb3I0mpT5NPeslNr_CKu3SHgWJcbgGK6POj-XbNXYnKjXDLn-SRv8wSV9PKSAE4deQTwUKILH7lnota0L-Xsdr5YoySXrB399pHfLAgija6Ny9CnNjgcQt_22Ucq3b5pVV3Ny5fbZsMm91rbV8txqoL5aig1Bq1lNMQE7LOGnxAUwR6UqheTl3RM82ikifuT4PJUHfs8xvemPVFcKyl45eNZUOhr0n-IGu5syIDpEpP_GBWFph-H3NS-STQ";
         request.SetRequestHeader("Authorization", "Bearer " + accessToken);
 
         yield return request.SendWebRequest();
@@ -104,8 +104,8 @@ public class ModelUploader : MonoBehaviour
         // 새로운 권장 방식
         bool instantiated = await gltf.InstantiateMainSceneAsync(modelParent);
 
-        modelParent.localScale = new Vector3(10f, 10f, 10f);
-
+        modelParent.localScale = new Vector3(3f, 3f, 3f);
+        modelParent.transform.rotation = Quaternion.Euler(0, -90, 0);
 
         if (!instantiated)
         {
