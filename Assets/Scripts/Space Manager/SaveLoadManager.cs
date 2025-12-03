@@ -11,7 +11,7 @@ public class SaveLoadManager : MonoBehaviour
 
     public void RequestSave()
     {
-        UIManager.Instance.OpenSaveConfirmPopup();
+        EditorUIManager.Instance.OpenSaveConfirmPopup();
     }
 
     public void Save()

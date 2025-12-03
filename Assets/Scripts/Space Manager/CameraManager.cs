@@ -14,6 +14,6 @@ public class CameraManager : MonoBehaviour
     public void ToggleViewMode()
     {
         is3DView = !is3DView;
-        UIManager.Instance.UpdateViewModeIcon(is3DView);
+        // EditorUIManager.Instance.UpdateViewModeIcon(is3DView);
     }
 }
