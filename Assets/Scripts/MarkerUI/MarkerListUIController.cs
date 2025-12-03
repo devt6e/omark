@@ -294,4 +294,30 @@ public class MarkerListUIController : MonoBehaviour
             ListText.text = "마커리스트";
         }
     }
+
+    // 3D 마커만 씬에서 제거하고, 2D 마커의 참조를 해제하는 함수
+    public void UnlinkAndDestroy3DMarker(string markerId)
+    {
+        // 1. 2D 마커 UI 항목을 찾습니다.
+        foreach (GameObject markerIcon in createdMarkerIcons)
+        {
+            UIMarkerItemData uiItemData = markerIcon.GetComponent<UIMarkerItemData>();
+
+            if (uiItemData != null && uiItemData.Data.Id == markerId)
+            {
+                // 2. 3D 마커가 연결되어 있는지 확인하고 파괴
+                if (uiItemData.linked3DMarker != null)
+                {
+                    Destroy(uiItemData.linked3DMarker);
+                    Debug.Log($"[Action] 3D 마커 ID {markerId}만 씬에서 파괴되었습니다.");
+                }
+
+                // 3. **[핵심]** 2D 마커의 3D 참조를 해제하여, 다시 배치할 수 있게 만듭니다.
+                uiItemData.linked3DMarker = null;
+
+                // 4. 2D 마커(리스트 항목)는 그대로 유지됩니다.
+                return;
+            }
+        }
+    }
 }
