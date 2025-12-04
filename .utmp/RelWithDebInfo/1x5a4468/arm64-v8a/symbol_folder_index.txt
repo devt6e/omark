@@ -1,0 +1,1 @@
+C:\coding\Unity\proto_omark\omark\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\build\intermediates\cxx\RelWithDebInfo\1x5a4468\obj\arm64-v8a
