@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4679796564676245894}
   - component: {fileID: 934526118065794545}
   m_Layer: 7
-  m_Name: default_room_preview
+  m_Name: FloorPiecePre
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

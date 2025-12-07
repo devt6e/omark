@@ -1,37 +1,64 @@
 using UnityEngine;
+using System;
 
 public class FloorPiece : MonoBehaviour
 {
+    // ================================
+    // 저장용 ID
+    // ================================
+    public string pieceId;
+
+    // ================================
+    // 하이라이트 관련
+    // ================================
     private GameObject highlightObj;
 
     [Header("Highlight Prefab (Quad)")]
     public GameObject highlightPrefab;
 
-    // 바닥 영역 정보
-    public Bounds GetBounds()
+
+    private void Awake()
     {
-        return new Bounds(transform.position, transform.localScale);
+        // JSON 로드 시 기존 ID 유지됨
+        if (string.IsNullOrEmpty(pieceId))
+            pieceId = Guid.NewGuid().ToString();
     }
 
     // ================================
-    // 선택
+    // 데이터 → JSON 변환
+    // ================================
+    public FloorPieceData ToData()
+    {
+        return new FloorPieceData
+        {
+            id = pieceId,
+            position = transform.localPosition,
+            scale = transform.localScale
+        };
+    }
+
+    // ================================
+    // JSON → 데이터 적용
+    // ================================
+    public void FromData(FloorPieceData data)
+    {
+        pieceId = data.id;
+        transform.localPosition = data.position;
+        transform.localScale = data.scale;
+    }
+
+    // ================================
+    // 선택 (하이라이트 표시)
     // ================================
     public void Select()
     {
         if (highlightObj != null) return;
 
         highlightObj = Instantiate(highlightPrefab, transform);
-        highlightObj.transform.localPosition = Vector3.zero;
-        highlightObj.transform.localRotation = Quaternion.identity;
 
-        // 바닥과 동일한 스케일 적용
-        highlightObj.transform.localScale = Vector3.one;
-
-        // 하이라이트는 바닥보다 조금 위에 배치해 z-fighting 방지
         highlightObj.transform.localPosition = new Vector3(0, 0.51f, 0);
-
-        // 회전 적용 (Quad를 바닥 위로 눕히기)
         highlightObj.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        highlightObj.transform.localScale = Vector3.one;
     }
 
     // ================================
@@ -44,5 +71,13 @@ public class FloorPiece : MonoBehaviour
             Destroy(highlightObj);
             highlightObj = null;
         }
+    }
+
+    // ================================
+    // 바닥 Bounds 반환
+    // ================================
+    public Bounds GetBounds()
+    {
+        return new Bounds(transform.position, transform.localScale);
     }
 }

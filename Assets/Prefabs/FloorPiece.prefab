@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 1534692871276155911}
   - component: {fileID: 6869615872903109319}
   m_Layer: 7
-  m_Name: default_room_final
+  m_Name: FloorPiece
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -399,6 +399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fc65ed89976a304d8c7716f60557292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FloorPiece
+  pieceId: 
   highlightPrefab: {fileID: 3339716437789534912, guid: 1282513d814a3c04c923bda34a3e78fc, type: 3}
 --- !u!1 &7640389994233304008
 GameObject:
