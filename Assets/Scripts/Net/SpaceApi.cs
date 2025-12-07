@@ -6,7 +6,7 @@ public class SpaceApi : MonoBehaviour
 {
     [SerializeField] ApiClient api;
 
-    // ============ Auth Header ¼³Á¤ ============
+    // ============ Auth Header ì ìš© ============  
     private void ApplyAuth()
     {
         string token = PlayerPrefs.GetString("ACCESS_TOKEN", null);
@@ -14,7 +14,7 @@ public class SpaceApi : MonoBehaviour
             api.AccessToken = token;
     }
 
-    // ============ GET ÀüÃ¼ È¯°æ ============
+    // ============ GET ì „ì²´ í™˜ê²½ ì¡°íšŒ ============  
     public IEnumerator GetAllEnvironments(
         System.Action<List<VirtualEnvironmentResponseDto>> onSuccess,
         System.Action<string> onError)
@@ -32,7 +32,7 @@ public class SpaceApi : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            onError?.Invoke("¸ñ·ÏÀ» ºÒ·¯¿ÀÁö ¸øÇß½À´Ï´Ù.");
+            onError?.Invoke("í™˜ê²½ ëª©ë¡ì„ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
             yield break;
         }
 
@@ -41,11 +41,11 @@ public class SpaceApi : MonoBehaviour
         if (res != null && res.status == "success")
             onSuccess?.Invoke(res.data ?? new List<VirtualEnvironmentResponseDto>());
         else
-            onError?.Invoke(res?.message ?? "ÀÀ´ä ¿À·ù");
+            onError?.Invoke(res?.message ?? "í™˜ê²½ ì¡°íšŒ ì‹¤íŒ¨");
     }
 
 
-    // ============ GET »ó¼¼ Á¶È¸ ============
+    // ============ GET í™˜ê²½ ìƒì„¸ ì¡°íšŒ ============  
     public IEnumerator GetEnvironmentDetail(
         long envId,
         System.Action<VirtualEnvironmentResponseDto> onSuccess,
@@ -64,7 +64,7 @@ public class SpaceApi : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            onError?.Invoke("È¯°æ »ó¼¼ Á¶È¸ ½ÇÆĞ");
+            onError?.Invoke("í™˜ê²½ ìƒì„¸ ì¡°íšŒ ì‹¤íŒ¨");
             yield break;
         }
 
@@ -73,11 +73,11 @@ public class SpaceApi : MonoBehaviour
         if (res != null && res.status == "success")
             onSuccess?.Invoke(res.data);
         else
-            onError?.Invoke(res?.message ?? "»ó¼¼ Á¶È¸ ¿À·ù");
+            onError?.Invoke(res?.message ?? "ìƒì„¸ ì¡°íšŒ ì‹¤íŒ¨");
     }
 
 
-    // ============ POST »ı¼º ============
+    // ============ POST í™˜ê²½ ìƒì„± ============  
     public IEnumerator CreateEnvironment(
         string name,
         System.Action<VirtualEnvironmentResponseDto> onSuccess,
@@ -99,7 +99,7 @@ public class SpaceApi : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            onError?.Invoke("°ø°£ »ı¼º ½ÇÆĞ");
+            onError?.Invoke("í™˜ê²½ ìƒì„±ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
             yield break;
         }
 
@@ -108,11 +108,11 @@ public class SpaceApi : MonoBehaviour
         if (res != null && res.status == "success")
             onSuccess?.Invoke(res.data);
         else
-            onError?.Invoke(res?.message ?? "»ı¼º ¿À·ù");
+            onError?.Invoke(res?.message ?? "í™˜ê²½ ìƒì„± ì‹¤íŒ¨");
     }
 
 
-    // ============ PUT ÀÌ¸§ ¼öÁ¤ ============
+    // ============ PUT í™˜ê²½ ì´ë¦„ ìˆ˜ì • ============  
     public IEnumerator UpdateEnvironment(
         long envId, string newName,
         System.Action onSuccess,
@@ -134,7 +134,7 @@ public class SpaceApi : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            onError?.Invoke("ÀÌ¸§ ¼öÁ¤ ½ÇÆĞ");
+            onError?.Invoke("ì´ë¦„ ìˆ˜ì •ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
             yield break;
         }
 
@@ -143,11 +143,11 @@ public class SpaceApi : MonoBehaviour
         if (res != null && res.status == "success")
             onSuccess?.Invoke();
         else
-            onError?.Invoke(res?.message ?? "¼öÁ¤ ¿À·ù");
+            onError?.Invoke(res?.message ?? "ì´ë¦„ ìˆ˜ì • ì‹¤íŒ¨");
     }
 
 
-    // ============ DELETE »èÁ¦ ============
+    // ============ DELETE í™˜ê²½ ì‚­ì œ ============  
     public IEnumerator DeleteEnvironment(
         long envId,
         System.Action onSuccess,
@@ -166,7 +166,7 @@ public class SpaceApi : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            onError?.Invoke("»èÁ¦ ½ÇÆĞ");
+            onError?.Invoke("í™˜ê²½ ì‚­ì œ ì‹¤íŒ¨");
             yield break;
         }
 
@@ -175,11 +175,11 @@ public class SpaceApi : MonoBehaviour
         if (res != null && res.status == "success")
             onSuccess?.Invoke();
         else
-            onError?.Invoke(res?.message ?? "»èÁ¦ ¿À·ù");
+            onError?.Invoke(res?.message ?? "ì‚­ì œ ì‹¤íŒ¨");
     }
 
 
-    // ============ ¡Ú Presigned URL ¿äÃ» ============
+    // ============ S3 Presigned URL ìš”ì²­ ============  
     public IEnumerator RequestUploadUrl(
         long envId,
         string fileName,
@@ -202,7 +202,7 @@ public class SpaceApi : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            onError?.Invoke("S3 ¾÷·Îµå URL ¿äÃ» ½ÇÆĞ");
+            onError?.Invoke("S3 ì—…ë¡œë“œ URL ìš”ì²­ ì‹¤íŒ¨");
             yield break;
         }
 
@@ -211,6 +211,6 @@ public class SpaceApi : MonoBehaviour
         if (res != null && res.status == "success")
             onSuccess?.Invoke(res.data);
         else
-            onError?.Invoke(res?.message ?? "Presigned URL ¿À·ù");
+            onError?.Invoke(res?.message ?? "Presigned URL ìš”ì²­ ì‹¤íŒ¨");
     }
 }

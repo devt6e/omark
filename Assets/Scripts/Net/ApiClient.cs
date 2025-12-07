@@ -96,6 +96,9 @@ public class ApiClient : MonoBehaviour
     public IEnumerator Delete(string path, Action<bool, string> done)
     {
         var req = UnityWebRequest.Delete(baseUrl + path);
+        
+        req.downloadHandler = new DownloadHandlerBuffer();
+
         AddAuth(req);
 
         yield return req.SendWebRequest();
