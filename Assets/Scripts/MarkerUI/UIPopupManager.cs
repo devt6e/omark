@@ -58,6 +58,12 @@ public class UIPopupManager : MonoBehaviour
     public GameObject failedPanel;              // 실패 메시지 패널
     public Button failedConfirmButton;          // 실패 패널의 '확인' 버튼
 
+    [Header("7. 3D 마커 전용 제어 패널")]
+    public GameObject marker3DControlPanel;
+    private ARMarkerData currentARMarkerData; // 현재 제어 중인 3D 마커 데이터
+    [Header("8. 3D 마커 전용 제어 버튼")]
+    public Button confirm3DDeleteButton; // "확인" 버튼
+    public Button cancel3DControlButton;  // "취소" 버튼
     // ======================================================================
     // 6. 내부 상태 변수
     // ======================================================================
@@ -107,6 +113,16 @@ public class UIPopupManager : MonoBehaviour
         if (failedConfirmButton != null)
         {
             failedConfirmButton.onClick.AddListener(OnFailedConfirmClicked);
+        }
+
+        // [3D 제어 패널 버튼 연결]
+        if (confirm3DDeleteButton != null)
+        {
+            confirm3DDeleteButton.onClick.AddListener(Confirm3DDelete);
+        }
+        if (cancel3DControlButton != null)
+        {
+            cancel3DControlButton.onClick.AddListener(Cancel3DControl);
         }
     }
 
@@ -453,11 +469,65 @@ public class UIPopupManager : MonoBehaviour
         return null;
     }
 
+    public void Show3DControlPanel(ARMarkerData arData)
+    {
+        if (marker3DControlPanel != null)
+        {
+            // 1. 현재 제어 대상을 저장
+            this.currentARMarkerData = arData;
+
+            // 2. 3D 전용 패널 활성화
+            marker3DControlPanel.SetActive(true);
+
+            // TODO: 3D 패널의 UI 요소에 arData의 정보(위치, ID)를 출력하는 로직 추가
+
+            Debug.Log($"3D 전용 제어 패널을 마커 {arData.markerId}에 대해 띄웁니다.");
+        }
+        // 기존 팝업은 닫습니다 (선택 사항)
+        //HideMarkerDetailPopup();
+    }
+
     public void HideEditPanel()
     {
         if (detailEditPanel != null)
         {
             detailEditPanel.SetActive(false);
         }
+    }
+
+    public void Confirm3DDelete()
+    {
+        if (currentARMarkerData == null || uiController == null)
+        {
+            Debug.LogError("삭제할 3D 마커 데이터가 없습니다.");
+            return;
+        }
+
+        string markerId = currentARMarkerData.markerId;
+        // 1. **[핵심 수정]** 3D 마커만 삭제하고 2D 마커는 유지하는 함수를 호출
+        uiController.UnlinkAndDestroy3DMarker(markerId);
+
+        // TODO: (선택 사항) 서버에 해당 마커 데이터 삭제 요청 (DELETE API) 추가
+        // Note: 서버에서는 마커 배치가 취소된 것으로 처리하거나, 해당 마커의 위치 정보를 초기화해야 합니다.
+
+        // 2. 패널 닫기
+        Hide3DControlPanel();
+        Debug.Log($"[Action] 3D 마커 배치가 취소되었습니다. 2D 마커는 유지됨.");
+    }
+
+    public void Cancel3DControl()
+    {
+        // 3D 제어 패널을 비활성화합니다.
+        Hide3DControlPanel();
+    }
+
+    // 3D 제어 패널을 숨기는 헬퍼 함수
+    private void Hide3DControlPanel()
+    {
+        if (marker3DControlPanel != null)
+        {
+            marker3DControlPanel.SetActive(false);
+        }
+        currentARMarkerData = null; // 제어 중인 마커 참조 해제
     }
 }

@@ -56,22 +56,57 @@ public class CameraMovementController : MonoBehaviour
         // Time.deltaTime을 곱하여 프레임 속도에 관계없이 일정한 속도를 유지합니다.
         float distance = moveSpeed * Time.deltaTime;
 
-        // 로컬 축(Space.Self)을 따라 이동해야 카메라가 바라보는 방향으로 움직입니다.
-        if (isMovingForward)
+        // 1. 앞/뒤 이동 계산
+        if (isMovingForward || isMovingBackward)
         {
-            targetPivot.Translate(Vector3.forward * distance, Space.Self);
+            // Pivot의 현재 로컬 앞 방향 벡터를 가져옵니다.
+            Vector3 direction = targetPivot.forward;
+
+            // **[핵심 수정] Y축 성분을 0으로 만들고 정규화하여 수평 방향 벡터를 얻습니다.**
+            direction.y = 0;
+
+            // 벡터가 유효할 경우에만 이동 적용
+            if (direction.sqrMagnitude > 0)
+            {
+                direction.Normalize();
+
+                if (isMovingForward)
+                {
+                    // 월드 공간에서 수평 방향으로 이동
+                    targetPivot.Translate(direction * distance, Space.World);
+                }
+                if (isMovingBackward)
+                {
+                    // 월드 공간에서 수평 방향으로 뒤로 이동
+                    targetPivot.Translate(direction * -distance, Space.World);
+                }
+            }
         }
-        if (isMovingBackward)
+
+        // 2. 좌/우 이동 계산 (Strafe)
+        if (isMovingRight || isMovingLeft)
         {
-            targetPivot.Translate(Vector3.back * distance, Space.Self);
-        }
-        if (isMovingRight)
-        {
-            targetPivot.Translate(Vector3.right * distance, Space.Self);
-        }
-        if (isMovingLeft)
-        {
-            targetPivot.Translate(Vector3.left * distance, Space.Self);
+            // Pivot의 현재 로컬 오른쪽 방향 벡터를 가져옵니다.
+            Vector3 direction = targetPivot.right;
+
+            // **[핵심 수정] Y축 성분을 0으로 만들고 정규화하여 수평 방향 벡터를 얻습니다.**
+            direction.y = 0;
+
+            if (direction.sqrMagnitude > 0)
+            {
+                direction.Normalize();
+
+                if (isMovingRight)
+                {
+                    // 월드 공간에서 수평 방향으로 오른쪽 이동
+                    targetPivot.Translate(direction * distance, Space.World);
+                }
+                if (isMovingLeft)
+                {
+                    // 월드 공간에서 수평 방향으로 왼쪽 이동
+                    targetPivot.Translate(direction * -distance, Space.World);
+                }
+            }
         }
     }
 }

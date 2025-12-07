@@ -37,7 +37,7 @@ public class RoomItem : MonoBehaviour
     {
         SpaceSession.currentEnvironmentId = environmentId;
         SpaceSession.currentS3Url = s3FileUrl;
-        SceneManager.LoadScene("sample");
+        SceneManager.LoadScene("space");
     }
 
     public void SetTexts(string name, string date)
