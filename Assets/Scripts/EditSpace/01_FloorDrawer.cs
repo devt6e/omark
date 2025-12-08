@@ -133,7 +133,7 @@ public class FloorDrawer : MonoBehaviour
         if (depth < GRID) depth = GRID;
 
         previewObj.transform.position = center;
-        previewObj.transform.localScale = new Vector3(width, 1f, depth);
+        previewObj.transform.localScale = new Vector3(width, 0.1f, depth);
     }
 
     // ---------------------------

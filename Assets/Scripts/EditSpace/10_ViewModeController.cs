@@ -71,6 +71,9 @@ public class ViewModeController : MonoBehaviour
         // 2D 전용 UI/그리드 비활성화
         if (grid2D != null) grid2D.SetActive(false);
 
+        // 모드 전환
+        EditorModeManager.Instance.SetMode(EditMode.MoveView);
+
         // 3D 전용 오브젝트 활성화 + 벽 재생성
         if (wallGenerator != null)
         {
