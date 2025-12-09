@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/sc_AR.unity
     guid: 20a1f61cb978dc54eaeafa15f1e3471d
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Scene_3DSample.unity
     guid: d54416f6527d6194f95c214e27d27473
   - enabled: 0
@@ -50,7 +50,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/sc_roomitem/space.unity
     guid: 182e99ddff88cf24693dcae6a954df8c
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/sc_roomitem/space 1.unity
     guid: 92890676eebc0d24c88ff88ffab66809
   m_configObjects:
