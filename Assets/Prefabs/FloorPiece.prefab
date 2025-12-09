@@ -269,10 +269,9 @@ GameObject:
   - component: {fileID: 1857812784520784068}
   - component: {fileID: 4433850862295505374}
   - component: {fileID: 8757940171703189394}
-  - component: {fileID: 1534692871276155911}
   - component: {fileID: 6869615872903109319}
   m_Layer: 7
-  m_Name: default_room_final
+  m_Name: FloorPiece
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -371,22 +370,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1534692871276155911
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6720783277730502145}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ac176d321c0bc04fbc74f6185099530, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EditableObject
-  type: 1
-  width: 0
-  height: 0
-  length: 0
 --- !u!114 &6869615872903109319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,6 +382,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fc65ed89976a304d8c7716f60557292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FloorPiece
+  sizeUI: {fileID: 0}
+  pieceId: 
   highlightPrefab: {fileID: 3339716437789534912, guid: 1282513d814a3c04c923bda34a3e78fc, type: 3}
 --- !u!1 &7640389994233304008
 GameObject:

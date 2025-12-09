@@ -46,10 +46,30 @@ public class MarkerPlacer : MonoBehaviour, IDropHandler
                     finalPosition = new Vector3(hit.point.x, hit.point.y + offsetY, hit.point.z);
                 }
 
+                // 2. **[핵심 추가] 카메라 응시 회전 계산**
+                Transform mainCameraTransform = Camera.main.transform;
+
+                // 마커에서 카메라를 향하는 방향 벡터 계산
+                Vector3 lookDirection = mainCameraTransform.position - finalPosition;
+
+                // Y축 성분을 0으로 만들어 수평 회전만 적용 (마커가 기울어지는 것 방지)
+                lookDirection.y = 0;
+
+                Quaternion targetRotation = Quaternion.identity;
+
+                if (lookDirection != Vector3.zero)
+                {
+                    // LookRotation: 마커의 정면(Z축)이 lookDirection을 향하도록 회전 값 생성
+                    targetRotation = Quaternion.LookRotation(lookDirection);
+                    targetRotation *= Quaternion.Euler(0, 180, 0);
+                }
+
+                // 3. 위치 및 회전 적용
                 currentGhost.transform.position = finalPosition;
+                currentGhost.transform.rotation = targetRotation; // **<- 회전 적용**
 
                 // 4. 고스트를 활성화 (보이게)
-                currentGhost.SetActive(true);
+                if (!currentGhost.activeSelf) currentGhost.SetActive(true);
             }
             else
             {
@@ -119,24 +139,33 @@ public class MarkerPlacer : MonoBehaviour, IDropHandler
                 finalPosition = new Vector3(hit.point.x, hit.point.y + offsetY, hit.point.z);
             }
 
-            // 최종 위치/회전 적용
+            // 카메라를 바라보도록 회전 로직
+            Transform mainCameraTransform = Camera.main.transform;
+            Vector3 lookDirection = mainCameraTransform.position - targetMarker.transform.position;
+            lookDirection.y = 0; // Y축 고정
+
+            Quaternion targetRotation = Quaternion.identity;
+
+            if (lookDirection != Vector3.zero)
+            {
+                // LookRotation: 마커의 정면(Z축)이 lookDirection을 향하도록 회전 값 생성
+                targetRotation = Quaternion.LookRotation(lookDirection);
+                targetRotation *= Quaternion.Euler(0, 180, 0); 
+            }
+
             targetMarker.transform.position = finalPosition;
-            targetMarker.transform.rotation = Quaternion.identity; // 기본 회전으로 설정
+            targetMarker.transform.rotation = targetRotation;
 
             // 4. 데이터 업데이트 (위치가 변경되었으므로 ARMarkerData 갱신)
             ARMarkerData arData = targetMarker.GetComponent<ARMarkerData>();
             if (arData != null)
             {
-                // **수정:** fullMarkerData를 전달합니다.
+                // fullMarkerData를 전달합니다.
                 arData.Initialize(dataToUse, targetMarker.transform.position, targetMarker.transform.rotation);
-
-                // **[핵심 추가]** 비주얼 동기화 호출
-                MarkerVisualSync visualSync = targetMarker.GetComponent<MarkerVisualSync>();
-                if (visualSync != null)
-                {
-                    visualSync.UpdateVisuals();
-                }
             }
+            // 5. 비주얼 업데이트 및 포커싱 (MarkerVisualSync 및 CameraFocusController 호출)
+            MarkerVisualSync visualSync = targetMarker.GetComponent<MarkerVisualSync>();
+            if (visualSync != null) { visualSync.UpdateVisuals(); }
         }
         else
         {

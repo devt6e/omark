@@ -8,9 +8,9 @@ public class CameraFocusController : MonoBehaviour
     public Transform cameraPivot;
 
     [Header("포커스 설정")]
-    public float focusDistance = 1.5f; // 마커로부터 떨어질 거리 (미터)
+    public float focusDistance = 10.0f; // 마커로부터 떨어질 거리 (미터)
     public float moveSpeed = 5.0f;     // 이동 속도 (부드러운 이동을 위한 속도)
-    public float rotationSpeed = 2.0f; // 회전 속도
+    public float rotationSpeed = 10.0f; // 회전 속도
 
     // 마커가 잘 보이도록 카메라를 이동 및 회전시키는 함수
     public void FocusOnMarker(Transform markerTransform)
@@ -28,6 +28,10 @@ public class CameraFocusController : MonoBehaviour
         // 카메라가 마커를 바라보게 하기 위해, 마커 위치에서 FocusDistance만큼 '뒤로' 물러납니다.
         // 여기서는 World Up을 기준으로 마커 뒤쪽으로 1.5m 이동합니다.
         Vector3 targetPosition = markerCenter - (markerCenter - cameraPivot.position).normalized * focusDistance;
+
+        // y축 고정
+        float fixedY = cameraPivot.position.y;
+        targetPosition.y = fixedY;
 
         // 2. **카메라 회전 계산 (LookAt):**
         // 카메라 피벗이 마커의 중심을 바라보도록 회전량을 계산합니다.

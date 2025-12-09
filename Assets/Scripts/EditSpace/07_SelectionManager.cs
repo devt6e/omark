@@ -16,6 +16,7 @@ public class SelectionManager : MonoBehaviour
     public Canvas uiCanvas;
     public RectTransform deleteButton;
     public float groupButtonYOffset = 150f; // 전체 선택 시 화면 하단에서 조금 위
+    public SizeUIController sizeUIController;
 
     private Camera cam;
     private float pressStartTime;
@@ -114,6 +115,7 @@ public class SelectionManager : MonoBehaviour
         piece.Select();
 
         UpdateDeleteButtonPosition();
+        piece.ShowSizeUI();
     }
 
     private void SelectAll()
@@ -132,7 +134,10 @@ public class SelectionManager : MonoBehaviour
     private void ClearSelection()
     {
         foreach (var piece in currentSelection)
+        {
             piece.Deselect();
+            piece.HideSizeUI();
+        }
 
         currentSelection.Clear();
 
@@ -223,13 +228,13 @@ public class SelectionManager : MonoBehaviour
         {
             FloorPiece target = currentSelection[0];
 
-            // RoomManager 중간 바닥 검사
-            if (RoomManager.Instance.IsMiddlePiece(target))
-            {
-                Debug.Log("<color=yellow>중간 FloorPiece는 삭제할 수 없습니다.</color>");
-                ClearSelection();
-                return;
-            }
+            // // RoomManager 중간 바닥 검사
+            // if (RoomManager.Instance.IsMiddlePiece(target))
+            // {
+            //     Debug.Log("<color=yellow>중간 FloorPiece는 삭제할 수 없습니다.</color>");
+            //     ClearSelection();
+            //     return;
+            // }
 
             RoomManager.Instance.DeletePiece(target);
             ClearSelection();
