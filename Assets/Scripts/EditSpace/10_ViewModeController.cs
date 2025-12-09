@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+// using TMPro;
 
 public class ViewModeController : MonoBehaviour
 {
@@ -18,6 +20,8 @@ public class ViewModeController : MonoBehaviour
     [SerializeField] private float activeAlpha = 1f;     // 255 / 255
     [SerializeField] private float inactiveAlpha = 0.6f; // 150 / 255
 
+    [Header("Button Toggler")]
+    public ViewModeButtonToggler buttonToggler;
 
     private bool is3DView = false;
 
@@ -39,7 +43,8 @@ public class ViewModeController : MonoBehaviour
     private void Set2DView()
     {
         is3DView = false;
-
+        SetAlpha(button2D, activeAlpha);
+        SetAlpha(button3D, inactiveAlpha);
         // if (uiCanvas != null)
         //     uiCanvas.worldCamera = camera2DObj.GetComponent<Camera>();   // ⭐ UI 카메라 변경
 
@@ -48,19 +53,22 @@ public class ViewModeController : MonoBehaviour
         if (camera3DObj != null) camera3DObj.SetActive(false);
 
         // 2D 전용 UI/그리드 활성화
-        if (grid2D != null) grid2D.SetActive(true);
-
+        
+        buttonToggler.ApplyViewMode(false);
         // 3D 전용 오브젝트 비활성화
         if (wallGenerator != null && wallGenerator.wallsRoot != null)
             wallGenerator.wallsRoot.gameObject.SetActive(false);
 
         UpdateButtonVisual();
+
+        if (grid2D != null) grid2D.SetActive(true);
     }
 
     private void Set3DView()
     {
         is3DView = true;
-
+        SetAlpha(button3D, activeAlpha);
+        SetAlpha(button2D, inactiveAlpha);
         // if (uiCanvas != null)
         //     uiCanvas.worldCamera = camera3DObj.GetComponent<Camera>();   // ⭐ UI 카메라 변경
 
@@ -86,6 +94,7 @@ public class ViewModeController : MonoBehaviour
             Position3DCamera();
             UpdateButtonVisual();
         }
+        buttonToggler.ApplyViewMode(true);
     }
 
     private void Position3DCamera()
@@ -130,5 +139,13 @@ public class ViewModeController : MonoBehaviour
             button3D.color = c;
         }
     }
+    
+    private void SetAlpha(Image img, float alpha)
+    {
+        if (img == null) return;
 
+        Color c = img.color;
+        c.a = alpha;
+        img.color = c;
+    }
 }

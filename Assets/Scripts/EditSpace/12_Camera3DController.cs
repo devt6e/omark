@@ -6,9 +6,11 @@ public class Camera3DController : MonoBehaviour
     [Header("Input Actions")]
     public InputActionReference pointAction;        // Pointer position
     public InputActionReference contactAction;      // Pointer press
+    public InputActionReference scrollAction;       // Mouse wheel scroll (Vector2, 보통 y 사용)
 
     [Header("Zoom Settings")]
-    public float zoomSpeed = 0.5f;
+    public float zoomSpeed = 0.5f;          // 핀치 줌 속도
+    public float mouseWheelZoomSpeed = 10f; // 마우스 휠 줌 속도
     public float minDistance = 5f;
     public float maxDistance = 60f;
 
@@ -43,6 +45,8 @@ public class Camera3DController : MonoBehaviour
     {
         pointAction.action.Enable();
         contactAction.action.Enable();
+        if (scrollAction != null) scrollAction.action.Enable();
+
         UpdateTargetCenter();
         CalculateInitialDistance();
     }
@@ -51,6 +55,7 @@ public class Camera3DController : MonoBehaviour
     {
         pointAction.action.Disable();
         contactAction.action.Disable();
+        if (scrollAction != null) scrollAction.action.Disable();
     }
 
     private void LateUpdate()
@@ -62,6 +67,7 @@ public class Camera3DController : MonoBehaviour
 
         HandleOrbit();
         HandlePinchZoom();
+        HandleMouseWheelZoom();   // 🔹 에디터/PC용 줌
         HandlePanButtons();
 
         UpdateCameraPosition();
@@ -108,9 +114,10 @@ public class Camera3DController : MonoBehaviour
             float yaw = delta.x * orbitSpeed;
             float pitch = -delta.y * orbitSpeed;
 
-            // 회전 적용
+            // 수평 회전 (Y축)
             transform.RotateAround(targetCenter, Vector3.up, yaw);
 
+            // 수직 회전 (카메라의 오른쪽 축 기준)
             Vector3 right = transform.right;
             transform.RotateAround(targetCenter, right, pitch);
 
@@ -120,6 +127,7 @@ public class Camera3DController : MonoBehaviour
 
             if (currentPitch < pitchMin || currentPitch > pitchMax)
             {
+                // 범위 넘었으면 되돌리기
                 transform.RotateAround(targetCenter, right, -pitch);
             }
         }
@@ -130,7 +138,7 @@ public class Camera3DController : MonoBehaviour
     }
 
     // ================================================
-    // 🔵 Pinch Zoom
+    // 🔵 Pinch Zoom (모바일)
     // ================================================
     private void HandlePinchZoom()
     {
@@ -172,6 +180,21 @@ public class Camera3DController : MonoBehaviour
 
         prevTouch0Pos = pos0;
         prevTouch1Pos = pos1;
+    }
+
+    // ================================================
+    // 🔵 Mouse Wheel Zoom (에디터/PC)
+    // ================================================
+    private void HandleMouseWheelZoom()
+    {
+        if (scrollAction == null) return;
+
+        Vector2 scroll = scrollAction.action.ReadValue<Vector2>();
+        if (Mathf.Abs(scroll.y) < 0.0001f) return;
+
+        // y > 0 이면 앞으로 당기기(줌인), y < 0 이면 줌아웃
+        distance -= scroll.y * mouseWheelZoomSpeed * Time.deltaTime;
+        distance = Mathf.Clamp(distance, minDistance, maxDistance);
     }
 
     // ================================================

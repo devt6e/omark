@@ -12,11 +12,16 @@ public class FloorDrawer : MonoBehaviour
     public GameObject floorPreviewPrefab;
     public GameObject floorFinalPrefab;
 
+    [Header("Dimension UI")]
+    public Canvas uiCanvas;
+    public DimensionLabelUI dimensionLabelPrefab;
+
+    private DimensionLabelUI widthLabel;
+    private DimensionLabelUI heightLabel;
+
     private GameObject previewObj;
     private bool isDragging = false;
     private Vector3 dragStartPos;
-
-    private const float GRID = 0.5f; // 500mm
 
     private Camera cam;
 
@@ -45,13 +50,17 @@ public class FloorDrawer : MonoBehaviour
 
     private void Update()
     {
-        // 방 그리기 모드가 아니면 완전히 무시
         if (EditorModeManager.Instance.CurrentMode != EditMode.DrawFloor)
             return;
 
         if (!isDragging) return;
 
-        Vector3 current = SnapToGrid(GetMouseWorldPos());
+        // 현재 마우스 위치 가져오기
+        Vector3 rawCurrent = GetMouseWorldPos();
+
+        // FloorPiece 스냅 + 10cm 단위 보정
+        Vector3 current = SnapUtil.CleanPosition(rawCurrent, RoomManager.Instance.GetAllPieces());
+
         UpdatePreview(current);
     }
 
@@ -66,7 +75,11 @@ public class FloorDrawer : MonoBehaviour
         if (IsPointerOverUI())
             return;
 
-        dragStartPos = SnapToGrid(GetMouseWorldPos());
+        Vector3 rawStart = GetMouseWorldPos();
+
+        // 시작점 보정: FloorPiece 경계 스냅 → 10cm 스냅
+        dragStartPos = SnapUtil.CleanPosition(rawStart, RoomManager.Instance.GetAllPieces());
+
         StartPreview();
     }
 
@@ -75,11 +88,9 @@ public class FloorDrawer : MonoBehaviour
     // ===========================
     private void OnClickCanceled(InputAction.CallbackContext ctx)
     {
-        if (EditorModeManager.Instance.CurrentMode != EditMode.DrawFloor)
-            return;
+        if (!isDragging) return;
 
-        if (isDragging)
-            EndPreview();
+        EndPreview();
     }
 
     // ---------------------------
@@ -90,7 +101,6 @@ public class FloorDrawer : MonoBehaviour
         Vector2 screenPos = pointAction.action.ReadValue<Vector2>();
         Ray ray = cam.ScreenPointToRay(screenPos);
 
-        // y=0 평면에 투영
         Plane ground = new Plane(Vector3.up, Vector3.zero);
 
         if (ground.Raycast(ray, out float enter))
@@ -100,22 +110,15 @@ public class FloorDrawer : MonoBehaviour
     }
 
     // ---------------------------
-    // 그리드(500mm) 스냅
-    // ---------------------------
-    private Vector3 SnapToGrid(Vector3 pos)
-    {
-        pos.x = Mathf.Round(pos.x / GRID) * GRID;
-        pos.z = Mathf.Round(pos.z / GRID) * GRID;
-        return pos;
-    }
-
-    // ---------------------------
     // 프리뷰 시작
     // ---------------------------
     private void StartPreview()
     {
         isDragging = true;
         previewObj = Instantiate(floorPreviewPrefab);
+
+        widthLabel = Instantiate(dimensionLabelPrefab, uiCanvas.transform);
+        heightLabel = Instantiate(dimensionLabelPrefab, uiCanvas.transform);
     }
 
     // ---------------------------
@@ -128,59 +131,58 @@ public class FloorDrawer : MonoBehaviour
         float width = Mathf.Abs(currentPos.x - dragStartPos.x);
         float depth = Mathf.Abs(currentPos.z - dragStartPos.z);
 
-        // 최소 크기 보호 (실수로 너무 작은 드래그)
-        if (width < GRID) width = GRID;
-        if (depth < GRID) depth = GRID;
+        // 최소 크기 10cm 보정
+        if (width < SnapUtil.UNIT) width = SnapUtil.UNIT;
+        if (depth < SnapUtil.UNIT) depth = SnapUtil.UNIT;
 
         previewObj.transform.position = center;
         previewObj.transform.localScale = new Vector3(width, 0.1f, depth);
+
+        UpdateDimensionLabels(center, width, depth);
     }
 
     // ---------------------------
-    // 드래그 종료 → 최종 바닥 생성 시도
+    // 드래그 종료 → 최종 바닥 생성
     // ---------------------------
     private void EndPreview()
     {
         isDragging = false;
+
+        if (widthLabel != null) Destroy(widthLabel.gameObject);
+        if (heightLabel != null) Destroy(heightLabel.gameObject);
+
+        widthLabel = null;
+        heightLabel = null;
 
         if (previewObj == null) return;
 
         Vector3 pos = previewObj.transform.position;
         Vector3 scale = previewObj.transform.localScale;
 
-        // 미리보기 Bounds 계산
         Bounds candidateBounds = new Bounds(pos, scale);
 
-        // RoomManager에게 이 위치에 생성 가능한지 물어봄
-        bool canPlace = RoomManager.Instance != null &&
-                        RoomManager.Instance.CanPlace(candidateBounds);
+        bool canPlace =
+            RoomManager.Instance != null &&
+            RoomManager.Instance.CanPlace(candidateBounds);
 
         Destroy(previewObj);
         previewObj = null;
 
         if (!canPlace)
         {
-            Debug.Log("RoomManager: 기존 바닥과 이어지지 않아서 바닥을 생성하지 않습니다.");
+            Debug.Log("RoomManager: 기존 바닥과 이어지지 않아 생성하지 않음");
             return;
         }
 
-        // 생성 가능하면 실제 FloorPiece 생성
         GameObject finalFloor = Instantiate(floorFinalPrefab);
         finalFloor.transform.position = pos;
         finalFloor.transform.localScale = scale;
 
-        // FloorPiece 컴포넌트 가져오기
         FloorPiece piece = finalFloor.GetComponent<FloorPiece>();
         if (piece == null)
-        {
             piece = finalFloor.AddComponent<FloorPiece>();
-        }
 
-        // RoomManager에 등록
-        if (RoomManager.Instance != null)
-        {
-            RoomManager.Instance.RegisterPiece(piece);
-        }
+        RoomManager.Instance.RegisterPiece(piece);
     }
 
     // ---------------------------
@@ -190,24 +192,40 @@ public class FloorDrawer : MonoBehaviour
     {
         if (EventSystem.current == null) return false;
 
-        // 마우스
         if (Mouse.current != null && EventSystem.current.IsPointerOverGameObject())
             return true;
 
-        // 터치
         if (Touchscreen.current != null)
         {
             foreach (var touch in Touchscreen.current.touches)
             {
-                if (touch.isInProgress)
-                {
-                    int id = touch.touchId.ReadValue();
-                    if (EventSystem.current.IsPointerOverGameObject(id))
-                        return true;
-                }
+                if (touch.isInProgress &&
+                    EventSystem.current.IsPointerOverGameObject(touch.touchId.ReadValue()))
+                    return true;
             }
         }
 
         return false;
+    }
+
+    // ---------------------------
+    // 치수 Label 표시 계산
+    // ---------------------------
+    private void UpdateDimensionLabels(Vector3 center, float width, float depth)
+    {
+        if (widthLabel == null || heightLabel == null)
+            return;
+
+        float halfW = width * 0.5f;
+        float halfD = depth * 0.5f;
+
+        Vector3 topPos = new Vector3(center.x, 0.15f, center.z + halfD);
+        Vector3 rightPos = new Vector3(center.x + halfW, 0.15f, center.z);
+
+        Vector2 topS = cam.WorldToScreenPoint(topPos);
+        Vector2 rightS = cam.WorldToScreenPoint(rightPos);
+
+        widthLabel.SetLabel(topS, width);
+        heightLabel.SetLabel(rightS, depth);
     }
 }
