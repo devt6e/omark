@@ -1,71 +1,137 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public static class SnapUtil
 {
-    // 기본 그리기 단위(10cm = 0.1m)
-    public const float UNIT = 0.1f;
-
-    // 근처 FloorPiece 변에 붙는 스냅 거리(예: 15cm)
-    public const float SNAP_THRESHOLD = 0.15f;
+    // ================================
+    // 설정 값
+    // ================================
+    public static float GridUnit = 0.1f;         // 10cm
+    public static float SnapThreshold = 0.15f;   // 피스끼리 붙는 거리 허용 범위
 
     // ================================
-    // 10cm 단위 스냅
+    // FloorPiece 이동 시 호출되는 함수
     // ================================
-    public static float SnapToUnit(float v)
+    public static Vector3 SnapFloorPiecePosition(Vector3 rawPos, FloorPiece movingPiece, float threshold)
     {
-        return Mathf.Round(v / UNIT) * UNIT;
+        SnapThreshold = threshold;
+
+        // 1) 먼저 FloorPiece 스냅 시도
+        Vector3? snapPos = TrySnapToNeighbors(rawPos, movingPiece);
+
+        if (snapPos.HasValue)
+            return snapPos.Value;
+
+        // 2) 스냅 실패 → 그리드 스냅
+        return SnapToGrid(rawPos);
     }
 
-    public static Vector3 SnapToUnit(Vector3 v)
+    // ============================================================
+    // 1) 바닥 피스끼리 스냅
+    // ============================================================
+    private static Vector3? TrySnapToNeighbors(Vector3 rawPos, FloorPiece movingPiece)
     {
-        v.x = SnapToUnit(v.x);
-        v.z = SnapToUnit(v.z);
-        return v;
-    }
+        List<FloorPiece> all = RoomManager.Instance.GetAllPieces();
 
-    // ================================
-    // FloorPiece 경계 스냅
-    // (startPoint, currentPoint 모두 사용)
-    // ================================
-    public static Vector3 SnapToFloorEdges(Vector3 pos, List<FloorPiece> pieces)
-    {
-        float px = pos.x;
-        float pz = pos.z;
+        Bounds movingBounds = movingPiece.GetBounds();
+        Vector3 size = movingBounds.size;
 
-        foreach (var f in pieces)
+        float halfW = size.x * 0.5f;
+        float halfD = size.z * 0.5f;
+
+        // 이동 후의 임시 Bounds
+        Bounds future = new Bounds(rawPos, size);
+
+        foreach (var other in all)
         {
-            if (f == null) continue;
+            if (other == null || other == movingPiece) continue;
 
-            Bounds b = f.GetBounds();
-            float minX = b.min.x;
-            float maxX = b.max.x;
-            float minZ = b.min.z;
-            float maxZ = b.max.z;
+            Bounds o = other.GetBounds();
 
-            // ----- X 방향 스냅 -----
-            if (Mathf.Abs(px - minX) <= SNAP_THRESHOLD) px = minX;
-            if (Mathf.Abs(px - maxX) <= SNAP_THRESHOLD) px = maxX;
+            // -----------------------------------------
+            // LEFT 스냅 (moving.right ≈ other.left)
+            // -----------------------------------------
+            float movingRight = future.center.x + halfW;
+            float otherLeft   = o.min.x;
 
-            // ----- Z 방향 스냅 -----
-            if (Mathf.Abs(pz - minZ) <= SNAP_THRESHOLD) pz = minZ;
-            if (Mathf.Abs(pz - maxZ) <= SNAP_THRESHOLD) pz = maxZ;
+            if (Mathf.Abs(movingRight - otherLeft) <= SnapThreshold)
+            {
+                if (CheckZOverlap(future, o))
+                {
+                    float correctedX = otherLeft - halfW;
+                    return new Vector3(correctedX, rawPos.y, rawPos.z);
+                }
+            }
+
+            // -----------------------------------------
+            // RIGHT 스냅 (moving.left ≈ other.right)
+            // -----------------------------------------
+            float movingLeft = future.center.x - halfW;
+            float otherRight = o.max.x;
+
+            if (Mathf.Abs(movingLeft - otherRight) <= SnapThreshold)
+            {
+                if (CheckZOverlap(future, o))
+                {
+                    float correctedX = otherRight + halfW;
+                    return new Vector3(correctedX, rawPos.y, rawPos.z);
+                }
+            }
+
+            // -----------------------------------------
+            // TOP 스냅 (moving.bottom ≈ other.top)
+            // -----------------------------------------
+            float movingBottomZ = future.center.z - halfD;
+            float otherTopZ     = o.max.z;
+
+            if (Mathf.Abs(movingBottomZ - otherTopZ) <= SnapThreshold)
+            {
+                if (CheckXOverlap(future, o))
+                {
+                    float correctedZ = otherTopZ + halfD;
+                    return new Vector3(rawPos.x, rawPos.y, correctedZ);
+                }
+            }
+
+            // -----------------------------------------
+            // BOTTOM 스냅 (moving.top ≈ other.bottom)
+            // -----------------------------------------
+            float movingTopZ = future.center.z + halfD;
+            float otherBottomZ = o.min.z;
+
+            if (Mathf.Abs(movingTopZ - otherBottomZ) <= SnapThreshold)
+            {
+                if (CheckXOverlap(future, o))
+                {
+                    float correctedZ = otherBottomZ - halfD;
+                    return new Vector3(rawPos.x, rawPos.y, correctedZ);
+                }
+            }
         }
 
-        return new Vector3(px, pos.y, pz);
+        return null; // 스냅 실패
     }
 
-    // ================================
-    // 시작/끝점 보정 (ObjectSnap → UnitSnap 순)
-    // ================================
-    public static Vector3 CleanPosition(Vector3 raw, List<FloorPiece> pieces)
+    // ============================================================
+    // 2) 그리드 스냅
+    // ============================================================
+    public static Vector3 SnapToGrid(Vector3 pos)
     {
-        // 1) 먼저 FloorPiece 경계에 붙일지 확인
-        Vector3 snapped = SnapToFloorEdges(raw, pieces);
+        pos.x = Mathf.Round(pos.x / GridUnit) * GridUnit;
+        pos.z = Mathf.Round(pos.z / GridUnit) * GridUnit;
+        return pos;
+    }
 
-        // 2) 마지막으로 10cm 단위로 정리
-        snapped = SnapToUnit(snapped);
+    // ============================================================
+    // Overlap 체크 함수 (XZ)
+    // ============================================================
+    private static bool CheckXOverlap(Bounds a, Bounds b)
+    {
+        return (a.max.x > b.min.x) && (a.min.x < b.max.x);
+    }
 
-        return snapped;
+    private static bool CheckZOverlap(Bounds a, Bounds b)
+    {
+        return (a.max.z > b.min.z) && (a.min.z < b.max.z);
     }
 }

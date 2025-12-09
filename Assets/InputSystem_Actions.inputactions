@@ -997,7 +997,7 @@
             "id": "8d1fccd6-20a2-4693-9d4f-021c80cb6ef1",
             "actions": [
                 {
-                    "name": "New action",
+                    "name": "esc",
                     "type": "Button",
                     "id": "4177f899-6816-4356-bb65-24608dc7b02c",
                     "expectedControlType": "",
@@ -1014,39 +1014,57 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "esc",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
             ]
         },
         {
-            "name": "Editor_Drawing",
-            "id": "c8044dc4-2a45-4607-8fff-cf67cf78483d",
+            "name": "Editor_Pointer",
+            "id": "be378f40-0925-4b0a-892b-95b75777f50e",
             "actions": [
                 {
                     "name": "Point",
                     "type": "Value",
-                    "id": "4e547ae2-f7bd-48eb-8f64-29eedd5099fd",
-                    "expectedControlType": "",
+                    "id": "0b4c9623-f378-43f3-9ed0-2be9a80b6000",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Click",
+                    "name": "Contact",
                     "type": "Button",
-                    "id": "bb3d3906-aa4c-418a-af68-396e003cba96",
+                    "id": "c7f9b897-d431-4756-addf-5b81516b58ac",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Delta",
+                    "type": "Value",
+                    "id": "709746fb-51d4-4356-89de-b3aba460c289",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Scroll",
+                    "type": "Value",
+                    "id": "44982385-a609-42fb-8bd6-75e8f5fd8627",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
                 {
                     "name": "",
-                    "id": "1f154143-28b3-440c-96d6-311bcc73babb",
+                    "id": "3bb213d5-c8c4-4650-8635-d2853a3d1237",
                     "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
@@ -1057,115 +1075,84 @@
                 },
                 {
                     "name": "",
-                    "id": "90fcc1ff-525a-4b18-a909-8161ecac9c58",
+                    "id": "09388913-8e4c-4191-b1f1-07f9976a56de",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Point",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "11f6286b-4fb1-4736-8525-6044b8d01633",
+                    "path": "<Pen>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Point",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8b7812a0-7e92-4755-8749-9e117bdf1776",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Click",
+                    "action": "Contact",
                     "isComposite": false,
                     "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Editor_EditorCamera",
-            "id": "19c22d23-7f11-4641-8050-79397358a9f2",
-            "actions": [
-                {
-                    "name": "PrimaryPoint",
-                    "type": "Value",
-                    "id": "0ba421f6-a205-40db-90df-23dbda5ecc9f",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 },
-                {
-                    "name": "PrimaryContact",
-                    "type": "Button",
-                    "id": "775b51a6-581f-40a2-b7a6-93486ad83de4",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "SecondaryPoint",
-                    "type": "Value",
-                    "id": "72c7bb4e-d1f0-4832-8ad5-e2e229279f97",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "PrimaryDelta",
-                    "type": "Value",
-                    "id": "cdcddb6f-5845-421c-aaba-fc03ea3b4326",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Scroll",
-                    "type": "Value",
-                    "id": "551063ee-a47a-45d9-afa9-e2f9c4e94851",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                }
-            ],
-            "bindings": [
                 {
                     "name": "",
-                    "id": "3e26f0e2-7256-4089-b825-0699f2ce25ed",
-                    "path": "<Pointer>/position",
+                    "id": "c802b4fe-07ae-4bf3-a8fa-284235602e8c",
+                    "path": "<Touchscreen>/Press",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PrimaryPoint",
+                    "action": "Contact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "f6426c93-8c96-4a23-9406-4ddcb301a4bc",
-                    "path": "<Pointer>/press",
+                    "id": "21478e2c-6f06-4b33-8564-4f4b6d83f885",
+                    "path": "<Pen>/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PrimaryContact",
+                    "action": "Contact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "3e9ffed8-e8fa-4a02-b9e7-6daaa66a7863",
-                    "path": "<Touchscreen>/touch1/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SecondaryPoint",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "da633c90-fad7-45c2-b0ef-b9f23568d361",
+                    "id": "98c8d00a-c9d4-4f07-a7f8-8e3a0061be9b",
                     "path": "<Pointer>/delta",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PrimaryDelta",
+                    "action": "Delta",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "b12b84c6-791f-412b-8004-1bd122aec3d5",
+                    "id": "e3dd0933-ec85-4b62-8c70-a65bcfaae730",
+                    "path": "<Touchscreen>/touch0/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Delta",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a325cb39-5eb0-47b7-87ef-5bd05d0abbd6",
                     "path": "<Mouse>/scroll",
                     "interactions": "",
                     "processors": "",
@@ -1177,48 +1164,88 @@
             ]
         },
         {
-            "name": "Editor_Selection",
-            "id": "7b644408-1efd-4e7b-951e-0e8af5807201",
+            "name": "Editor_Gesture",
+            "id": "9f5bd999-a2ed-448b-b6f8-4a122b079357",
             "actions": [
                 {
-                    "name": "Point",
+                    "name": "PrimaryFinger",
                     "type": "Value",
-                    "id": "92adf33a-4bd3-4847-be34-6aabc3c22c5c",
-                    "expectedControlType": "",
+                    "id": "7559212c-97fa-434d-8a0e-ea4d9d898291",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Press",
-                    "type": "Button",
-                    "id": "58d1e9bd-32ca-4e02-8922-b53dad1b0f17",
-                    "expectedControlType": "",
+                    "name": "SecondaryFinger",
+                    "type": "Value",
+                    "id": "5a7c1742-bbb8-4d63-80c9-2b053f24e663",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "PinchDistance",
+                    "type": "Value",
+                    "id": "fd74ea63-0a0f-4821-880a-6f1cc949ffe6",
+                    "expectedControlType": "Double",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "PinchDelta",
+                    "type": "Value",
+                    "id": "4a9d8791-60d0-4fd8-a422-751b01f5164a",
+                    "expectedControlType": "Double",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
                 {
                     "name": "",
-                    "id": "868b70e6-bdb6-435c-9a42-5f2eb3367bf4",
-                    "path": "<Pointer>/position",
+                    "id": "c9989641-a2ba-4cfa-b2f4-56a65ec19273",
+                    "path": "<Touchscreen>/touch0/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Point",
+                    "action": "PrimaryFinger",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "5873b8e7-cabc-4264-939f-a16d4327b414",
-                    "path": "<Pointer>/press",
+                    "id": "525b95dd-154f-4320-a821-75a8ee2910a8",
+                    "path": "<Touchscreen>/touch1/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Press",
+                    "action": "SecondaryFinger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4f1a30ab-f818-4f82-97bf-115f8c7bc076",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PinchDelta",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1f0bce9f-d539-41b7-beb6-ad23449b2eae",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PinchDistance",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
