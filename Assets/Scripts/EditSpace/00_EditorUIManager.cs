@@ -6,7 +6,7 @@ public class EditorUIManager : MonoBehaviour
     public static EditorUIManager Instance;
 
     public GameObject panelLeftMenu;
-    // public GameObject panelDropdown;
+    public GameObject panelDropdown;
     public GameObject panelHelpPopup;
     public GameObject panelSaveConfirmPopup;
     public GameObject blocker;
@@ -17,17 +17,17 @@ public class EditorUIManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        // panelDropdown.SetActive(false);
+        panelDropdown.SetActive(false);
         panelHelpPopup.SetActive(false);
         panelSaveConfirmPopup.SetActive(false);
         blocker.SetActive(false);
     }
 
-    // public void ToggleDropdown()
-    // {
-    //     bool active = !panelDropdown.activeSelf;
-    //     panelDropdown.SetActive(active);
-    // }
+    public void ToggleDropdown()
+    {
+        bool active = !panelDropdown.activeSelf;
+        panelDropdown.SetActive(active);
+    }
 
     public void UpdateModeTitle(string title)
     {

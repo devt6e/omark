@@ -50,7 +50,7 @@ public class CameraBlockFade : MonoBehaviour
         }
 
         if (EditorModeManager.Instance != null &&
-            EditorModeManager.Instance.CurrentMode == EditMode.MoveView)
+            EditorModeManager.Instance.CurrentMode == EditMode.MoveView2D)
         {
             // MoveView는 2D 카메라 모드일 가능성 있음 → 카메라 타입 체크
             if (cam != null && cam.orthographic)

@@ -46,7 +46,7 @@ public class CameraMoveController : MonoBehaviour
     private void Update()
     {
         // 🔒 Move 모드가 아니면 입력 무시
-        if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView)
+        if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView2D)
             return;
 
         HandlePan();

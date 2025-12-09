@@ -51,7 +51,8 @@ public class SelectionManager : MonoBehaviour
 
     private void Update()
     {
-        if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView)
+        if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView2D &&
+            EditorModeManager.Instance.CurrentMode != EditMode.EditFloor)
             return;
 
         if (isPressing && pressedPiece != null)
@@ -68,8 +69,9 @@ public class SelectionManager : MonoBehaviour
 
     private void OnPressStarted(InputAction.CallbackContext ctx)
     {
-        if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView)
-            return;
+        if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView2D &&
+        EditorModeManager.Instance.CurrentMode != EditMode.EditFloor)
+        return;
 
         if (IsPointerOverUI())
             return;
@@ -115,7 +117,8 @@ public class SelectionManager : MonoBehaviour
         piece.Select();
 
         UpdateDeleteButtonPosition();
-        piece.ShowSizeUI();
+        if (EditorModeManager.Instance.CurrentMode == EditMode.EditFloor)
+            piece.ShowSizeUI();
     }
 
     private void SelectAll()

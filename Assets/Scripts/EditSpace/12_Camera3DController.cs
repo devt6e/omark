@@ -60,7 +60,7 @@ public class Camera3DController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView)
+        if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView3D)
             return;
 
         UpdateTargetCenter();
