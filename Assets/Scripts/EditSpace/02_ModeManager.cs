@@ -26,8 +26,17 @@ public class EditorModeManager : MonoBehaviour
 
     public void SetMode(EditMode newMode)
     {
+        EditMode previous = CurrentMode;
         CurrentMode = newMode;
         Debug.Log($"[ModeManager] Mode changed to: {newMode}");
+
+        if (previous == EditMode.EditFloor && newMode != EditMode.EditFloor)
+        {
+            if (SelectionManager.Instance != null)
+            {
+                SelectionManager.Instance.ClearSelection(); // 모든 FloorPiece 하이라이트 & SizeUI 제거
+            }
+        }
     }
 
     public bool Is2DMode =>

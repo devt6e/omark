@@ -6,37 +6,37 @@ using TMPro;
 
 public class MarkerPlacer : MonoBehaviour, IDropHandler
 {
-    [Header("3D ¿ÀºêÁ§Æ® ¼³Á¤")]
+    [Header("3D ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½")]
     public GameObject marker3DPrefab;
     public LayerMask placementLayer;
 
-    [Header("3D ¹èÄ¡ ¹Ì¸®º¸±â")]
-    public GameObject marker3DGhostPrefab; // °í½ºÆ® ÇÁ¸®ÆÕ
-    private GameObject currentGhost;       // ÇöÀç ¾À¿¡ ÀÖ´Â °í½ºÆ® ¿ÀºêÁ§Æ®
+    [Header("3D ï¿½ï¿½Ä¡ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    public GameObject marker3DGhostPrefab; // ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    private GameObject currentGhost;       // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
     void Update()
     {
-        // ¸¶Ä¿ µ¥ÀÌÅÍ°¡ µå·¡±× ÁßÀÎ °æ¿ì¿¡¸¸ ÀÛµ¿
+        // ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ ï¿½å·¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½Ûµï¿½
         if (UIMarkerItemData.markerDataToPlace != null && marker3DGhostPrefab != null)
         {
-            // 1. °í½ºÆ®°¡ ¾øÀ¸¸é »ý¼º
+            // 1. ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (currentGhost == null)
             {
-                // °í½ºÆ® »ý¼º (3D ¾ÀÀ¸·Î ¹Ù·Î ÀÌµ¿½ÃÅ³ ÇÊ¿ä ¾øÀ½)
+                // ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ (3D ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½Ìµï¿½ï¿½ï¿½Å³ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½)
                 currentGhost = Instantiate(marker3DGhostPrefab, Vector3.zero, Quaternion.identity);
                 currentGhost.name = "Ghost_Marker_Preview";
 
                 SyncGhostVisuals(currentGhost, UIMarkerItemData.markerDataToPlace);
             }
 
-            // 2. Raycast ¼öÇà (OnDrop°ú µ¿ÀÏ)
+            // 2. Raycast ï¿½ï¿½ï¿½ï¿½ (OnDropï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
             Vector2 mousePosition = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
             Ray ray = Camera.main.ScreenPointToRay(mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit, 100f, placementLayer))
             {
-                // 3. Ãæµ¹ ÁöÁ¡¿¡ °í½ºÆ® ÀÌµ¿ (³ôÀÌ ÀÚµ¿ Á¶Á¤ Æ÷ÇÔ)
+                // 3. ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ìµï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
                 Renderer renderer = currentGhost.GetComponentInChildren<Renderer>();
                 Vector3 finalPosition = hit.point;
 
@@ -46,77 +46,77 @@ public class MarkerPlacer : MonoBehaviour, IDropHandler
                     finalPosition = new Vector3(hit.point.x, hit.point.y + offsetY, hit.point.z);
                 }
 
-                // 2. **[ÇÙ½É Ãß°¡] Ä«¸Þ¶ó ÀÀ½Ã È¸Àü °è»ê**
+                // 2. **[ï¿½Ù½ï¿½ ï¿½ß°ï¿½] Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½**
                 Transform mainCameraTransform = Camera.main.transform;
 
-                // ¸¶Ä¿¿¡¼­ Ä«¸Þ¶ó¸¦ ÇâÇÏ´Â ¹æÇâ º¤ÅÍ °è»ê
+                // ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
                 Vector3 lookDirection = mainCameraTransform.position - finalPosition;
 
-                // YÃà ¼ººÐÀ» 0À¸·Î ¸¸µé¾î ¼öÆò È¸Àü¸¸ Àû¿ë (¸¶Ä¿°¡ ±â¿ï¾îÁö´Â °Í ¹æÁö)
+                // Yï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
                 lookDirection.y = 0;
 
                 Quaternion targetRotation = Quaternion.identity;
 
                 if (lookDirection != Vector3.zero)
                 {
-                    // LookRotation: ¸¶Ä¿ÀÇ Á¤¸é(ZÃà)ÀÌ lookDirectionÀ» ÇâÇÏµµ·Ï È¸Àü °ª »ý¼º
+                    // LookRotation: ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(Zï¿½ï¿½)ï¿½ï¿½ lookDirectionï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     targetRotation = Quaternion.LookRotation(lookDirection);
                     targetRotation *= Quaternion.Euler(0, 180, 0);
                 }
 
-                // 3. À§Ä¡ ¹× È¸Àü Àû¿ë
+                // 3. ï¿½ï¿½Ä¡ ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 currentGhost.transform.position = finalPosition;
-                currentGhost.transform.rotation = targetRotation; // **<- È¸Àü Àû¿ë**
+                currentGhost.transform.rotation = targetRotation; // **<- È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½**
 
-                // 4. °í½ºÆ®¸¦ È°¼ºÈ­ (º¸ÀÌ°Ô)
+                // 4. ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ È°ï¿½ï¿½È­ (ï¿½ï¿½ï¿½Ì°ï¿½)
                 if (!currentGhost.activeSelf) currentGhost.SetActive(true);
             }
             else
             {
-                // Ãæµ¹ Ç¥¸éÀÌ ¾øÀ¸¸é °í½ºÆ® ¼û±è
+                // ï¿½æµ¹ Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
                 if (currentGhost.activeSelf) currentGhost.SetActive(false);
             }
         }
         else if (currentGhost != null)
         {
-            // µå·¡±×°¡ ³¡³µÀ¸¸é °í½ºÆ® ÆÄ±«
+            // ï¿½å·¡ï¿½×°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ä±ï¿½
             Destroy(currentGhost);
             currentGhost = null;
         }
     }
 
-    // µå·Ó ÀÌº¥Æ® ¼ö½Å (IDropHandler)
+    // ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½ (IDropHandler)
     public void OnDrop(PointerEventData eventData)
     {
         MarkerData dataToUse = UIMarkerItemData.markerDataToPlace;
 
         if (dataToUse == null) return;
 
-        // 1. **[1:1 »ý¼º Á¦¾î]** 2D ¸¶Ä¿ UI Ç×¸ñÀ» Ã£½À´Ï´Ù.
+        // 1. **[1:1 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½]** 2D ï¿½ï¿½Ä¿ UI ï¿½×¸ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½Ï´ï¿½.
         UIMarkerItemData sourceUI = FindUIMarkerById(dataToUse.Id);
-        if (sourceUI == null) return; // 2D source UI¸¦ Ã£Áö ¸øÇÏ¸é Á¾·á
+        if (sourceUI == null) return; // 2D source UIï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-        // 2. Raycast ÁØºñ ¹× ½ÇÇà (»õ·Î¿î ¹èÄ¡ À§Ä¡ Ã£±â)
+        // 2. Raycast ï¿½Øºï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½Ä¡ Ã£ï¿½ï¿½)
         Ray ray = Camera.main.ScreenPointToRay(eventData.position);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, 100f, placementLayer))
         {
-            GameObject targetMarker; // »ý¼º ¶Ç´Â ÀÌµ¿µÉ 3D ¸¶Ä¿
+            GameObject targetMarker; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ 3D ï¿½ï¿½Ä¿
             bool isMovingExisting = (sourceUI.linked3DMarker != null);
 
             if (isMovingExisting)
             {
-                // === PATH 1: ÀÌ¹Ì ¹èÄ¡µÈ ¸¶Ä¿¸¦ ÀÌµ¿ (¿äÃ»ÇÏ½Å ±â´É) ===
+                // === PATH 1: ï¿½Ì¹ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½Ìµï¿½ (ï¿½ï¿½Ã»ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½) ===
                 targetMarker = sourceUI.linked3DMarker;
-                Debug.Log($"[Placement] ¸¶Ä¿ '{dataToUse.Name}'À» »õ À§Ä¡·Î ÀÌµ¿ÇÕ´Ï´Ù.");
+                Debug.Log($"[Placement] ï¿½ï¿½Ä¿ '{dataToUse.Name}'ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Õ´Ï´ï¿½.");
             }
             else
             {
-                // === PATH 2: »õ·Î¿î ¸¶Ä¿ »ý¼º ===
+                // === PATH 2: ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ ===
                 targetMarker = Instantiate(marker3DPrefab, hit.point, Quaternion.identity);
 
-                // ¾À ÀÌµ¿ (»õ·Î »ý¼ºµÈ ¸¶Ä¿¿¡¸¸ ÇÊ¿ä)
+                // ï¿½ï¿½ ï¿½Ìµï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½)
                 Scene targetScene = SceneManager.GetSceneByName("Scene_3DSample");
                 if (targetScene.isLoaded)
                 {
@@ -124,31 +124,31 @@ public class MarkerPlacer : MonoBehaviour, IDropHandler
                     targetMarker.name = "3D_Marker_" + dataToUse.Name;
                 }
 
-                // 2D ¸¶Ä¿¿¡ 3D ¿ÀºêÁ§Æ® ÂüÁ¶ ÀúÀå
+                // 2D ï¿½ï¿½Ä¿ï¿½ï¿½ 3D ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 sourceUI.linked3DMarker = targetMarker;
             }
 
-            // 3. **[ÇÙ½É] ³ôÀÌ ÀÚµ¿ Á¶Á¤ ¹× À§Ä¡ Àû¿ë**
+            // 3. **[ï¿½Ù½ï¿½] ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½**
             Renderer renderer = targetMarker.GetComponentInChildren<Renderer>();
             Vector3 finalPosition = hit.point;
 
             if (renderer != null)
             {
-                // ¸¶Ä¿ ³ôÀÌÀÇ Àý¹Ý(extents.y)À» °è»êÇÏ¿© Y À§Ä¡ Á¶Á¤
+                // ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(extents.y)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Y ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
                 float offsetY = renderer.bounds.extents.y;
                 finalPosition = new Vector3(hit.point.x, hit.point.y + offsetY, hit.point.z);
             }
 
-            // Ä«¸Þ¶ó¸¦ ¹Ù¶óº¸µµ·Ï È¸Àü ·ÎÁ÷
+            // Ä«ï¿½Þ¶ï¿½ ï¿½Ù¶óº¸µï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             Transform mainCameraTransform = Camera.main.transform;
-            Vector3 lookDirection = mainCameraTransform.position - targetMarker.transform.position;
-            lookDirection.y = 0; // YÃà °íÁ¤
+            Vector3 lookDirection = mainCameraTransform.position - finalPosition;
+            lookDirection.y = 0; // Yï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
             Quaternion targetRotation = Quaternion.identity;
 
             if (lookDirection != Vector3.zero)
             {
-                // LookRotation: ¸¶Ä¿ÀÇ Á¤¸é(ZÃà)ÀÌ lookDirectionÀ» ÇâÇÏµµ·Ï È¸Àü °ª »ý¼º
+                // LookRotation: ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(Zï¿½ï¿½)ï¿½ï¿½ lookDirectionï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 targetRotation = Quaternion.LookRotation(lookDirection);
                 targetRotation *= Quaternion.Euler(0, 180, 0); 
             }
@@ -156,23 +156,23 @@ public class MarkerPlacer : MonoBehaviour, IDropHandler
             targetMarker.transform.position = finalPosition;
             targetMarker.transform.rotation = targetRotation;
 
-            // 4. µ¥ÀÌÅÍ ¾÷µ¥ÀÌÆ® (À§Ä¡°¡ º¯°æµÇ¾úÀ¸¹Ç·Î ARMarkerData °»½Å)
+            // 4. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® (ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ARMarkerData ï¿½ï¿½ï¿½ï¿½)
             ARMarkerData arData = targetMarker.GetComponent<ARMarkerData>();
             if (arData != null)
             {
-                // fullMarkerData¸¦ Àü´ÞÇÕ´Ï´Ù.
+                // fullMarkerDataï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
                 arData.Initialize(dataToUse, targetMarker.transform.position, targetMarker.transform.rotation);
             }
-            // 5. ºñÁÖ¾ó ¾÷µ¥ÀÌÆ® ¹× Æ÷Ä¿½Ì (MarkerVisualSync ¹× CameraFocusController È£Ãâ)
+            // 5. ï¿½ï¿½ï¿½Ö¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ ï¿½ï¿½Ä¿ï¿½ï¿½ (MarkerVisualSync ï¿½ï¿½ CameraFocusController È£ï¿½ï¿½)
             MarkerVisualSync visualSync = targetMarker.GetComponent<MarkerVisualSync>();
             if (visualSync != null) { visualSync.UpdateVisuals(); }
         }
         else
         {
-            Debug.LogWarning("Raycast Ãæµ¹ ¾øÀ½: ¸¶Ä¿¸¦ ¹èÄ¡ÇÒ 3D Ç¥¸éÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù. (ÀÌµ¿ ½ÇÆÐ)");
+            Debug.LogWarning("Raycast ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ 3D Ç¥ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. (ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½)");
         }
 
-        // 5. »ç¿ë ÈÄ µ¥ÀÌÅÍ ÃÊ±âÈ­
+        // 5. ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         UIMarkerItemData.markerDataToPlace = null;
     }
 
@@ -185,13 +185,13 @@ public class MarkerPlacer : MonoBehaviour, IDropHandler
             Color newColor;
             if (ColorUtility.TryParseHtmlString(data.ColorCode, out newColor))
             {
-                // MaterialÀÇ Alpha °ª¸¸ ³·Ãß¾î ¹ÝÅõ¸íÇÏ°Ô ¸¸µì´Ï´Ù. (Alpha 0.3)
+                // Materialï¿½ï¿½ Alpha ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. (Alpha 0.3)
                 newColor.a = 0.3f;
                 renderer.material.color = newColor;
             }
         }
 
-        // 2. Text Synchronization (3D TextMeshPro »ç¿ë °¡Á¤)
+        // 2. Text Synchronization (3D TextMeshPro ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         TextMeshPro nameTag = ghost.GetComponentInChildren<TextMeshPro>();
         if (nameTag != null)
         {
@@ -199,10 +199,10 @@ public class MarkerPlacer : MonoBehaviour, IDropHandler
         }
     }
 
-    // Helper ÇÔ¼ö (ID·Î 2D ¸¶Ä¿ Ã£±â)
+    // Helper ï¿½Ô¼ï¿½ (IDï¿½ï¿½ 2D ï¿½ï¿½Ä¿ Ã£ï¿½ï¿½)
     private UIMarkerItemData FindUIMarkerById(string markerId)
     {
-        // ¾À ÀüÃ¼¿¡¼­ UIMarkerItemData ÄÄÆ÷³ÍÆ®¸¦ °¡Áø ¿ÀºêÁ§Æ®¸¦ Ã£½À´Ï´Ù.
+        // ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ UIMarkerItemData ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½Ï´ï¿½.
         UIMarkerItemData[] uiMarkers = FindObjectsByType<UIMarkerItemData>(FindObjectsSortMode.None);
 
         foreach (var uiMarker in uiMarkers)

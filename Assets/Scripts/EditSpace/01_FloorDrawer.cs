@@ -59,7 +59,7 @@ public class FloorDrawer : MonoBehaviour
         Vector3 current = GetMouseWorldPos();
 
         // ← 필요하면 여기를 활성화하면 10cm 단위 드로잉 가능
-        // current = SnapUtil.SnapToGrid(current);
+        current = SnapUtil.SnapToGrid(current);
 
         UpdatePreview(current);
     }
@@ -139,7 +139,7 @@ public class FloorDrawer : MonoBehaviour
         previewObj.transform.position = center;
         previewObj.transform.localScale = new Vector3(width, 0.1f, depth);
 
-        UpdateDimensionLabels(center, width, depth);
+        UpdateDimensionPreview(center, width, depth);   
     }
 
     // ============================================================
@@ -174,12 +174,9 @@ public class FloorDrawer : MonoBehaviour
             return;
         }
 
-        // --------------------------
-        // 여기서 SnapUtil 스냅 적용
-        // --------------------------
-        pos = SnapUtil.SnapToGrid(pos);
-
-        // 최종 FloorPiece 생성
+        // ============================================
+        // FloorPiece 생성
+        // ============================================
         GameObject finalFloor = Object.Instantiate(floorFinalPrefab);
         finalFloor.transform.position = pos;
         finalFloor.transform.localScale = scale;
@@ -188,28 +185,40 @@ public class FloorDrawer : MonoBehaviour
         if (piece == null)
             piece = finalFloor.AddComponent<FloorPiece>();
 
+        // ============================================
+        // 🔥 생성 시에도 피스 스냅 적용
+        // ============================================
+        pos = SnapUtil.SnapFloorPiecePosition(pos, piece, SnapUtil.SnapThreshold);
+        finalFloor.transform.position = pos;
+
         RoomManager.Instance.RegisterPiece(piece);
+
+        DimensionLabelUIManager.Instance.HidePreview();
     }
+
 
     // ============================================================
     // UI Label 업데이트
     // ============================================================
-    private void UpdateDimensionLabels(Vector3 center, float width, float depth)
+    private void UpdateDimensionPreview(Vector3 center, float width, float depth)
     {
-        if (widthLabel == null || heightLabel == null)
-            return;
+        var mgr = DimensionLabelUIManager.Instance;
 
-        float halfW = width * 0.5f;
-        float halfD = depth * 0.5f;
+        // 가로 (위쪽)
+        mgr.widthPreviewLabel.placeAbove = true;
+        mgr.widthPreviewLabel.placeRight = false;
+        mgr.widthPreviewLabel.SetWorldLabel(
+            new Vector3(center.x, 1f, center.z + depth * 0.5f),
+            width
+        );
 
-        Vector3 topPos   = new Vector3(center.x, 0.15f, center.z + halfD);
-        Vector3 rightPos = new Vector3(center.x + halfW, 0.15f, center.z);
-
-        Vector2 topS   = cam.WorldToScreenPoint(topPos);
-        Vector2 rightS = cam.WorldToScreenPoint(rightPos);
-
-        widthLabel.SetLabel(topS, width);
-        heightLabel.SetLabel(rightS, depth);
+        // 세로 (오른쪽)
+        mgr.heightPreviewLabel.placeAbove = false;
+        mgr.heightPreviewLabel.placeRight = true;
+        mgr.heightPreviewLabel.SetWorldLabel(
+            new Vector3(center.x + width * 0.5f, 1f, center.z),
+            depth
+        );
     }
 
     // ============================================================

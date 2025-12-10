@@ -2,60 +2,78 @@ using UnityEngine;
 
 public class CameraFocusController : MonoBehaviour
 {
-    // [Inspector ¿¬°á]
-    [Header("Ä«¸Þ¶ó ÀÌµ¿ ´ë»ó")]
-    // XR Origin ÇÏÀ§ÀÇ Camera Offset TransformÀ» ¿¬°áÇÕ´Ï´Ù.
+    // [Inspector ï¿½ï¿½ï¿½ï¿½]
+    [Header("Ä«ï¿½Þ¶ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½")]
+    // XR Origin ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Camera Offset Transformï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
     public Transform cameraPivot;
 
-    [Header("Æ÷Ä¿½º ¼³Á¤")]
-    public float focusDistance = 10.0f; // ¸¶Ä¿·ÎºÎÅÍ ¶³¾îÁú °Å¸® (¹ÌÅÍ)
-    public float moveSpeed = 5.0f;     // ÀÌµ¿ ¼Óµµ (ºÎµå·¯¿î ÀÌµ¿À» À§ÇÑ ¼Óµµ)
-    public float rotationSpeed = 10.0f; // È¸Àü ¼Óµµ
+    [Header("ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
+    public float focusDistance = 10.0f; // ï¿½ï¿½Ä¿ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ (ï¿½ï¿½ï¿½ï¿½)
+    public float moveSpeed = 5.0f;     // ï¿½Ìµï¿½ ï¿½Óµï¿½ (ï¿½Îµå·¯ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½)
+    public float rotationSpeed = 10.0f; // È¸ï¿½ï¿½ ï¿½Óµï¿½
 
-    // ¸¶Ä¿°¡ Àß º¸ÀÌµµ·Ï Ä«¸Þ¶ó¸¦ ÀÌµ¿ ¹× È¸Àü½ÃÅ°´Â ÇÔ¼ö
+    // ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Ô¼ï¿½
     public void FocusOnMarker(Transform markerTransform)
     {
         if (cameraPivot == null || markerTransform == null)
         {
-            Debug.LogError("Ä«¸Þ¶ó Pivot ¶Ç´Â ¸¶Ä¿ TransformÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+            Debug.LogError("Ä«ï¿½Þ¶ï¿½ Pivot ï¿½Ç´ï¿½ ï¿½ï¿½Ä¿ Transformï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½.");
             return;
         }
 
-        // 1. **¸ñÇ¥ À§Ä¡ °è»ê**: ¸¶Ä¿ À§Ä¡¿¡¼­ ÀÏÁ¤ °Å¸®¸¸Å­ 'µÚ·Î' ¹°·¯¼± ÁöÁ¡
-        // ÇöÀç Ä«¸Þ¶ó È¸Àü ÃàÀÌ ¾Æ´Ñ, ¸¶Ä¿ÀÇ À§Ä¡¸¦ ±âÁØÀ¸·Î World Space¿¡¼­ °è»êÇÕ´Ï´Ù.
         Vector3 markerCenter = markerTransform.position;
 
-        // Ä«¸Þ¶ó°¡ ¸¶Ä¿¸¦ ¹Ù¶óº¸°Ô ÇÏ±â À§ÇØ, ¸¶Ä¿ À§Ä¡¿¡¼­ FocusDistance¸¸Å­ 'µÚ·Î' ¹°·¯³³´Ï´Ù.
-        // ¿©±â¼­´Â World UpÀ» ±âÁØÀ¸·Î ¸¶Ä¿ µÚÂÊÀ¸·Î 1.5m ÀÌµ¿ÇÕ´Ï´Ù.
+        // 1. Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½Ç¥ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½
+        // ï¿½ï¿½Ä¿ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½Å­ 'ï¿½Ú·ï¿½' ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Õ´Ï´ï¿½.
         Vector3 targetPosition = markerCenter - (markerCenter - cameraPivot.position).normalized * focusDistance;
 
-        // yÃà °íÁ¤
+        // **Ä«ï¿½Þ¶ï¿½ Yï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»)**
         float fixedY = cameraPivot.position.y;
         targetPosition.y = fixedY;
 
-        // 2. **Ä«¸Þ¶ó È¸Àü °è»ê (LookAt):**
-        // Ä«¸Þ¶ó ÇÇ¹þÀÌ ¸¶Ä¿ÀÇ Áß½ÉÀ» ¹Ù¶óº¸µµ·Ï È¸Àü·®À» °è»êÇÕ´Ï´Ù.
-        Quaternion targetRotation = Quaternion.LookRotation(markerCenter - targetPosition, Vector3.up);
+        // 2. Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½Ç¥ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ (ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½Ù¶óº¸°ï¿½)
+        Quaternion cameraTargetRotation = Quaternion.LookRotation(markerCenter - targetPosition, Vector3.up);
 
-        // 3. ºÎµå·¯¿î ÀÌµ¿ ¹× È¸Àü ÄÚ·çÆ¾ ½ÃÀÛ
-        StartCoroutine(MoveAndRotate(targetPosition, targetRotation));
+        // 3. **[ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½] ï¿½ï¿½Ä¿ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½)**
+        Transform mainCameraTransform = Camera.main.transform;
 
-        Debug.Log($"[Focus] Ä«¸Þ¶ó¸¦ ¸¶Ä¿ {markerTransform.name}À¸·Î ÀÌµ¿ ¿äÃ»Çß½À´Ï´Ù.");
+        // ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+        Vector3 markerLookDirection = mainCameraTransform.position - markerCenter;
+        markerLookDirection.y = 0; // Yï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½)
+
+        Quaternion markerTargetRotation = Quaternion.identity;
+
+        if (markerLookDirection != Vector3.zero)
+        {
+            // LookRotationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            markerTargetRotation = Quaternion.LookRotation(markerLookDirection);
+
+            // ï¿½ï¿½Ä¿ ï¿½ï¿½Ä¡ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ß´ï¿½ 180ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½
+            markerTargetRotation *= Quaternion.Euler(0, 180, 0);
+        }
+
+        // **ï¿½ï¿½Ä¿ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½**
+        markerTransform.rotation = markerTargetRotation;
+
+        // 4. ï¿½Îµå·¯ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½Ú·ï¿½Æ¾ ï¿½ï¿½ï¿½ï¿½
+        StartCoroutine(MoveAndRotate(targetPosition, cameraTargetRotation));
+
+        Debug.Log($"[Focus] Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½Ä¿ {markerTransform.name}ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½Ã»ï¿½ß½ï¿½ï¿½Ï´ï¿½.");
     }
 
     private System.Collections.IEnumerator MoveAndRotate(Vector3 pos, Quaternion rot)
     {
         while (Vector3.Distance(cameraPivot.position, pos) > 0.01f || Quaternion.Angle(cameraPivot.rotation, rot) > 0.1f)
         {
-            // À§Ä¡ Lerp (ºÎµå·¯¿î ÀÌµ¿)
+            // ï¿½ï¿½Ä¡ Lerp (ï¿½Îµå·¯ï¿½ï¿½ ï¿½Ìµï¿½)
             cameraPivot.position = Vector3.Lerp(cameraPivot.position, pos, Time.deltaTime * moveSpeed);
 
-            // È¸Àü Lerp (ºÎµå·¯¿î È¸Àü)
+            // È¸ï¿½ï¿½ Lerp (ï¿½Îµå·¯ï¿½ï¿½ È¸ï¿½ï¿½)
             cameraPivot.rotation = Quaternion.Slerp(cameraPivot.rotation, rot, Time.deltaTime * rotationSpeed);
 
             yield return null;
         }
-        // ÃÖÁ¾ À§Ä¡/È¸Àü È®Á¤
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡/È¸ï¿½ï¿½ È®ï¿½ï¿½
         cameraPivot.position = pos;
         cameraPivot.rotation = rot;
     }
