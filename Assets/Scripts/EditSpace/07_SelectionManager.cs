@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class SelectionManager : MonoBehaviour
 {
+    public static SelectionManager Instance { get; private set; }
+
     [Header("Input Actions")]
     public InputActionReference pointAction;
     public InputActionReference contactAction;
@@ -15,50 +17,56 @@ public class SelectionManager : MonoBehaviour
     [Header("UI")]
     public Canvas uiCanvas;
     public RectTransform deleteButton;
-    public float groupButtonYOffset = 150f; // 전체 선택 시 화면 하단에서 조금 위
-    public SizeUIController sizeUIController;
+    public RectTransform resizeButton;     // ★ Resize 버튼
+    public float groupButtonYOffset = 150f;
 
-    private Camera cam;
+    public Camera cam;
     private float pressStartTime;
     private bool isPressing = false;
 
     private FloorPiece pressedPiece;
-
     private List<FloorPiece> currentSelection = new();
+    public List<FloorPiece> GetCurrentSelection() => currentSelection;
 
     private void Awake()
     {
-        cam = Camera.main;
+        Instance = this;
+
+        deleteButton.gameObject.SetActive(false);
+        resizeButton.gameObject.SetActive(false);
+
+        EnableInput();
     }
 
     private void OnEnable()
     {
-        pointAction.action.Enable();
-        contactAction.action.Enable();
-
         contactAction.action.started += OnPressStarted;
         contactAction.action.canceled += OnPressCanceled;
+
+        pointAction.action.Enable();
+        contactAction.action.Enable();
     }
 
     private void OnDisable()
     {
-        pointAction.action.Disable();
-        contactAction.action.Disable();
-
         contactAction.action.started -= OnPressStarted;
         contactAction.action.canceled -= OnPressCanceled;
+
+        pointAction.action.Disable();
+        contactAction.action.Disable();
     }
 
     private void Update()
     {
-        if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView)
+        Debug.Log(EditorModeManager.Instance.CurrentMode);
+        // EditFloor 모드에서만 동작
+        if (EditorModeManager.Instance.CurrentMode != EditMode.EditFloor)
             return;
 
         if (isPressing && pressedPiece != null)
         {
-            float holdTime = Time.time - pressStartTime;
-
-            if (holdTime >= longPressTime)
+            float hold = Time.time - pressStartTime;
+            if (hold >= longPressTime)
             {
                 SelectAll();
                 isPressing = false;
@@ -66,9 +74,12 @@ public class SelectionManager : MonoBehaviour
         }
     }
 
+    public void SetCamera(Camera newCam) => cam = newCam;
+    
     private void OnPressStarted(InputAction.CallbackContext ctx)
     {
-        if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView)
+        Debug.Log("OnPressed");
+        if (EditorModeManager.Instance.CurrentMode != EditMode.EditFloor)
             return;
 
         if (IsPointerOverUI())
@@ -76,7 +87,6 @@ public class SelectionManager : MonoBehaviour
 
         pressStartTime = Time.time;
         isPressing = true;
-
         pressedPiece = RaycastFloorPiece();
     }
 
@@ -105,17 +115,21 @@ public class SelectionManager : MonoBehaviour
         SelectSingle(pressedPiece);
     }
 
-    // ======================================
-    // 선택 관련
-    // ======================================
+    // ============================================================
+    // 선택 처리
+    // ============================================================
     private void SelectSingle(FloorPiece piece)
     {
+        Debug.Log("Actual Label active? " + DimensionLabelUIManager.Instance.widthActualLabel.gameObject.activeSelf);
+
         ClearSelection();
+
         currentSelection.Add(piece);
         piece.Select();
 
-        UpdateDeleteButtonPosition();
-        piece.ShowSizeUI();
+        UpdateActionButtons();
+
+        ShowDimensionForPiece(piece);
     }
 
     private void SelectAll()
@@ -128,136 +142,125 @@ public class SelectionManager : MonoBehaviour
             piece.Select();
         }
 
-        UpdateDeleteButtonPosition();
+        UpdateActionButtons();
     }
 
-    private void ClearSelection()
+    public void ClearSelection()
     {
-        foreach (var piece in currentSelection)
-        {
-            piece.Deselect();
-            piece.HideSizeUI();
-        }
+        foreach (var p in currentSelection)
+            p.Deselect();
 
         currentSelection.Clear();
-
-        UpdateDeleteButtonPosition();
+        
+        DimensionLabelUIManager.Instance.HideActual();
+        UpdateActionButtons();
     }
 
-    // ======================================
-    // 삭제 버튼 위치 갱신
-    // ======================================
-    private void UpdateDeleteButtonPosition()
+    // ============================================================
+    // 버튼 표시/숨김 & 배치
+    // ============================================================
+    private void UpdateActionButtons()
     {
-        if (deleteButton == null || uiCanvas == null)
+        // 모드 체크
+        if (EditorModeManager.Instance.CurrentMode != EditMode.EditFloor)
+        {
+            deleteButton.gameObject.SetActive(false);
+            resizeButton.gameObject.SetActive(false);
             return;
+        }
 
-        // 선택이 아무 것도 없으면 버튼 숨기기
+        // Resize Popup이 떠있으면 두 버튼 모두 숨김
+        if (ResizePopupUI.Instance != null &&
+            ResizePopupUI.Instance.popupRoot.activeSelf)
+        {
+            deleteButton.gameObject.SetActive(false);
+            resizeButton.gameObject.SetActive(false);
+            return;
+        }
+
+        // 선택 없음
         if (currentSelection.Count == 0)
         {
             deleteButton.gameObject.SetActive(false);
+            resizeButton.gameObject.SetActive(false);
+            
             return;
         }
 
-        // 1개 선택: 해당 바닥 중앙에 버튼 표시
-        if (currentSelection.Count == 1)
-        {
-            FloorPiece piece = currentSelection[0];
-            if (piece == null)
-            {
-                deleteButton.gameObject.SetActive(false);
-                return;
-            }
-
-            // anchor 복원 (중요!)
-            var rt = deleteButton;
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot    = new Vector2(0.5f, 0.5f);
-
-            Vector3 worldPos = piece.GetBounds().center;
-            Vector3 screenPos = cam.WorldToScreenPoint(worldPos);
-
-            if (screenPos.z < 0)
-            {
-                deleteButton.gameObject.SetActive(false);
-                return;
-            }
-
-            RectTransform canvasRect = uiCanvas.transform as RectTransform;
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvasRect,
-                screenPos,
-                uiCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : uiCanvas.worldCamera,
-                out Vector2 localPos
-            );
-
-            deleteButton.gameObject.SetActive(true);
-            deleteButton.anchoredPosition = localPos;
-        }
-        // 여러 개 선택 (롱프레스 전체 선택): 화면 하단 중앙 근처에 표시
-        else
+        // 여러 개 선택 → Delete만 표시, Resize 숨김
+        if (currentSelection.Count > 1)
         {
             deleteButton.gameObject.SetActive(true);
+            resizeButton.gameObject.SetActive(false);
 
-            RectTransform canvasRect = uiCanvas.transform as RectTransform;
-            var rt = deleteButton;
-
-            // 앵커를 하단 중앙으로
-            rt.anchorMin = new Vector2(0.5f, 0f);
-            rt.anchorMax = new Vector2(0.5f, 0f);
-            rt.pivot    = new Vector2(0.5f, 0.5f);
-
-            // 하단에서 groupButtonYOffset 만큼 위
-            rt.anchoredPosition = new Vector2(0f, groupButtonYOffset);
+            PositionButtonsForMultiple();
+            return;
         }
+
+        // 1개 선택 → Delete & Resize 둘 다 ON
+        deleteButton.gameObject.SetActive(true);
+        resizeButton.gameObject.SetActive(true);
+
+        PositionButtonsForSingle();
     }
-    // ======================================
-    // 삭제 기능
-    // ======================================
+
+    private void PositionButtonsForMultiple()
+    {
+        var rt = deleteButton;
+        rt.anchorMin = new Vector2(0.5f, 0f);
+        rt.anchorMax = new Vector2(0.5f, 0f);
+        rt.pivot     = new Vector2(0.5f, 0.5f);
+        rt.anchoredPosition = new Vector2(0, groupButtonYOffset);
+    }
+
+    private void PositionButtonsForSingle()
+    {
+        // Delete 왼쪽
+        var d = deleteButton;
+        d.anchorMin = new Vector2(0.5f, 0f);
+        d.anchorMax = new Vector2(0.5f, 0f);
+        d.pivot     = new Vector2(0.5f, 0.5f);
+        d.anchoredPosition = new Vector2(-80, groupButtonYOffset);
+
+        // Resize 오른쪽
+        var r = resizeButton;
+        r.anchorMin = new Vector2(0.5f, 0f);
+        r.anchorMax = new Vector2(0.5f, 0f);
+        r.pivot     = new Vector2(0.5f, 0.5f);
+        r.anchoredPosition = new Vector2(80, groupButtonYOffset);
+    }
+
+    // ============================================================
+    // 삭제
+    // ============================================================
     public void OnClickDeleteButton()
     {
-        if (currentSelection.Count == 0)
-            return;
+        if (currentSelection.Count == 0) return;
 
-        // ============================
-        // 1개 선택 → 단일 삭제
-        // ============================
-        if (currentSelection.Count == 1)
-        {
-            FloorPiece target = currentSelection[0];
-
-            // // RoomManager 중간 바닥 검사
-            // if (RoomManager.Instance.IsMiddlePiece(target))
-            // {
-            //     Debug.Log("<color=yellow>중간 FloorPiece는 삭제할 수 없습니다.</color>");
-            //     ClearSelection();
-            //     return;
-            // }
-
-            RoomManager.Instance.DeletePiece(target);
-            ClearSelection();
-            return;
-        }
-
-        // ============================
-        // 여러 개 선택 → 그룹 삭제
-        // ============================
-        foreach (var piece in currentSelection)
-        {
-            if (piece == null) continue;
-
-            // 그룹 삭제 시에는 중간 바닥 개념 삭제 X
-            // 전체가 함께 삭제되므로 그래프 무결성 문제 없음
-            RoomManager.Instance.DeletePiece(piece);
-        }
+        foreach (var p in currentSelection)
+            if (p != null)
+                RoomManager.Instance.DeletePiece(p);
 
         ClearSelection();
     }
 
+    // ============================================================
+    // 리사이즈 버튼 → 팝업 열기
+    // ============================================================
+    public void OnClickResizeButton()
+    {
+        if (currentSelection.Count != 1) return;
 
-    // ======================================
+        FloorPiece p = currentSelection[0];
+        ResizePopupUI.Instance.Show(p);
+
+        DimensionLabelUIManager.Instance.HideActual();
+        UpdateActionButtons();
+    }
+
+    // ============================================================
+    // 유틸리티
+    // ============================================================
     private FloorPiece RaycastFloorPiece()
     {
         Vector2 screenPos = pointAction.action.ReadValue<Vector2>();
@@ -273,19 +276,55 @@ public class SelectionManager : MonoBehaviour
     {
         if (EventSystem.current == null) return false;
 
-        if (Mouse.current != null && EventSystem.current.IsPointerOverGameObject())
+        // 마우스
+        if (Mouse.current != null &&
+            EventSystem.current.IsPointerOverGameObject())
             return true;
 
+        // 터치
         if (Touchscreen.current != null)
         {
             foreach (var t in Touchscreen.current.touches)
             {
-                if (t.isInProgress)
-                    if (EventSystem.current.IsPointerOverGameObject(t.touchId.ReadValue()))
-                        return true;
-            }
+                if (t.isInProgress &&
+                    EventSystem.current.IsPointerOverGameObject(t.touchId.ReadValue()))
+                    return true;
+                }
         }
-
         return false;
+    }
+
+    private void ShowDimensionForPiece(FloorPiece piece)
+    {
+        var mgr = DimensionLabelUIManager.Instance;
+        Bounds b = piece.GetBounds();
+
+        // Width label (위쪽)
+        mgr.widthActualLabel.placeAbove = true;
+        mgr.widthActualLabel.placeRight = false;
+        mgr.widthActualLabel.SetWorldLabel(
+            new Vector3(b.center.x, 0, b.max.z),
+            b.size.x
+        );
+
+        // Height label (오른쪽)
+        mgr.heightActualLabel.placeAbove = false;
+        mgr.heightActualLabel.placeRight = true;
+        mgr.heightActualLabel.SetWorldLabel(
+            new Vector3(b.max.x, 0, b.center.z),
+            b.size.z
+        );
+    }
+
+    public void EnableInput()
+    {
+        pointAction.action.Enable();
+        contactAction.action.Enable();
+    }
+
+    public void DisableInput()
+    {
+        pointAction.action.Disable();
+        contactAction.action.Disable();
     }
 }

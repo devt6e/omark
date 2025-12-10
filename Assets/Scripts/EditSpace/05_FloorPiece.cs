@@ -6,7 +6,7 @@ public class FloorPiece : MonoBehaviour
     // ================================
     // Size UI (싱글턴으로 연결됨)
     // ================================
-    public SizeUIController sizeUI;   // 선택 시 자동 연결됨
+    // public SizeUIController sizeUI;   // 선택 시 자동 연결됨
 
     // ================================
     // 저장용 ID
@@ -27,12 +27,12 @@ public class FloorPiece : MonoBehaviour
         if (string.IsNullOrEmpty(pieceId))
             pieceId = Guid.NewGuid().ToString();
 
-        // 싱글턴 연결
-        if (sizeUI == null)
-            sizeUI = SizeUIController.Instance;
+        // // 싱글턴 연결
+        // if (sizeUI == null)
+        //     sizeUI = SizeUIController.Instance;
 
-        if (sizeUI != null)
-            sizeUI.Hide();
+        // if (sizeUI != null)
+        //     sizeUI.Hide();
     }
 
     // ================================
@@ -79,8 +79,8 @@ public class FloorPiece : MonoBehaviour
             highlightObj = null;
         }
 
-        // UI도 숨김
-        HideSizeUI();
+        // // UI도 숨김
+        // HideSizeUI();
     }
 
     // ================================
@@ -94,38 +94,38 @@ public class FloorPiece : MonoBehaviour
     // ================================
     // UI 출력 / 숨기기
     // ================================
-    public void ShowSizeUI()
-    {
-        if (sizeUI == null) return;
+    // public void ShowSizeUI()
+    // {
+    //     if (sizeUI == null) return;
 
-        sizeUI.Show(this);
-        sizeUI.UpdateUIPositions(this);
-    }
+    //     sizeUI.Show(this);
+    //     sizeUI.UpdateUIPositions(this);
+    // }
 
-    public void HideSizeUI()
-    {
-        if (sizeUI != null)
-            sizeUI.Hide();
-    }
+    // public void HideSizeUI()
+    // {
+    //     if (sizeUI != null)
+    //         sizeUI.Hide();
+    // }
 
-    // ================================
-    // 실제 바닥 크기 적용 메서드
-    // ================================
-    public void ApplyWidth(float newWidth)
-    {
-        Vector3 scale = transform.localScale;
-        scale.x = Mathf.Max(0.01f, newWidth); // 최소 크기 제한
-        transform.localScale = scale;
+    // // ================================
+    // // 실제 바닥 크기 적용 메서드
+    // // ================================
+    // public void ApplyWidth(float newWidth)
+    // {
+    //     Vector3 scale = transform.localScale;
+    //     scale.x = Mathf.Max(0.01f, newWidth); // 최소 크기 제한
+    //     transform.localScale = scale;
 
-        sizeUI?.UpdateUIPositions(this);
-    }
+    //     sizeUI?.UpdateUIPositions(this);
+    // }
 
-    public void ApplyHeight(float newHeight)
-    {
-        Vector3 scale = transform.localScale;
-        scale.z = Mathf.Max(0.01f, newHeight);
-        transform.localScale = scale;
+    // public void ApplyHeight(float newHeight)
+    // {
+    //     Vector3 scale = transform.localScale;
+    //     scale.z = Mathf.Max(0.01f, newHeight);
+    //     transform.localScale = scale;
 
-        sizeUI?.UpdateUIPositions(this);
-    }
+    //     sizeUI?.UpdateUIPositions(this);
+    // }
 }
