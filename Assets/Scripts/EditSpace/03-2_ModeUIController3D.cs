@@ -4,7 +4,7 @@ using TMPro;
 
 public class ModeUIController3D : MonoBehaviour
 {
-    public static ModeUIController3D Instance {get; private set;}
+    public static ModeUIController3D Instance { get; private set; }
 
     [Header("Buttons")]
     public Button btnMove3D;
@@ -22,6 +22,10 @@ public class ModeUIController3D : MonoBehaviour
     [Header("Alpha Settings")]
     [SerializeField] private float activeAlpha = 1f;
     [SerializeField] private float inactiveAlpha = 0.6f;
+
+    [Header("Furniture UI")]
+    public GameObject furnitureCreateButton;  
+    // ← "가구 생성하기" 버튼 오브젝트 연결해두기
 
     private void Awake()
     {
@@ -45,10 +49,14 @@ public class ModeUIController3D : MonoBehaviour
 
     public void UpdateUI(EditMode mode)
     {
-        // 기본값
+        // 기본값 초기화
         SetAlpha(hlMove3D, inactiveAlpha);
         SetAlpha(hlPlaceFurniture, inactiveAlpha);
         SetAlpha(hlEditFurniture, inactiveAlpha);
+
+        // 모든 모드에서 기본적으로 숨겨두고, 필요할 때만 켜준다.
+        if (furnitureCreateButton != null)
+            furnitureCreateButton.SetActive(false);
 
         switch (mode)
         {
@@ -60,6 +68,11 @@ public class ModeUIController3D : MonoBehaviour
             case EditMode.PlaceFurniture:
                 SetAlpha(hlPlaceFurniture, activeAlpha);
                 modeText.text = "가구 배치";
+
+                // 가구 배치 모드일 때만 버튼 표시
+                if (furnitureCreateButton != null)
+                    furnitureCreateButton.SetActive(true);
+
                 break;
 
             case EditMode.EditFurniture:

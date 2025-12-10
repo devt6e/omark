@@ -47,14 +47,6 @@ public class FloorDrawer : MonoBehaviour
 
     private void Update()
     {
-        // Debug.Log($"[FloorDrawer] Mode={EditorModeManager.Instance.CurrentMode}, camNull={cam == null}");
-
-        // if (contactAction.action.IsPressed())
-        //     Debug.Log("Pressed, worldPoint=" + GetMouseWorldPos());
-
-        Debug.Log("clickAction.enabled = " + contactAction.action.enabled);
-        Debug.Log("pointAction.enabled = " + pointAction.action.enabled);
-
         if (EditorModeManager.Instance.CurrentMode != EditMode.DrawFloor)
             return;
 

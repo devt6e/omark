@@ -53,6 +53,8 @@ public class Camera3DController : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (GizmoInputBlocker.IsDraggingGizmo)
+            return;
         if (EditorModeManager.Instance.CurrentMode != EditMode.MoveView3D)
             return;
 
