@@ -20,7 +20,7 @@ public class SelectionManager : MonoBehaviour
     public RectTransform resizeButton;     // ★ Resize 버튼
     public float groupButtonYOffset = 150f;
 
-    private Camera cam;
+    public Camera cam;
     private float pressStartTime;
     private bool isPressing = false;
 
@@ -30,33 +30,35 @@ public class SelectionManager : MonoBehaviour
 
     private void Awake()
     {
-        cam = Camera.main;
         Instance = this;
 
         deleteButton.gameObject.SetActive(false);
         resizeButton.gameObject.SetActive(false);
+
+        EnableInput();
     }
 
     private void OnEnable()
     {
-        pointAction.action.Enable();
-        contactAction.action.Enable();
-
         contactAction.action.started += OnPressStarted;
         contactAction.action.canceled += OnPressCanceled;
+
+        pointAction.action.Enable();
+        contactAction.action.Enable();
     }
 
     private void OnDisable()
     {
-        pointAction.action.Disable();
-        contactAction.action.Disable();
-
         contactAction.action.started -= OnPressStarted;
         contactAction.action.canceled -= OnPressCanceled;
+
+        pointAction.action.Disable();
+        contactAction.action.Disable();
     }
 
     private void Update()
     {
+        Debug.Log(EditorModeManager.Instance.CurrentMode);
         // EditFloor 모드에서만 동작
         if (EditorModeManager.Instance.CurrentMode != EditMode.EditFloor)
             return;
@@ -72,8 +74,11 @@ public class SelectionManager : MonoBehaviour
         }
     }
 
+    public void SetCamera(Camera newCam) => cam = newCam;
+    
     private void OnPressStarted(InputAction.CallbackContext ctx)
     {
+        Debug.Log("OnPressed");
         if (EditorModeManager.Instance.CurrentMode != EditMode.EditFloor)
             return;
 
@@ -309,5 +314,17 @@ public class SelectionManager : MonoBehaviour
             new Vector3(b.max.x, 0, b.center.z),
             b.size.z
         );
+    }
+
+    public void EnableInput()
+    {
+        pointAction.action.Enable();
+        contactAction.action.Enable();
+    }
+
+    public void DisableInput()
+    {
+        pointAction.action.Disable();
+        contactAction.action.Disable();
     }
 }

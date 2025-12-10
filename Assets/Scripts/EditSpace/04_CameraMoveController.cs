@@ -3,9 +3,12 @@ using UnityEngine.InputSystem;
 
 public class CameraMoveController : MonoBehaviour
 {
+
+    public static CameraMoveController Instance {get; private set;}
+
     [Header("Input Actions")]
-    public InputActionReference primaryPointAction;    // Pointer position
-    public InputActionReference primaryContactAction;  // Pointer press
+    public InputActionReference pointAction;    // Pointer position
+    public InputActionReference contactAction;  // Pointer press
     public InputActionReference scrollAction;          // Mouse wheel scroll
 
     [Header("Camera Settings")]
@@ -15,7 +18,7 @@ public class CameraMoveController : MonoBehaviour
     public float minZoom = 3f;
     public float maxZoom = 20f;
 
-    private Camera cam;
+    public Camera cam;
 
     private bool isPanning = false;
     private Vector2 lastPointerPos;
@@ -26,21 +29,8 @@ public class CameraMoveController : MonoBehaviour
 
     private void Awake()
     {
-        cam = Camera.main;
-    }
-
-    private void OnEnable()
-    {
-        primaryPointAction.action.Enable();
-        primaryContactAction.action.Enable();
-        scrollAction.action.Enable();
-    }
-
-    private void OnDisable()
-    {
-        primaryPointAction.action.Disable();
-        primaryContactAction.action.Disable();
-        scrollAction.action.Disable();
+        Instance = this;
+        EnableInput();
     }
 
     private void Update()
@@ -54,16 +44,18 @@ public class CameraMoveController : MonoBehaviour
         HandlePinchZoom();
     }
 
+    public void SetCamera(Camera newCam) => cam = newCam;
+
     // ============================================
     // 1️⃣ 드래그로 카메라 이동 (Pan)
     // ============================================
     private void HandlePan()
     {
-        bool pressed = primaryContactAction.action.IsPressed();
+        bool pressed = contactAction.action.IsPressed();
 
         if (pressed)
         {
-            Vector2 currentPos = primaryPointAction.action.ReadValue<Vector2>();
+            Vector2 currentPos = pointAction.action.ReadValue<Vector2>();
 
             if (!isPanning)
             {
@@ -151,5 +143,19 @@ public class CameraMoveController : MonoBehaviour
         // 현재 위치를 다음 프레임을 위한 이전 위치로 저장
         prevTouch0Pos = touch0Pos;
         prevTouch1Pos = touch1Pos;
+    }
+
+    public void EnableInput()
+    {
+        pointAction.action.Enable();
+        contactAction.action.Enable();
+        scrollAction?.action.Enable();
+    }
+
+    public void DisableInput()
+    {
+        pointAction.action.Disable();
+        contactAction.action.Disable();
+        scrollAction?.action.Disable();
     }
 }

@@ -4,9 +4,11 @@ using UnityEngine.EventSystems;
 
 public class FloorDrawer : MonoBehaviour
 {
+    public static FloorDrawer Instance { get; private set; }
+
     [Header("Input Actions")]
     public InputActionReference pointAction;   // Pointer position (mouse/touch)
-    public InputActionReference clickAction;   // Pointer press
+    public InputActionReference contactAction;   // Pointer press
 
     [Header("Prefabs")]
     public GameObject floorPreviewPrefab;
@@ -23,33 +25,36 @@ public class FloorDrawer : MonoBehaviour
     private bool isDragging = false;
     private Vector3 dragStartPos;
 
-    private Camera cam;
+    public Camera cam;
 
     private void Awake()
     {
-        cam = Camera.main;
+        Instance = this;
+        EnableInput();
     }
 
     private void OnEnable()
     {
-        clickAction.action.started += OnClickStarted;
-        clickAction.action.canceled += OnClickCanceled;
-
-        clickAction.action.Enable();
-        pointAction.action.Enable();
+        contactAction.action.started += OnClickStarted;
+        contactAction.action.canceled += OnClickCanceled;
     }
 
     private void OnDisable()
     {
-        clickAction.action.started -= OnClickStarted;
-        clickAction.action.canceled -= OnClickCanceled;
-
-        clickAction.action.Disable();
-        pointAction.action.Disable();
+        contactAction.action.started -= OnClickStarted;
+        contactAction.action.canceled -= OnClickCanceled;
     }
 
     private void Update()
     {
+        // Debug.Log($"[FloorDrawer] Mode={EditorModeManager.Instance.CurrentMode}, camNull={cam == null}");
+
+        // if (contactAction.action.IsPressed())
+        //     Debug.Log("Pressed, worldPoint=" + GetMouseWorldPos());
+
+        Debug.Log("clickAction.enabled = " + contactAction.action.enabled);
+        Debug.Log("pointAction.enabled = " + pointAction.action.enabled);
+
         if (EditorModeManager.Instance.CurrentMode != EditMode.DrawFloor)
             return;
 
@@ -63,12 +68,13 @@ public class FloorDrawer : MonoBehaviour
 
         UpdatePreview(current);
     }
-
+    public void SetCamera(Camera newCam) => cam = newCam;
     // ============================================================
     // 클릭 시작
     // ============================================================
     private void OnClickStarted(InputAction.CallbackContext ctx)
     {
+        Debug.Log("OnPressed");
         if (EditorModeManager.Instance.CurrentMode != EditMode.DrawFloor)
             return;
 
@@ -242,5 +248,17 @@ public class FloorDrawer : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void EnableInput()
+    {
+        pointAction.action.Enable();
+        contactAction.action.Enable();
+    }
+
+    public void DisableInput()
+    {
+        pointAction.action.Disable();
+        contactAction.action.Disable();
     }
 }

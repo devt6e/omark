@@ -4,6 +4,8 @@ using TMPro;
 
 public class ModeUIController2D : MonoBehaviour
 {
+    public static ModeUIController2D Instance {get; private set;}
+
     [Header("Buttons")]
     public Button btnMove;
     public Button btnDrawFloor;
@@ -21,6 +23,11 @@ public class ModeUIController2D : MonoBehaviour
     [SerializeField] private float activeAlpha = 1f;
     [SerializeField] private float inactiveAlpha = 0.6f;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         btnMove.onClick.AddListener(() => OnModeClicked(EditMode.MoveView2D));
@@ -36,7 +43,7 @@ public class ModeUIController2D : MonoBehaviour
         UpdateUI(mode);
     }
 
-    private void UpdateUI(EditMode mode)
+    public void UpdateUI(EditMode mode)
     {
         // 모든 버튼 기본 세팅
         SetAlpha(hlMove, inactiveAlpha);

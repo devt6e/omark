@@ -533,6 +533,7 @@ MonoBehaviour:
   deleteButton: {fileID: 1754690021}
   resizeButton: {fileID: 1771774202}
   groupButtonYOffset: 150
+  cam: {fileID: 0}
 --- !u!1 &136395191
 GameObject:
   m_ObjectHideFlags: 0
@@ -1550,7 +1551,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &251338075
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3404,19 +3405,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 526284237}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77bac4613af672c4b9774ce9566cbd8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraMoveController
-  primaryPointAction: {fileID: -8756711213949634023, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  primaryContactAction: {fileID: 8808429020493116306, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  pointAction: {fileID: -8756711213949634023, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  contactAction: {fileID: 8808429020493116306, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   scrollAction: {fileID: -4894210002637985584, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   panSpeed: 0.01
   pinchZoomSpeed: 0.03
   mouseWheelZoomSpeed: 3
   minZoom: 3
   maxZoom: 20
+  cam: {fileID: 0}
 --- !u!1 &530829547
 GameObject:
   m_ObjectHideFlags: 0
@@ -4330,14 +4332,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77bac4613af672c4b9774ce9566cbd8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraMoveController
-  primaryPointAction: {fileID: -8756711213949634023, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  primaryContactAction: {fileID: 8808429020493116306, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  pointAction: {fileID: -8756711213949634023, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  contactAction: {fileID: 8808429020493116306, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   scrollAction: {fileID: -4894210002637985584, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   panSpeed: 0.01
   pinchZoomSpeed: 0.03
   mouseWheelZoomSpeed: 20
   minZoom: 3
   maxZoom: 20
+  cam: {fileID: 0}
 --- !u!1 &656874282
 GameObject:
   m_ObjectHideFlags: 0
@@ -8353,7 +8356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.392}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -11148,11 +11151,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FloorDrawer
   pointAction: {fileID: -8756711213949634023, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  clickAction: {fileID: 8808429020493116306, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  contactAction: {fileID: 8808429020493116306, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   floorPreviewPrefab: {fileID: 8563658510187297948, guid: e7e75f895239e484a966b207ab06f09c, type: 3}
   floorFinalPrefab: {fileID: 6720783277730502145, guid: d025b647c6856ef498260f5dae8e14aa, type: 3}
   uiCanvas: {fileID: 1683924447}
   dimensionLabelPrefab: {fileID: 7143623617028037731, guid: f72bcd49c27122c40aca64f2a7642682, type: 3}
+  cam: {fileID: 0}
 --- !u!4 &1683067548
 Transform:
   m_ObjectHideFlags: 0
@@ -12022,7 +12026,7 @@ GameObject:
   - component: {fileID: 1771176209}
   m_Layer: 0
   m_Name: 3DCamera
-  m_TagString: MainCamera
+  m_TagString: Camera3D
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12168,11 +12172,12 @@ MonoBehaviour:
   orbitSpeed: 0.2
   pitchMin: 10
   pitchMax: 80
-  panSpeed: 10
-  panUp: 0
-  panDown: 0
-  panLeft: 0
-  panRight: 0
+  panSpeed: 0.05
+  panSpeedButtons: 10
+  panUp: 1
+  panDown: 1
+  panLeft: 1
+  panRight: 1
 --- !u!1 &1771774201
 GameObject:
   m_ObjectHideFlags: 0

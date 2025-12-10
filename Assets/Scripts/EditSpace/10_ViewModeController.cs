@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class ViewModeController : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class ViewModeController : MonoBehaviour
 
     private void Start()
     {
+        GlobalCameraManager.Camera2D = camera2DObj.GetComponent<Camera>();
+        GlobalCameraManager.Camera3D = camera3DObj.GetComponent<Camera>();;
         Set2DView();
     }
 
@@ -55,12 +58,24 @@ public class ViewModeController : MonoBehaviour
 
         // 기본 모드 설정
         EditorModeManager.Instance.SetMode(EditMode.MoveView2D);
+        ModeUIController2D.Instance.UpdateUI(EditMode.MoveView2D);
+
+        foreach (var wall in CameraBlockFade.GetAllWalls())
+        {
+            wall.SetCamera(null);
+            wall.RestoreAllWalls();
+        }
+
+        SelectionManager.Instance?.SetCamera(GlobalCameraManager.Camera2D);
+        FloorDrawer.Instance?.SetCamera(GlobalCameraManager.Camera2D);
+        CameraMoveController.Instance?.SetCamera(GlobalCameraManager.Camera2D);
 
         UpdateButtonVisual();
     }
 
     private void Set3DView()
     {
+        Debug.Log("3D " + GlobalCameraManager.Camera3D);
         is3DView = true;
 
         if (camera2DObj) camera2DObj.SetActive(false);
@@ -72,6 +87,14 @@ public class ViewModeController : MonoBehaviour
             wallGenerator.wallsRoot.gameObject.SetActive(true);
 
         wallGenerator?.RegenerateWalls();
+
+        var cam3D = camera3DObj.GetComponent<Camera>();
+        foreach (var wall in CameraBlockFade.GetAllWalls())
+            wall.cam = cam3D;
+
+        CameraBlockFade.Instance?.SetCamera(GlobalCameraManager.Camera3D);
+        Camera3DController.Instance?.SetCamera(GlobalCameraManager.Camera3D);
+
         Position3DCamera();
 
         // UI 전환
@@ -80,6 +103,7 @@ public class ViewModeController : MonoBehaviour
 
         // 기본 모드 설정
         EditorModeManager.Instance.SetMode(EditMode.MoveView3D);
+        ModeUIController3D.Instance.UpdateUI(EditMode.MoveView3D);
 
         UpdateButtonVisual();
     }

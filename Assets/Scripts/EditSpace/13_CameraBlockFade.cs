@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Renderer))]
 public class CameraBlockFade : MonoBehaviour
 {
+    public static CameraBlockFade Instance {get; private set;}
     [Header("Fade Settings")]
     public float fadeAlpha = 0.2f;         // 투명 알파
     public float normalAlpha = 1f;         // 기본 알파
@@ -13,15 +14,19 @@ public class CameraBlockFade : MonoBehaviour
     public int rayGridSize = 5;            // 화면 그리드 사이즈 (3 → 3×3, 5 → 5×5)
     public float rayDistance = 50f;        // 레이 탐색 거리
 
+    [Header("Target Camera")]
+    public Camera cam;
+
     private Renderer rend;
     private Material mat;
-    private Camera cam;
+    // private Camera cam;
 
     private static HashSet<CameraBlockFade> allWalls = new HashSet<CameraBlockFade>();
     private static HashSet<CameraBlockFade> hitWalls = new HashSet<CameraBlockFade>();
 
     private void Awake()
     {
+        Instance = this;
         rend = GetComponent<Renderer>();
         mat = rend.material; 
         allWalls.Add(this);
@@ -30,11 +35,6 @@ public class CameraBlockFade : MonoBehaviour
     private void OnDestroy()
     {
         allWalls.Remove(this);
-    }
-
-    private void Start()
-    {
-        cam = Camera.main;
     }
 
     private void LateUpdate()
@@ -49,22 +49,12 @@ public class CameraBlockFade : MonoBehaviour
             return;
         }
 
-        if (EditorModeManager.Instance != null &&
-            EditorModeManager.Instance.CurrentMode == EditMode.MoveView2D)
+        // 🔵 카메라가 방 안(바닥 위)에 있으면: 페이드 기능 끄기
+        if (IsCameraInsideRoom())
         {
-            // MoveView는 2D 카메라 모드일 가능성 있음 → 카메라 타입 체크
-            if (cam != null && cam.orthographic)
-            {
-                RestoreAllWalls();
-                return;
-            }
+            RestoreAllWalls();
+            return;
         }
-
-        // ------------------------------
-        // 2) 카메라 찾기
-        // ------------------------------
-        if (cam == null) cam = Camera.main;
-        if (cam == null) return;
 
         // ------------------------------
         // 3) 멀티 레이캐스트 처리
@@ -111,7 +101,9 @@ public class CameraBlockFade : MonoBehaviour
         }
     }
 
-    private void RestoreAllWalls()
+    public void SetCamera(Camera newCam) => cam = newCam;
+
+    public void RestoreAllWalls()
     {
         foreach (var wall in allWalls)
             wall.SetAlpha(wall.normalAlpha);
@@ -122,5 +114,30 @@ public class CameraBlockFade : MonoBehaviour
         Color c = mat.color;
         c.a = alpha;
         mat.color = c;
+    }
+
+    private bool IsCameraInsideRoom()
+    {
+        if (RoomManager.Instance == null || cam == null)
+            return false;
+
+        Vector3 origin = cam.transform.position;
+        Ray ray = new Ray(origin, Vector3.down);
+
+        // 바닥까지 적당한 거리 (필요하면 조절)
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        {
+            // FloorPiece에 맞았으면 방 안이라고 간주
+            var floor = hit.collider.GetComponent<FloorPiece>();
+            if (floor != null)
+                return true;
+        }
+
+        return false;
+    }
+
+    public static IEnumerable<CameraBlockFade> GetAllWalls()
+    {
+        return allWalls;
     }
 }

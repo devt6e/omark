@@ -4,6 +4,8 @@ using TMPro;
 
 public class ModeUIController3D : MonoBehaviour
 {
+    public static ModeUIController3D Instance {get; private set;}
+
     [Header("Buttons")]
     public Button btnMove3D;
     public Button btnPlaceFurniture;
@@ -21,6 +23,11 @@ public class ModeUIController3D : MonoBehaviour
     [SerializeField] private float activeAlpha = 1f;
     [SerializeField] private float inactiveAlpha = 0.6f;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         btnMove3D.onClick.AddListener(() => OnModeClicked(EditMode.MoveView3D));
@@ -36,7 +43,7 @@ public class ModeUIController3D : MonoBehaviour
         UpdateUI(mode);
     }
 
-    private void UpdateUI(EditMode mode)
+    public void UpdateUI(EditMode mode)
     {
         // 기본값
         SetAlpha(hlMove3D, inactiveAlpha);
