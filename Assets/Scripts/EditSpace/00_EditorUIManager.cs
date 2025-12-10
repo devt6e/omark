@@ -7,7 +7,6 @@ public class EditorUIManager : MonoBehaviour
 
     public GameObject panelLeftMenu;
     public GameObject panelDropdown;
-    public GameObject panelHelpPopup;
     public GameObject panelSaveConfirmPopup;
     public GameObject blocker;
 
@@ -17,8 +16,8 @@ public class EditorUIManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
         panelDropdown.SetActive(false);
-        panelHelpPopup.SetActive(false);
         panelSaveConfirmPopup.SetActive(false);
         blocker.SetActive(false);
     }
@@ -37,18 +36,6 @@ public class EditorUIManager : MonoBehaviour
     public void UpdateViewModeIcon(string mode)
     {
         txtRoomName.text = mode;
-    }
-
-    public void OpenHelpPopup()
-    {
-        panelHelpPopup.SetActive(true);
-        blocker.SetActive(true);
-    }
-
-    public void CloseHelpPopup()
-    {
-        panelHelpPopup.SetActive(false);
-        blocker.SetActive(false);
     }
 
     public void OpenSaveConfirmPopup()
