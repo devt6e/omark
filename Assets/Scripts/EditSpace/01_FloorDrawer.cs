@@ -66,7 +66,7 @@ public class FloorDrawer : MonoBehaviour
     // ============================================================
     private void OnClickStarted(InputAction.CallbackContext ctx)
     {
-        Debug.Log("OnPressed");
+        // Debug.Log("OnPressed");
         if (EditorModeManager.Instance.CurrentMode != EditMode.DrawFloor)
             return;
 

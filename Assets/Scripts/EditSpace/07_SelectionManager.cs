@@ -78,7 +78,7 @@ public class SelectionManager : MonoBehaviour
     
     private void OnPressStarted(InputAction.CallbackContext ctx)
     {
-        Debug.Log("OnPressed");
+        // Debug.Log("OnPressed");
         if (EditorModeManager.Instance.CurrentMode != EditMode.EditFloor)
             return;
 

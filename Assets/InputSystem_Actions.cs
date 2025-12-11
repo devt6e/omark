@@ -1125,7 +1125,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""id"": ""c7f9b897-d431-4756-addf-5b81516b58ac"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -1194,19 +1194,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""c802b4fe-07ae-4bf3-a8fa-284235602e8c"",
-                    ""path"": ""<Touchscreen>/Press"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Contact"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""21478e2c-6f06-4b33-8564-4f4b6d83f885"",
-                    ""path"": ""<Pen>/press"",
+                    ""id"": ""0e530fe1-355d-4434-9d2c-7f2c2943ba99"",
+                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

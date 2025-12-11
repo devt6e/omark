@@ -1,13 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class FurnitureMoveGizmo : MonoBehaviour
+public class FurnitureRotateGizmo : MonoBehaviour
 {
-    public static FurnitureMoveGizmo Instance {get; private set;}
-    [Header("Handles")]
-    public Transform axisX;
-    public Transform axisY;
-    public Transform axisZ;
+    public static FurnitureRotateGizmo Instance {get; private set;}
+    [Header("Handle")]
+    public Transform rotateRing;      // 회전 링(콜라이더 포함)
 
     [Header("Raycast")]
     public LayerMask gizmoMask;
@@ -16,12 +14,10 @@ public class FurnitureMoveGizmo : MonoBehaviour
     private Camera cam;
     private FurniturePiece target;
 
-    private enum HandleType { None, AxisX, AxisY, AxisZ }
-    private HandleType activeHandle = HandleType.None;
+    private bool isDragging = false;
 
-    private Vector3 dragStartTargetPos;
-    private Vector3 dragStartHitPoint;
-    private Vector3 activeAxisDir;
+    private Vector3 dragStartDir;     // 중심→포인터 방향(시작)
+    private float startRotationY;     // 시작 Y 회전값
 
     public void SetCamera(Camera newCam) => cam = newCam;
 
@@ -36,10 +32,10 @@ public class FurnitureMoveGizmo : MonoBehaviour
         if (target == null)
             return;
 
-        if (FurnitureGizmoController.Instance.CurrentMode != GizmoMode.Move)
+        if (FurnitureGizmoController.Instance.CurrentMode != GizmoMode.Rotate)
             return;
 
-        // 기즈모 위치는 타겟 중심
+        // 기즈모 위치/회전: 가구 중심 + world up 기준
         transform.position = target.Pivot.position;
         transform.rotation = Quaternion.identity;
 
@@ -48,15 +44,15 @@ public class FurnitureMoveGizmo : MonoBehaviour
 
         var input = InputReader.Instance;
 
-        if (input.ContactStarted)
+        if (!isDragging && input.ContactStarted)
         {
             TryBeginDrag(input.Point);
         }
-        else if (input.ContactActive && activeHandle != HandleType.None)
+        else if (isDragging && input.ContactActive)
         {
             Drag(input.Point);
         }
-        else if (input.ContactEnded && activeHandle != HandleType.None)
+        else if (isDragging && input.ContactEnded)
         {
             EndDrag();
         }
@@ -65,10 +61,10 @@ public class FurnitureMoveGizmo : MonoBehaviour
     public void AttachTarget(FurniturePiece piece)
     {
         target = piece;
-        activeHandle = HandleType.None;
+        isDragging = false;
         GizmoInputBlocker.IsDraggingGizmo = false;
 
-        if (target != null && FurnitureGizmoController.Instance.CurrentMode == GizmoMode.Move)
+        if (target != null && FurnitureGizmoController.Instance.CurrentMode == GizmoMode.Rotate)
         {
             transform.position = target.Pivot.position;
             transform.rotation = Quaternion.identity;
@@ -83,7 +79,7 @@ public class FurnitureMoveGizmo : MonoBehaviour
     public void Detach()
     {
         target = null;
-        activeHandle = HandleType.None;
+        isDragging = false;
         GizmoInputBlocker.IsDraggingGizmo = false;
         gameObject.SetActive(false);
     }
@@ -97,61 +93,63 @@ public class FurnitureMoveGizmo : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, maxRayDistance, gizmoMask))
         {
-            HandleType handle = GetHandleType(hit.transform);
-            if (handle == HandleType.None)
+            if (!IsRotateHandle(hit.transform))
                 return;
 
-            activeHandle = handle;
             GizmoInputBlocker.IsDraggingGizmo = true;
+            isDragging = true;
 
-            dragStartTargetPos = target.transform.position;
-            dragStartHitPoint = GetWorldPointOnPlane(screenPos, dragStartTargetPos.y);
+            Vector3 center = target.Pivot.position;
+            Vector3 startPoint = GetPointOnHorizontalPlane(screenPos, center.y);
 
-            switch (activeHandle)
-            {
-                case HandleType.AxisX: activeAxisDir = Vector3.right; break;
-                case HandleType.AxisY: activeAxisDir = Vector3.up; break;
-                case HandleType.AxisZ: activeAxisDir = Vector3.forward; break;
-            }
+            dragStartDir = (startPoint - center);
+            dragStartDir.y = 0f;
+            dragStartDir.Normalize();
+
+            startRotationY = target.transform.eulerAngles.y;
         }
     }
 
     private void Drag(Vector2 screenPos)
     {
-        if (target == null || activeHandle == HandleType.None)
+        if (target == null || !isDragging)
             return;
 
-        Vector3 currentHit = GetWorldPointOnPlane(screenPos, dragStartTargetPos.y);
-        Vector3 delta = currentHit - dragStartHitPoint;
+        Vector3 center = target.Pivot.position;
+        Vector3 currentPoint = GetPointOnHorizontalPlane(screenPos, center.y);
 
-        Vector3 projectedDelta = Vector3.Project(delta, activeAxisDir);
-        Vector3 newPos = dragStartTargetPos + projectedDelta;
+        Vector3 currentDir = (currentPoint - center);
+        currentDir.y = 0f;
+        currentDir.Normalize();
 
-        target.transform.position = newPos;
+        if (currentDir.sqrMagnitude < 0.0001f || dragStartDir.sqrMagnitude < 0.0001f)
+            return;
+
+        float angle = Vector3.SignedAngle(dragStartDir, currentDir, Vector3.up);
+
+        Vector3 euler = target.transform.eulerAngles;
+        euler.y = startRotationY + angle;
+        target.transform.eulerAngles = euler;
     }
 
     private void EndDrag()
     {
-        activeHandle = HandleType.None;
+        isDragging = false;
         GizmoInputBlocker.IsDraggingGizmo = false;
     }
 
-    private HandleType GetHandleType(Transform h)
+    private bool IsRotateHandle(Transform t)
     {
-        if (h == axisX) return HandleType.AxisX;
-        if (h == axisY) return HandleType.AxisY;
-        if (h == axisZ) return HandleType.AxisZ;
-
-        if (h.parent != null)
-            return GetHandleType(h.parent);
-
-        return HandleType.None;
+        if (t == rotateRing) return true;
+        if (t.parent != null)
+            return IsRotateHandle(t.parent);
+        return false;
     }
 
-    private Vector3 GetWorldPointOnPlane(Vector2 screenPos, float y)
+    private Vector3 GetPointOnHorizontalPlane(Vector2 screenPos, float y)
     {
         Ray ray = cam.ScreenPointToRay(screenPos);
-        Plane plane = new Plane(Vector3.up, new Vector3(0, y, 0)); // XZ 평면
+        Plane plane = new Plane(Vector3.up, new Vector3(0, y, 0));
 
         if (plane.Raycast(ray, out float enter))
             return ray.GetPoint(enter);
