@@ -3,7 +3,8 @@ using UnityEngine.EventSystems;
 
 public class FurnitureMoveGizmo : MonoBehaviour
 {
-    public static FurnitureMoveGizmo Instance {get; private set;}
+    public static FurnitureMoveGizmo Instance { get; private set; }
+
     [Header("Handles")]
     public Transform axisX;
     public Transform axisY;
@@ -23,11 +24,16 @@ public class FurnitureMoveGizmo : MonoBehaviour
     private Vector3 dragStartHitPoint;
     private Vector3 activeAxisDir;
 
-    public void SetCamera(Camera newCam) => cam = newCam;
-
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
+        cam = GlobalCameraManager.Camera3D;
         gameObject.SetActive(false);
     }
 
@@ -36,39 +42,37 @@ public class FurnitureMoveGizmo : MonoBehaviour
         if (target == null)
             return;
 
-        if (FurnitureGizmoController.Instance.CurrentMode != GizmoMode.Move)
-            return;
-
-        // 기즈모 위치는 타겟 중심
+        // 기즈모는 항상 타겟 위치를 따라간다
         transform.position = target.Pivot.position;
         transform.rotation = Quaternion.identity;
 
         if (IsPointerOverUI())
             return;
 
-        var input = InputReader.Instance;
-
-        if (input.ContactStarted)
+        // 1) 드래그 시작
+        if (InputReader.Instance.ContactStarted)
         {
-            TryBeginDrag(input.Point);
+            TryBeginDrag(InputReader.Instance.Point);
         }
-        else if (input.ContactActive && activeHandle != HandleType.None)
+        // 2) 드래그 중
+        else if (InputReader.Instance.ContactActive && activeHandle != HandleType.None)
         {
-            Drag(input.Point);
+            Drag(InputReader.Instance.Point);
         }
-        else if (input.ContactEnded && activeHandle != HandleType.None)
+        // 3) 드래그 종료
+        else if (InputReader.Instance.ContactEnded && activeHandle != HandleType.None)
         {
             EndDrag();
         }
     }
 
-    public void AttachTarget(FurniturePiece piece)
+    public void AttachTo(FurniturePiece piece)
     {
         target = piece;
         activeHandle = HandleType.None;
         GizmoInputBlocker.IsDraggingGizmo = false;
 
-        if (target != null && FurnitureGizmoController.Instance.CurrentMode == GizmoMode.Move)
+        if (target != null)
         {
             transform.position = target.Pivot.position;
             transform.rotation = Quaternion.identity;
@@ -105,7 +109,7 @@ public class FurnitureMoveGizmo : MonoBehaviour
             GizmoInputBlocker.IsDraggingGizmo = true;
 
             dragStartTargetPos = target.transform.position;
-            dragStartHitPoint = GetWorldPointOnPlane(screenPos, dragStartTargetPos.y);
+            dragStartHitPoint = GetWorldPoint(screenPos, dragStartTargetPos);
 
             switch (activeHandle)
             {
@@ -121,7 +125,7 @@ public class FurnitureMoveGizmo : MonoBehaviour
         if (target == null || activeHandle == HandleType.None)
             return;
 
-        Vector3 currentHit = GetWorldPointOnPlane(screenPos, dragStartTargetPos.y);
+        Vector3 currentHit = GetWorldPoint(screenPos, dragStartTargetPos);
         Vector3 delta = currentHit - dragStartHitPoint;
 
         Vector3 projectedDelta = Vector3.Project(delta, activeAxisDir);
@@ -148,15 +152,15 @@ public class FurnitureMoveGizmo : MonoBehaviour
         return HandleType.None;
     }
 
-    private Vector3 GetWorldPointOnPlane(Vector2 screenPos, float y)
+    private Vector3 GetWorldPoint(Vector2 screenPos, Vector3 origin)
     {
         Ray ray = cam.ScreenPointToRay(screenPos);
-        Plane plane = new Plane(Vector3.up, new Vector3(0, y, 0)); // XZ 평면
+        Plane plane = new Plane(Vector3.up, new Vector3(0, origin.y, 0)); // 기본 XZ 평면
 
         if (plane.Raycast(ray, out float enter))
             return ray.GetPoint(enter);
 
-        return new Vector3(0, y, 0);
+        return origin;
     }
 
     private bool IsPointerOverUI()

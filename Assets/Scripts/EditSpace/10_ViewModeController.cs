@@ -94,9 +94,6 @@ public class ViewModeController : MonoBehaviour
 
         CameraBlockFade.Instance?.SetCamera(GlobalCameraManager.Camera3D);
         Camera3DController.Instance?.SetCamera(GlobalCameraManager.Camera3D);
-        FurnitureSelectionHandler.Instance?.SetCamera(GlobalCameraManager.Camera3D);
-        FurnitureMoveGizmo.Instance?.SetCamera(GlobalCameraManager.Camera3D);
-        FurnitureRotateGizmo.Instance?.SetCamera(GlobalCameraManager.Camera3D);
 
         Position3DCamera();
 

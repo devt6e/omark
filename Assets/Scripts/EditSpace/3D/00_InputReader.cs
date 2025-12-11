@@ -19,7 +19,6 @@ public class InputReader : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("InputReader Awake");
         if (Instance != null)
         {
             Destroy(gameObject);
@@ -51,12 +50,11 @@ public class InputReader : MonoBehaviour
 
         // Scroll은 1프레임 후 자동 초기화하면 편함
         Scroll = 0f;
-    }
-    private void LateUpdate()
-    {
+
         ContactStarted = false;
         ContactEnded = false;
     }
+
     private void OnContactStart()
     {
         ContactStarted = true;

@@ -3,19 +3,14 @@ using UnityEngine.EventSystems;
 
 public class FurnitureSelectionHandler : MonoBehaviour
 {
-    public static FurnitureSelectionHandler Instance {get; private set;}
-
     [Header("Raycast")]
     public LayerMask furnitureMask;
 
     private Camera cam;
 
-    public void SetCamera(Camera newCam) => cam = newCam;
-
     private void Awake()
     {
-        Instance = this;
-        Debug.Log(cam);
+        cam = GlobalCameraManager.Camera3D;
     }
 
     private void Update()
@@ -29,10 +24,13 @@ public class FurnitureSelectionHandler : MonoBehaviour
         if (GizmoInputBlocker.IsDraggingGizmo)
             return;
 
+        Debug.Log("POINT = " + InputReader.Instance.Point + 
+          "   Screen = " + Screen.width + ", " + Screen.height);
         if (InputReader.Instance.ContactStarted)
         {
             if (IsPointerOverUI())
                 return;
+            Debug.Log("Ray Shooooot");
             HandleClick(InputReader.Instance.Point);
         }
     }
@@ -40,30 +38,39 @@ public class FurnitureSelectionHandler : MonoBehaviour
     private void HandleClick(Vector2 screenPos)
     {
         Ray ray = cam.ScreenPointToRay(screenPos);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, furnitureMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f)) // LayerMask 제거
         {
-            FurniturePiece piece = hit.collider.GetComponent<FurniturePiece>();
-            if (piece != null)
-            {
-                FurnitureManager.Instance.Select(piece);
-
-                FurnitureCopyButton.Instance.Show();
-
-                if (FurnitureMoveGizmo.Instance != null)
-                    FurnitureGizmoController.Instance.Attach(piece);
-                else
-                    Debug.Log("gizmo is null");
-
-                return;
-            }
+            Debug.Log("Hit ANY collider: " + hit.collider.name);
         }
+        else
+        {
+            Debug.Log("Raycast did NOT hit anything at all.");
+        }
+        // Debug.Log("hit0");
+        // if (Physics.Raycast(ray, out RaycastHit hit, 100f, furnitureMask))
+        // {
+        //     Debug.Log("hit1");
+        //     FurniturePiece piece = hit.collider.GetComponent<FurniturePiece>();
+        //     if (piece != null)
+        //     {
+        //         Debug.Log("hit2");
+        //         FurnitureManager.Instance.Select(piece);
+
+        //         FurnitureCopyButton.Instance.Show();
+
+        //         if (FurnitureMoveGizmo.Instance != null)
+        //             FurnitureMoveGizmo.Instance.AttachTo(piece);
+
+        //         return;
+        //     }
+        // }
 
         // 빈 공간 클릭 → 선택 해제
         FurnitureManager.Instance.ClearSelection();
         FurnitureCopyButton.Instance.Hide();
 
         if (FurnitureMoveGizmo.Instance != null)
-            FurnitureGizmoController.Instance.Detach();
+            FurnitureMoveGizmo.Instance.Detach();
     }
 
     private bool IsPointerOverUI()
