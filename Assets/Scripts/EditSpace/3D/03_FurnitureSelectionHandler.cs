@@ -24,8 +24,8 @@ public class FurnitureSelectionHandler : MonoBehaviour
         if (GizmoInputBlocker.IsDraggingGizmo)
             return;
 
-        Debug.Log("POINT = " + InputReader.Instance.Point + 
-          "   Screen = " + Screen.width + ", " + Screen.height);
+        // Debug.Log("POINT = " + InputReader.Instance.Point + 
+        //   "   Screen = " + Screen.width + ", " + Screen.height);
         if (InputReader.Instance.ContactStarted)
         {
             if (IsPointerOverUI())

@@ -124,8 +124,12 @@ public class ViewModeController : MonoBehaviour
         float distance = Mathf.Clamp(maxSize * 1.5f, 8f, 60f);
 
         Vector3 camOffset = new Vector3(-distance * 0.6f, distance, -distance);
+        // Vector3 camOffset = new Vector3(-distance * 0.6f, 1.5f, -distance);
+        // Vector3 camOffset = new Vector3(-distance * 0.6f, distance, 0f);
+        // camOffset = Vector3.zero;
 
         camera3DObj.transform.position = center + camOffset;
+        // camera3DObj.transform.position = center;
         camera3DObj.transform.LookAt(center);
     }
 

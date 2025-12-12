@@ -195,6 +195,7 @@ public class MainListUI : MonoBehaviour
             Debug.Log("새 공간 → 빈 SpaceDetail 생성");
 
             T6LoadedSpaceCache.Detail = new T6SpaceDetail();
+            T6LoadedSpaceCache.Detail.meta.name = item.txtName.text;
             T6LoadedSpaceCache.EnvironmentId = item.environmentId;
 
             SceneManager.LoadScene("sc_Edit");
@@ -221,10 +222,12 @@ public class MainListUI : MonoBehaviour
 
         Debug.Log("=== RAW JSON ===");
         Debug.Log(json);
-
+        
         var detail = T6SpaceDetailSerializer.FromJson(json);
         T6LoadedSpaceCache.Detail = detail;
         T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+
+        detail.meta.name = item.txtName.text;
 
         SceneManager.LoadScene("sc_Edit");
     }
@@ -286,7 +289,7 @@ public class MainListUI : MonoBehaviour
                 item.SetEditMode(true);
                 item.SetToggle(false);
             }
-        }
+        } 
 
         StartCoroutine(RebuildNextFrame());
     }

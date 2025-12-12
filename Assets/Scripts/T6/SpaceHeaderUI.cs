@@ -9,8 +9,13 @@ public class T6SpaceHeaderUI : MonoBehaviour
     // SpaceDetail 수신 시 UI 업데이트
     public void SetSpaceDetail(T6SpaceDetail detail)
     {
-        if (detail == null) return;
+        if (detail == null) 
+        {
+            Debug.Log("HeaderUI : detail null");
+            return;
 
-        txtSpaceName.text = detail.meta.name;
+        }
+        Debug.Log("HeaderUI : " + detail.meta.name);
+        txtSpaceName.text = detail.meta.name; 
     }
 }
