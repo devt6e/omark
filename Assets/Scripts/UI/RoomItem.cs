@@ -18,12 +18,14 @@ public class RoomItem : MonoBehaviour
     [Header("Buttons")]
     public Button btnEdit;
     public Button btnDelete;
+    public Button btnVR;
 
     public long environmentId;
     public string s3FileUrl;
 
     private System.Action<RoomItem> onOpenEditor;
     private System.Action<RoomItem> onDelete;
+    private System.Action<RoomItem> onOpenVR;
 
     private void Start()
     {
@@ -32,6 +34,12 @@ public class RoomItem : MonoBehaviour
 
         btnEdit.onClick.AddListener(OnClickEdit);
         btnDelete.onClick.AddListener(() => onDelete?.Invoke(this));
+        btnVR.onClick.AddListener(() => onOpenVR?.Invoke(this));
+    }
+
+    public void SetOpenVRAction(System.Action<RoomItem> callback)
+    {
+        onOpenVR = callback;
     }
 
     private void OnClickEdit()

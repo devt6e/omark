@@ -57,6 +57,7 @@ public class WallGenerator : MonoBehaviour
         if (pieces == null || pieces.Count == 0)
         {
             // 생성할 바닥이 없으면 벽도 없음
+            Debug.LogWarning("생성할 바닥이 없습니다.");
             return;
         }
 

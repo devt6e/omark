@@ -64,6 +64,7 @@ public class MainListUI : MonoBehaviour
 
         popupConfirmOK.onClick.AddListener(OnConfirmDelete);
         popupConfirmCancel.onClick.AddListener(CloseConfirmPopup);
+        
 
         // (1) 로컬 목록 먼저 로드
         T6SpaceListRepository.Instance.LoadLocal();
@@ -158,6 +159,7 @@ public class MainListUI : MonoBehaviour
         });
 
         item.SetOpenEditorAction(OnClickOpenEditor);
+        item.SetOpenVRAction(OnClickOpenVR);
     }
 
 
@@ -181,58 +183,8 @@ public class MainListUI : MonoBehaviour
         });
 
         item.SetOpenEditorAction(OnClickOpenEditor);
+        item.SetOpenVRAction(OnClickOpenVR);
     }
-
-
-
-    // ===============================================================
-    // Open Scene
-    // ===============================================================
-    private void OnClickOpenEditor(RoomItem item)
-    {
-        if (string.IsNullOrEmpty(item.s3FileUrl))
-        {
-            Debug.Log("새 공간 → 빈 SpaceDetail 생성");
-
-            T6LoadedSpaceCache.Detail = new T6SpaceDetail();
-            T6LoadedSpaceCache.Detail.meta.name = item.txtName.text;
-            T6LoadedSpaceCache.EnvironmentId = item.environmentId;
-
-            SceneManager.LoadScene("sc_Edit");
-            return;
-        }
-
-        StartCoroutine(LoadAndOpenEditor(item));
-    }
-
-    private IEnumerator LoadAndOpenEditor(RoomItem item)
-    {
-        string url = item.s3FileUrl;
-
-        var req = UnityEngine.Networking.UnityWebRequest.Get(url);
-        yield return req.SendWebRequest();
-
-        if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
-        {
-            Debug.LogError("JSON Load Failed: " + req.error);
-            yield break;
-        }
-
-        string json = req.downloadHandler.text;
-
-        Debug.Log("=== RAW JSON ===");
-        Debug.Log(json);
-        
-        var detail = T6SpaceDetailSerializer.FromJson(json);
-        T6LoadedSpaceCache.Detail = detail;
-        T6LoadedSpaceCache.EnvironmentId = item.environmentId;
-
-        detail.meta.name = item.txtName.text;
-
-        SceneManager.LoadScene("sc_Edit");
-    }
-
-
 
     // ===============================================================
     // CREATE (새 공간 생성)
@@ -409,8 +361,6 @@ public class MainListUI : MonoBehaviour
         StartCoroutine(RebuildNextFrame());
     }
 
-
-
     // ===============================================================
     // Utility
     // ===============================================================
@@ -426,4 +376,100 @@ public class MainListUI : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(listContent as RectTransform);
         Canvas.ForceUpdateCanvases();
     }
+    // ===============================================================
+    // Open Edit Scene
+    // ===============================================================
+    private void OnClickOpenEditor(RoomItem item)
+    {
+        if (string.IsNullOrEmpty(item.s3FileUrl))
+        {
+            Debug.Log("새 공간 → 빈 SpaceDetail 생성");
+
+            T6LoadedSpaceCache.Detail = new T6SpaceDetail();
+            T6LoadedSpaceCache.Detail.meta.name = item.txtName.text;
+            T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+
+            SceneManager.LoadScene("sc_Edit");
+            return;
+        }
+
+        StartCoroutine(LoadAndOpenEditor(item));
+    }
+
+    private IEnumerator LoadAndOpenEditor(RoomItem item)
+    {
+        string url = item.s3FileUrl;
+
+        var req = UnityEngine.Networking.UnityWebRequest.Get(url);
+        yield return req.SendWebRequest();
+
+        if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("JSON Load Failed: " + req.error);
+            yield break;
+        }
+
+        string json = req.downloadHandler.text;
+
+        Debug.Log("=== RAW JSON ===");
+        Debug.Log(json);
+        
+        var detail = T6SpaceDetailSerializer.FromJson(json);
+        T6LoadedSpaceCache.Detail = detail;
+        T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+
+        detail.meta.name = item.txtName.text;
+
+        SceneManager.LoadScene("sc_Edit");
+    }
+
+    // ===============================================================
+    // Open Edit Scene
+    // ===============================================================
+    private void OnClickOpenVR(RoomItem item)
+    {
+        StartCoroutine(LoadAndOpenVR(item));
+    }
+
+    private IEnumerator LoadAndOpenVR(RoomItem item)
+    {
+        // 1) s3FileUrl이 없는 경우 (새 공간)
+        if (string.IsNullOrEmpty(item.s3FileUrl))
+        {
+            Debug.Log("새 공간 → 빈 SpaceDetail 생성 (VR)");
+
+            T6LoadedSpaceCache.Detail = new T6SpaceDetail();
+            T6LoadedSpaceCache.Detail.meta.name = item.txtName.text;
+            T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+
+            SceneManager.LoadScene("sc_VR");
+            yield break;
+        }
+
+        // 2) JSON 다운로드
+        var req = UnityEngine.Networking.UnityWebRequest.Get(item.s3FileUrl);
+        yield return req.SendWebRequest();
+
+        if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("VR JSON Load Failed: " + req.error);
+            yield break;
+        }
+
+        // 3) JSON → SpaceDetail
+        string json = req.downloadHandler.text;
+        var detail = T6SpaceDetailSerializer.FromJson(json);
+
+        // 4) ★ 서버 이름 → JSON meta.name 동기화 (B 전략 핵심)
+        detail.meta.name = item.txtName.text;
+
+        // 5) Cache 저장
+        T6LoadedSpaceCache.Detail = detail;
+        T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+
+        // 6) VR 씬 로드
+        SceneManager.LoadScene("sc_VR");
+    }
+
+
 }

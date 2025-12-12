@@ -60,9 +60,6 @@
 //         else
 //             Debug.LogWarning("RoomLoader3D: WallGenerator가 없습니다.");
 
-//         // 6) 카메라 자동 중심 이동 알림
-//         NotifyCameraToReposition();
-
 //         Debug.Log("RoomLoader3D: 방 불러오기 완료");
 //     }
 
@@ -78,19 +75,5 @@
 //             roomManager.UnregisterPiece(p);
 //             Destroy(p.gameObject);
 //         }
-//     }
-
-
-//     // ======================================
-//     // 카메라 재배치 요청
-//     // ======================================
-//     private void NotifyCameraToReposition()
-//     {
-//         // Camera3DController가 자신을 초기화하도록 해도 되고,
-//         // ViewModeController 방식이면 Set3DView()가 알아서 처리함.
-        
-//         // ViewModeCameraAnchor anchor = FindAnyObjectByType<ViewModeCameraAnchor>();
-//         // if (anchor != null)
-//         //     anchor.RepositionCamera();
 //     }
 // }
