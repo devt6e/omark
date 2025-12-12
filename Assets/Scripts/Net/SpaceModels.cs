@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-// ������ ǥ�� ���� ����
+// 1. [공통] 서버 응답 래퍼
 [Serializable]
 public class ApiResponse<T>
 {
@@ -10,34 +10,57 @@ public class ApiResponse<T>
     public T data;
 }
 
-// 1) ���� ����/���� ��û DTO
+// 2. [요청] 공간 생성 및 이름 수정 (겸용)
 [Serializable]
 public class VirtualEnvironmentRequestDto
 {
     public string name;
 }
 
-// 2) ���� ���� DTO
+// // 3. [응답] 공간 정보 (구버전)
+// [Serializable]
+// public class VirtualEnvironmentResponseDto
+// {
+//     public long id;
+//     public string name;
+//     public string s3FileUrl;
+//     public long userId;
+// }
+
+// 3. [응답] 공간 정보 (신버전, ★ 중요: 파일 리스트 포함됨)
 [Serializable]
 public class VirtualEnvironmentResponseDto
 {
     public long id;
     public string name;
-    public string s3FileUrl;
     public long userId;
+    public List<EnvironmentFileDto> files; // 🚨 파일 목록
 }
 
-// 3) Presigned URL ��û DTO
+// 4. [응답-하위] 개별 파일 정보
+[Serializable]
+public class EnvironmentFileDto
+{
+    public long fileId;
+    public string fileType; // "SPACE" 또는 "MARKER"
+    public string fileName;
+    public string fileUrl;  // S3 다운로드 주소
+}
+
+// 5. [요청] 업로드 URL 요청
 [Serializable]
 public class S3PresignedUrlRequestDto
 {
     public string fileName;
+    public string fileType; // "SPACE" 또는 "MARKER"
 }
 
-// 4) Presigned URL ���� DTO
+// 6. [응답] 업로드 URL 정보
 [Serializable]
 public class S3PresignedUrlResponseDto
 {
     public string presignedUploadUrl;
     public string finalFileUrl;
 }
+
+

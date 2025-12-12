@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class MainListUI : MonoBehaviour
 {
@@ -64,6 +65,17 @@ public class MainListUI : MonoBehaviour
         popupConfirmOK.onClick.AddListener(OnConfirmDelete);
         popupConfirmCancel.onClick.AddListener(CloseConfirmPopup);
 
+        // (1) 로컬 목록 먼저 로드
+        T6SpaceListRepository.Instance.LoadLocal();
+
+        var localList = T6SpaceListRepository.Instance.GetAll();
+        if (localList.Count > 0)
+        {
+            foreach (var s in localList)
+                CreateRoomItemFromLocal(s);
+        }
+
+        // (3) 서버에서 최신 목록 요청
         StartCoroutine(LoadEnvironmentList());
     }
 
@@ -73,17 +85,41 @@ public class MainListUI : MonoBehaviour
     // ===============================================================
     private IEnumerator LoadEnvironmentList()
     {
-        // 기존 리스트 제거
         foreach (Transform c in listContent)
             Destroy(c.gameObject);
 
         yield return spaceApi.GetAllEnvironments(
             onSuccess: (list) =>
             {
+                var summaries = new List<T6SpaceSummary>();
+
                 foreach (var env in list)
                 {
+                    // 파일 리스트에서 SPACE 타입 파일 찾기
+                    EnvironmentFileDto spaceFile = null;
+                    if (env.files != null)
+                        spaceFile = env.files.Find(f => f.fileType == "SPACE");
+
+                    string s3Url = spaceFile?.fileUrl;
+
+                    // 날짜 (서버 CreatedAt 미제공 → 현재시간)
+                    string nowDate = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+
+                    // UI 생성
                     CreateRoomItemFromServer(env);
+
+                    // repository용 요약 정보 생성
+                    summaries.Add(new T6SpaceSummary(
+                        env.id,
+                        env.name,
+                        s3Url,
+                        nowDate
+                    ));
                 }
+
+                // repository 갱신
+                T6SpaceListRepository.Instance.SetList(summaries);
+                T6SpaceListRepository.Instance.SaveLocal();
 
                 RefreshEmptyText();
                 StartCoroutine(RebuildNextFrame());
@@ -95,18 +131,24 @@ public class MainListUI : MonoBehaviour
     }
 
 
-    // 서버 응답 DTO → RoomItem 생성
+    // ===============================================================
+    // RoomItem 생성 (서버)
+    // ===============================================================
     private void CreateRoomItemFromServer(VirtualEnvironmentResponseDto env)
     {
         GameObject go = Instantiate(roomItemPrefab, listContent);
         var item = go.GetComponent<RoomItem>();
 
-        // 날짜 대신 CreatedAt 미제공이므로 현재 시간으로 표시
         string nowDate = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+
+        // SPACE 파일 찾기
+        EnvironmentFileDto spaceFile = null;
+        if (env.files != null)
+            spaceFile = env.files.Find(f => f.fileType == "SPACE");
 
         item.SetTexts(env.name, nowDate);
         item.environmentId = env.id;
-        item.s3FileUrl = env.s3FileUrl;
+        item.s3FileUrl = spaceFile?.fileUrl;
 
         item.SetDeleteAction((roomItem) =>
         {
@@ -114,6 +156,77 @@ public class MainListUI : MonoBehaviour
             pendingDeleteList.Add(roomItem);
             OpenConfirmPopup(DeleteMode.Single);
         });
+
+        item.SetOpenEditorAction(OnClickOpenEditor);
+    }
+
+
+    // ===============================================================
+    // RoomItem 생성 (로컬)
+    // ===============================================================
+    private void CreateRoomItemFromLocal(T6SpaceSummary summary)
+    {
+        GameObject go = Instantiate(roomItemPrefab, listContent);
+        var item = go.GetComponent<RoomItem>();
+
+        item.SetTexts(summary.name, summary.createdAt);
+        item.environmentId = summary.id;
+        item.s3FileUrl = summary.s3FileUrl;
+
+        item.SetDeleteAction((roomItem) =>
+        {
+            pendingDeleteList.Clear();
+            pendingDeleteList.Add(roomItem);
+            OpenConfirmPopup(DeleteMode.Single);
+        });
+
+        item.SetOpenEditorAction(OnClickOpenEditor);
+    }
+
+
+
+    // ===============================================================
+    // Open Scene
+    // ===============================================================
+    private void OnClickOpenEditor(RoomItem item)
+    {
+        if (string.IsNullOrEmpty(item.s3FileUrl))
+        {
+            Debug.Log("새 공간 → 빈 SpaceDetail 생성");
+
+            T6LoadedSpaceCache.Detail = new T6SpaceDetail();
+            T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+
+            SceneManager.LoadScene("sc_Edit");
+            return;
+        }
+
+        StartCoroutine(LoadAndOpenEditor(item));
+    }
+
+    private IEnumerator LoadAndOpenEditor(RoomItem item)
+    {
+        string url = item.s3FileUrl;
+
+        var req = UnityEngine.Networking.UnityWebRequest.Get(url);
+        yield return req.SendWebRequest();
+
+        if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("JSON Load Failed: " + req.error);
+            yield break;
+        }
+
+        string json = req.downloadHandler.text;
+
+        Debug.Log("=== RAW JSON ===");
+        Debug.Log(json);
+
+        var detail = T6SpaceDetailSerializer.FromJson(json);
+        T6LoadedSpaceCache.Detail = detail;
+        T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+
+        SceneManager.LoadScene("sc_Edit");
     }
 
 
@@ -144,8 +257,8 @@ public class MainListUI : MonoBehaviour
             onSuccess: (env) =>
             {
                 CreateRoomItemFromServer(env);
-
                 popupCreateRoom.SetActive(false);
+
                 RefreshEmptyText();
                 StartCoroutine(RebuildNextFrame());
             },
@@ -174,6 +287,7 @@ public class MainListUI : MonoBehaviour
                 item.SetToggle(false);
             }
         }
+
         StartCoroutine(RebuildNextFrame());
     }
 
@@ -183,7 +297,6 @@ public class MainListUI : MonoBehaviour
         panelListNormal.SetActive(true);
 
         StartCoroutine(SaveEditedNames());
-
         StartCoroutine(RebuildNextFrame());
         RefreshEmptyText();
     }
@@ -204,7 +317,10 @@ public class MainListUI : MonoBehaviour
                 yield return spaceApi.UpdateEnvironment(
                     envId,
                     newName,
-                    onSuccess: () => { },
+                    onSuccess: () =>
+                    {
+                        T6SpaceListRepository.Instance.UpdateName(envId, newName);
+                    },
                     onError: (msg) => { Debug.LogError(msg); });
             }
         }
@@ -224,9 +340,7 @@ public class MainListUI : MonoBehaviour
             var item = t.GetComponent<RoomItem>();
 
             if (item != null && item.IsSelected())
-            {
                 pendingDeleteList.Add(item);
-            }
         }
 
         if (pendingDeleteList.Count == 0)
@@ -280,11 +394,9 @@ public class MainListUI : MonoBehaviour
                 onSuccess: () =>
                 {
                     Destroy(item.gameObject);
+                    T6SpaceListRepository.Instance.Remove(envId);
                 },
-                onError: (msg) =>
-                {
-                    Debug.LogError(msg);
-                });
+                onError: (msg) => { Debug.LogError(msg); });
         }
 
         pendingDeleteList.Clear();

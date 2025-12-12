@@ -8,9 +8,6 @@ public class RoomManager : MonoBehaviour
     // 현재 공간에 존재하는 모든 바닥 조각들
     private List<FloorPiece> floorPieces = new List<FloorPiece>();
 
-    // 인접 판정 허용 오차 (그리드 스냅 기준 조금의 오차 허용)
-    // [SerializeField] private float touchTolerance = 0.001f;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -60,53 +57,6 @@ public class RoomManager : MonoBehaviour
     {
         return floorPieces;
     }
-
-    // ===========================================================
-    // 현재 FloorPiece가 “중간 바닥”인지 판정 (삭제 불가 조건)
-    // ===========================================================
-    // public bool IsMiddlePiece(FloorPiece target)
-    // {
-    //     Bounds t = target.GetBounds();
-
-    //     int connectedCount = 0;
-
-    //     foreach (var other in floorPieces)
-    //     {
-    //         if (other == target) continue;
-
-    //         Bounds o = other.GetBounds();
-
-    //         // LEFT: target.xMin == other.xMax
-    //         bool leftTouch =
-    //             Mathf.Abs(t.min.x - o.max.x) <= touchTolerance &&
-    //             t.max.z > o.min.z + touchTolerance &&
-    //             t.min.z < o.max.z - touchTolerance;
-
-    //         // RIGHT
-    //         bool rightTouch =
-    //             Mathf.Abs(t.max.x - o.min.x) <= touchTolerance &&
-    //             t.max.z > o.min.z + touchTolerance &&
-    //             t.min.z < o.max.z - touchTolerance;
-
-    //         // TOP (Z+)
-    //         bool topTouch =
-    //             Mathf.Abs(t.max.z - o.min.z) <= touchTolerance &&
-    //             t.max.x > o.min.x + touchTolerance &&
-    //             t.min.x < o.max.x - touchTolerance;
-
-    //         // BOTTOM (Z-)
-    //         bool bottomTouch =
-    //             Mathf.Abs(t.min.z - o.max.z) <= touchTolerance &&
-    //             t.max.x > o.min.x + touchTolerance &&
-    //             t.min.x < o.max.x - touchTolerance;
-
-    //         if (leftTouch || rightTouch || topTouch || bottomTouch)
-    //             connectedCount++;
-    //     }
-
-    //     // 2개 이상 붙어있는 경우 → 중간 FloorPiece (삭제 불가)
-    //     return connectedCount >= 2;
-    // }
 
     // ===========================================================
     // FloorPiece 삭제

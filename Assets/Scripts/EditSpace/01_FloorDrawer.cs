@@ -66,7 +66,7 @@ public class FloorDrawer : MonoBehaviour
     // ============================================================
     private void OnClickStarted(InputAction.CallbackContext ctx)
     {
-        Debug.Log("OnPressed");
+        // Debug.Log("OnPressed");
         if (EditorModeManager.Instance.CurrentMode != EditMode.DrawFloor)
             return;
 
@@ -169,6 +169,22 @@ public class FloorDrawer : MonoBehaviour
         if (!canPlace)
         {
             Debug.Log("FloorDrawer: 연결되지 않은 위치이므로 배치 불가.");
+            return;
+        }
+
+        float width = scale.x;   // meters
+        float depth = scale.z;
+
+        // width < 1m & depth < 0.5m  OR  width < 0.5m & depth < 1m
+        bool tooSmall =
+            (width < 1f && depth < 0.5f) ||
+            (width < 0.5f && depth < 1f);
+
+        if (tooSmall)
+        {
+            Debug.Log("FloorDrawer: 최소 크기 미만이어서 바닥 생성 취소됨.");
+            Destroy(previewObj);
+            previewObj = null;
             return;
         }
 

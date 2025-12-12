@@ -22,6 +22,7 @@ public class RoomItem : MonoBehaviour
     public long environmentId;
     public string s3FileUrl;
 
+    private System.Action<RoomItem> onOpenEditor;
     private System.Action<RoomItem> onDelete;
 
     private void Start()
@@ -35,15 +36,18 @@ public class RoomItem : MonoBehaviour
 
     private void OnClickEdit()
     {
-        SpaceSession.currentEnvironmentId = environmentId;
-        SpaceSession.currentS3Url = s3FileUrl;
-        SceneManager.LoadScene("space");
+        onOpenEditor?.Invoke(this);
     }
 
     public void SetTexts(string name, string date)
     {
         txtName.text = name;
         txtDate.text = date;
+    }
+    
+    public void SetOpenEditorAction(System.Action<RoomItem> callback)
+    {
+        onOpenEditor = callback;
     }
 
     public void SetDeleteAction(System.Action<RoomItem> callback)

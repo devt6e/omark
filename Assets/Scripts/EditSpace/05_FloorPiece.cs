@@ -36,11 +36,11 @@ public class FloorPiece : MonoBehaviour
     }
 
     // ================================
-    // JSON 변환
+    // JSON 변환 (T6 Prefix)
     // ================================
-    public FloorPieceData ToData()
+    public T6FloorData ToT6Data()
     {
-        return new FloorPieceData
+        return new T6FloorData
         {
             id = pieceId,
             position = transform.localPosition,
@@ -48,7 +48,7 @@ public class FloorPiece : MonoBehaviour
         };
     }
 
-    public void FromData(FloorPieceData data)
+    public void FromT6Data(T6FloorData data)
     {
         pieceId = data.id;
         transform.localPosition = data.position;

@@ -55,7 +55,7 @@ public class LoginController : MonoBehaviour
 
         if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(pw))
         {
-            if (errorText) errorText.text = "���̵�� ��й�ȣ�� �Է��ϼ���.";
+            if (errorText) errorText.text = "아이디와 비밀번호를 입력해주세요.";
             yield break;
         }
 
@@ -96,7 +96,7 @@ public class LoginController : MonoBehaviour
 
     IEnumerator CoAutoLogin(string email, string refreshToken)
     {
-        if (errorText) errorText.text = "�ڵ� �α��� ���Դϴ�...";
+        if (errorText) errorText.text = "자동 로그인 중입니다...";
         if (loading) loading.SetActive(true);
 
         bool ok = false;
@@ -113,7 +113,7 @@ public class LoginController : MonoBehaviour
         if (!ok)
         {
             if (errorText) errorText.text = string.IsNullOrEmpty(msg)
-                ? "�ڵ� �α��ο� �����߽��ϴ�. �ٽ� �α����� �ּ���."
+                ? "자동 로그인에 실패하였습니다. 다시 로그인해주세요."
                 : msg;
 
             PlayerPrefs.SetInt("AUTO_LOGIN", 0);

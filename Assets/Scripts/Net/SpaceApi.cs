@@ -86,6 +86,7 @@ public class SpaceApi : MonoBehaviour
         ApplyAuth();
 
         var dto = new VirtualEnvironmentRequestDto { name = name };
+
         string json = JsonUtility.ToJson(dto);
 
         bool ok = false;
@@ -188,7 +189,7 @@ public class SpaceApi : MonoBehaviour
     {
         ApplyAuth();
 
-        var dto = new S3PresignedUrlRequestDto { fileName = fileName };
+        var dto = new S3PresignedUrlRequestDto { fileName = fileName, fileType = "SPACE"};
         string json = JsonUtility.ToJson(dto);
 
         bool ok = false;
@@ -214,3 +215,4 @@ public class SpaceApi : MonoBehaviour
             onError?.Invoke(res?.message ?? "Presigned URL 요청 실패");
     }
 }
+

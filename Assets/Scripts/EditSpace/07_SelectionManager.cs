@@ -58,7 +58,7 @@ public class SelectionManager : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(EditorModeManager.Instance.CurrentMode);
+        // Debug.Log(EditorModeManager.Instance.CurrentMode);
         // EditFloor 모드에서만 동작
         if (EditorModeManager.Instance.CurrentMode != EditMode.EditFloor)
             return;
@@ -78,7 +78,7 @@ public class SelectionManager : MonoBehaviour
     
     private void OnPressStarted(InputAction.CallbackContext ctx)
     {
-        Debug.Log("OnPressed");
+        // Debug.Log("OnPressed");
         if (EditorModeManager.Instance.CurrentMode != EditMode.EditFloor)
             return;
 

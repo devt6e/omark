@@ -107,24 +107,10 @@ public class FloorPieceMover : MonoBehaviour
 
         // Apply position
         targetPiece.transform.position = sr.snappedPos;
-
-        // if (sr.snapped)
-        // {
-        //     if (sr.hasCorner)
-        //     {
-        //         snapFX.ShowCorner(sr.edgeStartA, sr.edgeEndA, sr.edgeStartB, sr.edgeEndB);
-        //     }
-        //     else if (sr.hasEdge)
-        //     {
-        //         snapFX.ShowEdge(sr.edgeStartA, sr.edgeEndA);
-        //     }
-        // }
-        // else
-        // {
-        //     snapFX.Hide();
-        // }
-
-        // targetPiece.ShowSizeUI();
+        // FloorDrawer.Instance.UpdateDimensionPreview(
+        //     targetPiece.transform.position,
+        //     targetPiece.transform.localScale.x, 
+        //     targetPiece.transform.localScale.z);
     }
 
     // ============================================================
