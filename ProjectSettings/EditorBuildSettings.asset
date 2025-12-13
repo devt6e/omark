@@ -47,15 +47,18 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/sc_roomitem/sc_Edit.unity
     guid: 22602a19fa320e048a77f1d0148b7a88
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/sc_AR.unity
     guid: 20a1f61cb978dc54eaeafa15f1e3471d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Scene_3DSample.unity
     guid: d54416f6527d6194f95c214e27d27473
   - enabled: 0
     path: Assets/Scenes/sc_VR.unity
     guid: ad1ef6da4b38ff546a4e712a9f3bb00d
+  - enabled: 1
+    path: Assets/Scenes/sc_VR(new).unity
+    guid: 879e33671bb40d54e9c819d569782600
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 180c05ce96bba5e4184436af23a4b0da, type: 2}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 4a7436f1691dca84fbca76788145023a, type: 2}

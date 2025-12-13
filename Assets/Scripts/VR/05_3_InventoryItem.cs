@@ -14,13 +14,6 @@ public class InventoryScroll : MonoBehaviour
         Instance = this;
     }
 
-    // public void OnBeginDrag(PointerEventData eventData)
-    // {
-    //     if (!allowScroll)
-    //         eventData.Use();
-    // }
-
-
     // 스크롤 ON/OFF
     public void SetScroll(bool canScroll)
     {
