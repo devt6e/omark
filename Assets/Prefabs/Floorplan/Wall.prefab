@@ -124,7 +124,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89cf469a8d766b44283752fa60dde2f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraBlockFade
-  targetCamera: {fileID: 0}
   fadeAlpha: 0
   normalAlpha: 1
-  checkDistance: 100
+  maxFadeDistance: 10
+  rayGridSize: 5
+  rayDistance: 50
+  cam: {fileID: 0}

@@ -5,20 +5,20 @@ using System.Collections;
 
 public class MarkerListSlider : MonoBehaviour, IDragHandler, IEndDragHandler
 {
-    // [Inspector ¿¬°á]
-    [Header("½½¶óÀÌµù ÆĞ³Î ¼³Á¤")]
-    public RectTransform panelRect; // ½½¶óÀÌµùÇÒ ¸¶Ä¿ ¸®½ºÆ® ÆĞ³ÎÀÇ RectTransform
-    public float transitionSpeed = 15f; // ÀÌµ¿ ¼Óµµ
-    public float dragThreshold = 0.05f; // µå·¡±×¸¦ ÀÎÁ¤ÇÒ ÃÖ¼Ò ºñÀ² (È­¸é ³ôÀÌÀÇ 5%)
+    // [Inspector ì„¤ì •]
+    [Header("ìŠ¬ë¼ì´ë“œ íŒ¨ë„ ì„¤ì •")]
+    public RectTransform panelRect; // ìŠ¬ë¼ì´ë“œë  ë§ˆì»¤ ë¦¬ìŠ¤íŠ¸ íŒ¨ë„ì˜ RectTransform
+    public float transitionSpeed = 15f; // ì´ë™ ì†ë„
+    public float dragThreshold = 0.05f; // ë“œë˜ê·¸ë¡œ ì¸ì •í•˜ëŠ” ìµœì†Œ ë¹„ìœ¨ (í™”ë©´ ë†’ì´ ëŒ€ë¹„ 5%)
 
-    [Header("Pivot Á¶Á¤ ¼³Á¤")]
-    public float hiddenPivotY = 1.0f;    // ¼û°ÜÁø »óÅÂÀÏ ¶§ÀÇ Pivot Y (¿äÃ»ÇÏ½Å 1.0)
-    public float visiblePivotY = 1.07f;  // º¸ÀÌ´Â »óÅÂÀÏ ¶§ÀÇ Pivot Y (¿äÃ»ÇÏ½Å 1.07)
+    [Header("Pivot ìœ„ì¹˜ ì„¤ì •")]
+    public float hiddenPivotY = 1.0f;    // ìˆ¨ê¹€ ìƒíƒœì¼ ë•Œ Pivot Y (ê¸°ë³¸ê°’ 1.0)
+    public float visiblePivotY = 1.07f;  // í‘œì‹œ ìƒíƒœì¼ ë•Œ Pivot Y (ê¸°ë³¸ê°’ 1.07)
 
-    // ³»ºÎ »óÅÂ º¯¼ö
+    // ë‚´ë¶€ ìƒíƒœ ë³€ìˆ˜
     private Vector2 targetPosition;
-    private float hiddenY;     // ¼û°ÜÁø »óÅÂÀÇ Y ¾ŞÄ¿ À§Ä¡ (anchoredPosition)
-    private float visibleY;    // º¸ÀÌ´Â »óÅÂÀÇ Y ¾ŞÄ¿ À§Ä¡ (anchoredPosition)
+    private float hiddenY;     // ìˆ¨ê¹€ ìƒíƒœì˜ Y ìœ„ì¹˜ (anchoredPosition)
+    private float visibleY;    // í‘œì‹œ ìƒíƒœì˜ Y ìœ„ì¹˜ (anchoredPosition)
 
     void Start()
     {
@@ -27,31 +27,31 @@ public class MarkerListSlider : MonoBehaviour, IDragHandler, IEndDragHandler
             panelRect = GetComponent<RectTransform>();
             if (panelRect == null)
             {
-                Debug.LogError("ÆĞ³Î RectTransform ¿¬°á ÇÊ¼ö!");
+                Debug.LogError("íŒ¨ë„ RectTransformì´ í•„ìš”í•©ë‹ˆë‹¤!");
                 enabled = false;
                 return;
             }
         }
 
-        // 1. »óÅÂ Y À§Ä¡ °è»ê
-        // VisibleY: È­¸é ÇÏ´Ü¿¡ µü ºÙ¾îÀÖÀ» ¶§ (Y ¾ŞÄ¿ = 0f)
+        // 1. Y ìœ„ì¹˜ ê³„ì‚°
+        // visibleY: í™”ë©´ í•˜ë‹¨ì— ë”± ë¶™ì€ ìƒíƒœ (Y = 0)
         visibleY = 0f;
 
-        // HiddenY: ÆĞ³Î ³ôÀÌ¸¸Å­ ¾Æ·¡·Î ³»·Á°¡ ¼û°ÜÁ³À» ¶§ (ÆĞ³ÎÀÇ »ó´ÜÀÌ È­¸é ÇÏ´Ü¿¡ ¸ÂÃçÁü)
+        // hiddenY: íŒ¨ë„ ë†’ì´ë§Œí¼ ì•„ë˜ë¡œ ë‚´ë ¤ê°„ ìƒíƒœ
         hiddenY = -panelRect.rect.height;
 
-        // 2. ÃÊ±â À§Ä¡ ¼³Á¤ (¼û°ÜÁø »óÅÂ)
+        // 2. ì´ˆê¸° ìœ„ì¹˜ ì„¤ì • (ìˆ¨ê¹€ ìƒíƒœ)
         targetPosition = new Vector2(panelRect.anchoredPosition.x, hiddenY);
         panelRect.anchoredPosition = targetPosition;
 
-        // **ÇÙ½É:** ½ÃÀÛ ½Ã Pivot Y¸¦ ¼û°ÜÁø »óÅÂ·Î ¼³Á¤ (1.0)
+        // ë‹¤ì‹œ: ì´ˆê¸° Pivot Yë¥¼ ìˆ¨ê¹€ ìƒíƒœ ê°’ìœ¼ë¡œ ì„¤ì •
         Vector2 currentPivot = panelRect.pivot;
         panelRect.pivot = new Vector2(currentPivot.x, hiddenPivotY);
     }
 
     void Update()
     {
-        // 3. ¸ñÇ¥ À§Ä¡·Î ºÎµå·´°Ô ÀÌµ¿ (anchoredPosition ±â¹İ)
+        // 3. ëª©í‘œ ìœ„ì¹˜ë¡œ ë¶€ë“œëŸ½ê²Œ ì´ë™
         panelRect.anchoredPosition = Vector2.Lerp(
             panelRect.anchoredPosition,
             targetPosition,
@@ -59,61 +59,61 @@ public class MarkerListSlider : MonoBehaviour, IDragHandler, IEndDragHandler
         );
     }
 
-    // µå·¡±× Áß È£Ãâ (IDragHandler)
+    // ë“œë˜ê·¸ ì¤‘ í˜¸ì¶œ (IDragHandler)
     public void OnDrag(PointerEventData eventData)
     {
-        // YÃà µå·¡±×¸¸ Çã¿ëÇÏ¸ç, ÅÍÄ¡ À§Ä¡¸¦ µû¶ó ÀÌµ¿
+        // Yì¶• ë“œë˜ê·¸ì— ë”°ë¼ íŒ¨ë„ ìœ„ì¹˜ ì´ë™
         float newY = panelRect.anchoredPosition.y + eventData.delta.y;
 
-        // ÀÌµ¿ ¹üÀ§ Á¦ÇÑ: ¿ÏÀüÈ÷ ¼û°ÜÁø »óÅÂ(hiddenY)¿Í ¿ÏÀüÈ÷ º¸ÀÌ´Â »óÅÂ(visibleY) »çÀÌ
+        // ì´ë™ ë²”ìœ„ ì œí•œ: ìˆ¨ê¹€(hiddenY) ~ í‘œì‹œ(visibleY)
         newY = Mathf.Clamp(newY, hiddenY, visibleY);
 
         panelRect.anchoredPosition = new Vector2(panelRect.anchoredPosition.x, newY);
 
-        // µå·¡±× Áß¿¡´Â Lerp ÀÌµ¿À» Àá½Ã ¸ØÃä´Ï´Ù.
+        // ë“œë˜ê·¸ ì¤‘ì—ëŠ” ì¦‰ì‹œ ëª©í‘œ ìœ„ì¹˜ë¥¼ í˜„ì¬ ìœ„ì¹˜ë¡œ ì„¤ì •
         targetPosition = panelRect.anchoredPosition;
     }
 
-    // µå·¡±× Á¾·á ½Ã È£Ãâ (IEndDragHandler)
+    // ë“œë˜ê·¸ ì¢…ë£Œ ì‹œ í˜¸ì¶œ (IEndDragHandler)
     public void OnEndDrag(PointerEventData eventData)
     {
         float screenHeight = Screen.height;
-        float dragDistance = eventData.position.y - eventData.pressPosition.y; // ÃÑ µå·¡±×µÈ ÇÈ¼¿ °Å¸®
+        float dragDistance = eventData.position.y - eventData.pressPosition.y; // ì „ì²´ ë“œë˜ê·¸ ì´ë™ ê±°ë¦¬
         float dragRatio = Mathf.Abs(dragDistance) / screenHeight;
 
-        float targetPivotY; // ÃÖÁ¾ ¸ñÇ¥ Pivot Y °ª
+        float targetPivotY; // ìµœì¢… ì ìš©í•  Pivot Y ê°’
 
-        // 1. ÀÓ°è°ª(Threshold)À» ³Ñ¾ú´ÂÁö È®ÀÎ
+        // 1. ì„ê³„ê°’(threshold)ì„ ë„˜ì—ˆëŠ”ì§€ í™•ì¸
         if (dragRatio >= dragThreshold)
         {
-            // 2. ÃÖÁ¾ ¸ñÇ¥ »óÅÂ ¹× Pivot °áÁ¤
-            if (dragDistance > 0) // À§·Î µå·¡±× (º¸ÀÌ°Ô)
+            // 2. ë“œë˜ê·¸ ë°©í–¥ì— ë”°ë¼ ëª©í‘œ ìœ„ì¹˜ ê²°ì •
+            if (dragDistance > 0) // ìœ„ë¡œ ë“œë˜ê·¸ (íŒ¨ë„ ì—´ê¸°)
             {
                 targetPosition = new Vector2(panelRect.anchoredPosition.x, visibleY);
-                targetPivotY = visiblePivotY; // 1.07·Î º¯°æ
+                targetPivotY = visiblePivotY; // 1.07 ì ìš©
             }
-            else // ¾Æ·¡·Î µå·¡±× (¼û±â°Ô)
+            else // ì•„ë˜ë¡œ ë“œë˜ê·¸ (íŒ¨ë„ ë‹«ê¸°)
             {
                 targetPosition = new Vector2(panelRect.anchoredPosition.x, hiddenY);
-                targetPivotY = hiddenPivotY; // 1.0À¸·Î º¯°æ
+                targetPivotY = hiddenPivotY; // 1.0 ì ìš©
             }
         }
-        else // ÀÓ°è°ªÀ» ³ÑÁö ¸øÇß´Ù¸é (¾àÇÑ µå·¡±×)
+        else // ì„ê³„ê°’ì„ ë„˜ì§€ ëª»í•œ ê²½ìš° (ì§§ì€ ë“œë˜ê·¸)
         {
-            // ÇöÀç À§Ä¡¿¡¼­ ´õ °¡±î¿î »óÅÂ·Î º¹±Í
+            // í˜„ì¬ ìœ„ì¹˜ ê¸°ì¤€ìœ¼ë¡œ ê°€ê¹Œìš´ ìƒíƒœë¡œ ìŠ¤ëƒ…
             if (panelRect.anchoredPosition.y > hiddenY + (visibleY - hiddenY) / 2f)
             {
                 targetPosition = new Vector2(panelRect.anchoredPosition.x, visibleY);
-                targetPivotY = visiblePivotY; // 1.07·Î º¯°æ
+                targetPivotY = visiblePivotY; // 1.07 ì ìš©
             }
             else
             {
                 targetPosition = new Vector2(panelRect.anchoredPosition.x, hiddenY);
-                targetPivotY = hiddenPivotY; // 1.0À¸·Î º¯°æ
+                targetPivotY = hiddenPivotY; // 1.0 ì ìš©
             }
         }
 
-        // **ÇÙ½É ¼öÁ¤: Pivot Y °ª º¯°æ**
+        // ë‹¤ì‹œ: Pivot Y ê°’ì„ ìµœì¢… ìƒíƒœì— ë§ê²Œ ë³€ê²½
         Vector2 currentPivot = panelRect.pivot;
         panelRect.pivot = new Vector2(currentPivot.x, targetPivotY);
     }
