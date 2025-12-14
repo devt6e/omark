@@ -35,6 +35,7 @@ public class MarkerMoveController : MonoBehaviour
     [SerializeField] private MarkerSelectionController selectionController;
     [SerializeField] private CameraController3D cameraController;
     [SerializeField] private MarkerSlotSpawner slotSpawner;
+    [SerializeField] private MarkerDeletePanel deletePanel;
 
     // =========================
     // Internal
@@ -62,9 +63,8 @@ public class MarkerMoveController : MonoBehaviour
     private Vector3 lastValidPos;
     private Quaternion lastValidRot;
 
-    // ui
-    private int pointerId;
-    private bool startedOverUI;
+    private bool isOverDeleteZone;
+    
 
     // =========================
     // Unity Lifecycle
@@ -76,6 +76,7 @@ public class MarkerMoveController : MonoBehaviour
         var map = inputActions.FindActionMap(actionMapName, true);
         pointAction = map.FindAction(pointActionName, true);
         contactAction = map.FindAction(contactActionName, true);
+
     }
 
     private void OnEnable()
@@ -109,6 +110,12 @@ public class MarkerMoveController : MonoBehaviour
     // =========================
     public void BeginPlaceNew(MarkerInstance marker)
     {
+        Handheld.Vibrate();
+        Handheld.Vibrate();
+        isOverDeleteZone = false;
+
+        deletePanel.Hide();
+
         currentMarker = marker;
 
         isPlacingNew = true;
@@ -127,6 +134,9 @@ public class MarkerMoveController : MonoBehaviour
         isPointerDown = true;
         startPoint = point;
         canStartMove = false;
+
+        isOverDeleteZone = false;
+        deletePanel.Hide();
 
         if (isPlacingNew)
             return;
@@ -165,9 +175,11 @@ public class MarkerMoveController : MonoBehaviour
                     currentMarker = null;
                     return;
                 }
-
                 isMoving = true;
                 cameraController.IsBlocked = true;
+                
+                // ⭐ 이동 시작 → 삭제 패널 표시
+                deletePanel.Show();
             }
             else
             {
@@ -176,12 +188,28 @@ public class MarkerMoveController : MonoBehaviour
         }
 
         UpdatePreview(point);
+        Debug.Log($"OnMove : {isOverDeleteZone}");
+        // =========================
+        // 삭제 영역 판정 (⭐ 핵심)
+        // =========================
+        bool overDelete = deletePanel.IsPointerOver();
+        Debug.Log($"OnMove.overDelete =  {overDelete}");
+        if (overDelete != isOverDeleteZone)
+        {
+            isOverDeleteZone = overDelete;
 
-        pointerId = Pointer.current is Touchscreen
-            ? Touchscreen.current.primaryTouch.touchId.ReadValue()
-            : -1;
-        startedOverUI = EventSystem.current != null &&
-                        EventSystem.current.IsPointerOverGameObject(pointerId);
+            if (isOverDeleteZone)
+            {
+                Handheld.Vibrate();
+                Handheld.Vibrate();
+                Handheld.Vibrate();
+                currentMarker.SetDeletePreview(true);
+            }
+            else
+            {
+                currentMarker.SetDeletePreview(false);
+            }
+        }
     }
 
     private void OnPointerUp()
@@ -227,6 +255,18 @@ public class MarkerMoveController : MonoBehaviour
     private void EndMove()
     {
         string defId = currentMarker.DefinitionId;
+        Debug.Log(isOverDeleteZone);
+        // =========================
+        // ⭐ 배치된 마커 삭제 루틴
+        // =========================
+        if (isOverDeleteZone)
+        {
+            Debug.Log("Delete!");
+            DeleteCurrentMarker(defId);
+            CleanupAfterMove();
+            return;
+        }
+
 
         if (!hasValidPose)
         {
@@ -263,5 +303,37 @@ public class MarkerMoveController : MonoBehaviour
         canStartMove = false;
         currentMarker = null;
         hasValidPose = false;
+
+        CleanupAfterMove();
     }
+    private void CleanupAfterMove()
+    {
+        isOverDeleteZone = false;
+
+        isMoving = false;
+        isPlacingNew = false;
+        canStartMove = false;
+
+        currentMarker = null;
+        hasValidPose = false;
+
+        deletePanel.Hide();
+        cameraController.IsBlocked = false;
+        InventoryScroll.Instance.SetScroll(true);
+    }
+
+    private void DeleteCurrentMarker(string definitionId)
+    {
+        // 1. 마커 인스턴스 제거
+        currentMarker.ClearPlacement();
+        Destroy(currentMarker.gameObject);
+
+        // 2. 슬롯 잠금 해제 (⭐ 중요)
+        slotSpawner.UnlockDefinition(definitionId);
+
+        // 3. 선택 상태 정리 (선택 중이었을 수 있음)
+        if (selectionController.GetSelected() == currentMarker)
+            currentMarker.Deselect();
+    }
+
 }

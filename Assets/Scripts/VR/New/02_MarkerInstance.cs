@@ -178,4 +178,13 @@ public class MarkerInstance : MonoBehaviour
     {
         MarkerDefinitionRepository.Instance.ClearPlacement(definitionId);
     }
+
+    public void SetDeletePreview(bool active)
+    {
+        if (active)
+            visual.SetPreviewInvalid();   // 빨간색, 투명 등
+        else
+            visual.SetNormal();
+    }
+
 }

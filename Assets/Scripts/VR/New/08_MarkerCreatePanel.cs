@@ -46,7 +46,7 @@ public class MarkerCreatePanel : MonoBehaviour
         for (int i = 0; i < colorButtons.Length; i++)
         {
             colorButtons[i].transform.localScale =
-                (i == index) ? Vector3.one * 1.1f : Vector3.one;
+                (i == index) ? Vector3.one * 1.2f : Vector3.one;
         }
     }   
 

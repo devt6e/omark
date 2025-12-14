@@ -44,6 +44,8 @@ public class MarkerDefinition
     [SerializeField] private string description;
     [SerializeField] private Color color;
     [SerializeField] private int colorIndex;
+    [SerializeField] public bool isFavorite { get; private set; } = false;
+
 
     // =========================
     // Placement (nullable)
@@ -59,6 +61,7 @@ public class MarkerDefinition
     public string Description => description;
     public Color Color => color;
     public int ColorIndex => colorIndex;
+    public bool IsFavorite => isFavorite;
 
     /// <summary>
     /// 현재 배치되어 있는지 여부
@@ -102,5 +105,14 @@ public class MarkerDefinition
     public void ClearPlacement()
     {
         placement = null;
+    }
+    public void UpdateInfo(string displayName, string description)
+    {
+        this.displayName = displayName;
+        this.description = description;
+    }
+    public void SetFavorite(bool value)
+    {
+        this.isFavorite = value;
     }
 }

@@ -165,12 +165,13 @@ public class MarkerSelectionController : MonoBehaviour
         Debug.Log($"[Selection Cont.Select] seleted");
         Deselect();
 
+        Handheld.Vibrate();
         currentSelected = marker;
         currentSelected.Select();
         MarkerRotateAnimator.Instance.SetSingleTarget(marker);
     }
 
-    private void Deselect()
+    public void Deselect()
     {
         if (currentSelected == null)
             return;

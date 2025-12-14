@@ -11,8 +11,16 @@ public class MarkerSlotSpawner : MonoBehaviour
     [SerializeField] private MarkerInstance markerPrefab;
     [SerializeField] private MarkerMoveController moveController;
 
+    [SerializeField] private MarkerInfoPanel infoPanel;
+
     // 1 Definition = 1 MarkerInstance 규칙을 위한 잠금(락)
     private readonly HashSet<string> lockedDefinitions = new HashSet<string>();
+    private Dictionary<string, MarkerDefinitionSlot> slotMap;
+
+    private void Awake()
+    {
+        slotMap = new Dictionary<string, MarkerDefinitionSlot>();
+    }
 
     /// <summary>
     /// 새 Definition이 생겼을 때 슬롯을 자동 생성한다.
@@ -21,7 +29,8 @@ public class MarkerSlotSpawner : MonoBehaviour
     public MarkerDefinitionSlot SpawnSlot(string definitionId)
     {
         var slot = Instantiate(slotPrefab, slotRoot);
-        slot.Initialize(definitionId, this);
+        slot.Initialize(definitionId, this, infoPanel);
+        slotMap[definitionId] = slot;
         return slot;
     }
 
@@ -71,4 +80,40 @@ public class MarkerSlotSpawner : MonoBehaviour
         if (InventoryScroll.Instance != null)
             InventoryScroll.Instance.SetScroll(true);
     }
+
+    public void RefreshSlot(string definitionId)
+    {
+        if (slotMap == null)
+        {
+            Debug.LogError("[SlotSpawner] slotMap is null");
+            return;
+        }
+
+        if (!slotMap.TryGetValue(definitionId, out var slot) || slot == null)
+        {
+            Debug.LogWarning($"[SlotSpawner] RefreshSlot failed. id={definitionId}");
+            return;
+        }
+
+        slot.Refresh();
+    }
+
+    public void RemoveSlot(string definitionId)
+    {
+        if (slotMap == null)
+        {
+            Debug.LogError("[SlotSpawner] slotMap is null");
+            return;
+        }
+
+        if (!slotMap.TryGetValue(definitionId, out var slot) || slot == null)
+        {
+            Debug.LogWarning($"[SlotSpawner] RemoveSlot failed. id={definitionId}");
+            return;
+        }
+
+        slotMap.Remove(definitionId);
+        Destroy(slot.gameObject);
+    }
+
 }

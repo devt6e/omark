@@ -100,6 +100,19 @@ public class MarkerDefinitionRepository : MonoBehaviour
     }
 
     /// <summary>
+    /// 마커 정의의 이름 / 설명 수정
+    /// </summary>
+    public bool UpdateInfo(string definitionId, string displayName, string description)
+    {
+        var def = GetById(definitionId);
+        if (def == null)
+            return false;
+
+        def.UpdateInfo(displayName, description);
+        return true;
+    }
+
+    /// <summary>
     /// 마커 정의 제거
     /// (배치 여부와 무관, 호출 책임은 외부에 있음)
     /// </summary>
@@ -112,6 +125,14 @@ public class MarkerDefinitionRepository : MonoBehaviour
         definitions.Remove(def);
         lookup.Remove(definitionId);
         return true;
+    }
+
+    /// <summary>
+    /// 마커 정의 삭제 (Remove의 의미 명확화용 별칭)
+    /// </summary>
+    public bool Delete(string definitionId)
+    {
+        return Remove(definitionId);
     }
 
     // =========================
@@ -142,6 +163,20 @@ public class MarkerDefinitionRepository : MonoBehaviour
 
         def.ClearPlacement();
     }
+
+    /// <summary>
+    /// 즐겨찾기 상태 설정
+    /// </summary>
+    public bool SetFavorite(string definitionId, bool favorite)
+    {
+        var def = GetById(definitionId);
+        if (def == null)
+            return false;
+
+        def.SetFavorite(favorite);
+        return true;
+    }
+
 
     // =========================
     // Utility

@@ -60,6 +60,8 @@ public class CameraController3D : MonoBehaviour
         Vector3 euler = transform.eulerAngles;
         currentYaw = euler.y;
         currentPitch = NormalizePitch(euler.x);
+
+        IsBlocked = false;
     }
 
     private void OnEnable()

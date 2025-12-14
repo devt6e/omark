@@ -12,8 +12,8 @@ public class InventorySlider : MonoBehaviour, IDragHandler, IEndDragHandler
     public float dragThreshold = 0.05f; // 드래그로 인정하는 최소 비율 (화면 높이 대비 5%)
 
     [Header("Pivot 위치 설정")]
-    public float hiddenPivotY = 1.0f;    // 숨김 상태일 때 Pivot Y (기본값 1.0)
-    public float visiblePivotY = 1.07f;  // 표시 상태일 때 Pivot Y (기본값 1.07)
+    public float hiddenPivotY = 0f;    // 숨김 상태일 때 Pivot Y (기본값 1.0)
+    public float visiblePivotY = 0f;  // 표시 상태일 때 Pivot Y (기본값 1.07)
 
     [Header("refs")]
     [SerializeField] private CameraController3D cameraController;
@@ -40,7 +40,7 @@ public class InventorySlider : MonoBehaviour, IDragHandler, IEndDragHandler
         visibleY = 0f;
 
         // hiddenY: 패널 높이만큼 아래로 내려간 상태
-        hiddenY = -panelRect.rect.height;
+        hiddenY = -panelRect.rect.height * 0.5f;
 
         // 2. 초기 위치 설정 (숨김 상태)
         targetPosition = new Vector2(panelRect.anchoredPosition.x, hiddenY);
