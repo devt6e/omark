@@ -10,9 +10,13 @@ public class MarkerSlotSpawner : MonoBehaviour
     [Header("Placement Refs (Scene Objects)")]
     [SerializeField] private MarkerInstance markerPrefab;
     [SerializeField] private MarkerMoveController moveController;
+    [SerializeField] private MarkerInfoPresenter infoPresenter;
 
     // 1 Definition = 1 MarkerInstance 규칙을 위한 잠금(락)
     private readonly HashSet<string> lockedDefinitions = new HashSet<string>();
+    
+    // definitionId → Slot
+    private readonly Dictionary<string, MarkerDefinitionSlot> slots = new Dictionary<string, MarkerDefinitionSlot>();
 
     /// <summary>
     /// 새 Definition이 생겼을 때 슬롯을 자동 생성한다.
@@ -21,7 +25,10 @@ public class MarkerSlotSpawner : MonoBehaviour
     public MarkerDefinitionSlot SpawnSlot(string definitionId)
     {
         var slot = Instantiate(slotPrefab, slotRoot);
-        slot.Initialize(definitionId, this);
+        slot.Initialize(definitionId, this, infoPresenter);
+
+        slots[definitionId] = slot; // ⭐ 추가
+
         return slot;
     }
 
@@ -56,6 +63,27 @@ public class MarkerSlotSpawner : MonoBehaviour
         // 이동 컨트롤러로 배치 진입
         moveController.BeginPlaceNew(instance);
     }
+    
+    public void RemoveSlot(string definitionId)
+    {
+        if (!slots.TryGetValue(definitionId, out var slot))
+            return;
+
+        slots.Remove(definitionId);
+        Destroy(slot.gameObject);
+    }
+
+
+    /// <summary>
+    /// Definition 수정 후 슬롯 UI 갱신
+    /// </summary>
+    public void RefreshSlot(string definitionId)
+    {
+        if (!slots.TryGetValue(definitionId, out var slot))
+            return;
+
+        slot.Refresh();
+    }
 
     public bool IsDefinitionLocked(string definitionId)
         => lockedDefinitions.Contains(definitionId);
@@ -70,5 +98,21 @@ public class MarkerSlotSpawner : MonoBehaviour
 
         if (InventoryScroll.Instance != null)
             InventoryScroll.Instance.SetScroll(true);
+    }
+
+    public void ApplyFavoriteFilter(bool favoriteOnly)
+    {
+        foreach (var kv in slots)
+        {
+            var def = MarkerDefinitionRepository.Instance
+                .GetById(kv.Key);
+
+            if (def == null)
+                continue;
+
+            kv.Value.gameObject.SetActive(
+                !favoriteOnly || def.IsFavorite
+            );
+        }
     }
 }

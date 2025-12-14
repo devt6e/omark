@@ -10,7 +10,7 @@ public class InputReader : MonoBehaviour
     public bool ContactStarted;       // pressed this frame
     public bool ContactActive;        // being pressed
     public bool ContactEnded;         // released this frame
-    public float Scroll;              // mouse wheel / pinch delta
+    // public float Scroll;              // mouse wheel / pinch delta
 
     private InputSystem_Actions actions;
 
@@ -33,7 +33,7 @@ public class InputReader : MonoBehaviour
         actions.Editor_Pointer.Point.performed += ctx => Point = ctx.ReadValue<Vector2>();
         actions.Editor_Pointer.Contact.started += ctx => OnContactStart();
         actions.Editor_Pointer.Contact.canceled += ctx => OnContactEnd();
-        actions.Editor_Pointer.Scroll.performed += ctx => Scroll = ctx.ReadValue<float>();
+        // actions.Editor_Pointer.Scroll.performed += ctx => Scroll = ctx.ReadValue<float>();
     }
 
     private void Update()
@@ -49,7 +49,7 @@ public class InputReader : MonoBehaviour
         }
 
         // Scroll은 1프레임 후 자동 초기화하면 편함
-        Scroll = 0f;
+        // Scroll = 0f;
 
         ContactStarted = false;
         ContactEnded = false;

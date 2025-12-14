@@ -256,6 +256,10 @@ public class MarkerMoveController : MonoBehaviour
             currentMarker.Deselect();
         }
 
+        // (선택) 인벤토리 스크롤 차단
+        if (InventoryScroll.Instance != null)
+            InventoryScroll.Instance.SetScroll(true);
+
         cameraController.IsBlocked = false;
 
         isMoving = false;
@@ -263,5 +267,6 @@ public class MarkerMoveController : MonoBehaviour
         canStartMove = false;
         currentMarker = null;
         hasValidPose = false;
+        
     }
 }

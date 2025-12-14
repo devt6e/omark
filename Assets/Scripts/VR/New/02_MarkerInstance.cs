@@ -46,8 +46,14 @@ public class MarkerInstance : MonoBehaviour
 
         if (visual == null)
             Debug.LogError("[MarkerInstance] MarkerVisual not found.");
+
+        MarkerInstanceRegistry.Instance.Register(this);
     }
-    
+
+    private void OnDestroy()
+    {
+        MarkerInstanceRegistry.Instance.Unregister(this);
+    }
     
     // =========================
     // Initialization

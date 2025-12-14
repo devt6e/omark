@@ -114,6 +114,31 @@ public class MarkerDefinitionRepository : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// 기존 마커 정의 정보 수정
+    /// </summary>
+    public bool UpdateInfo(
+        string definitionId,
+        string newName,
+        Color newColor,
+        int newColorIndex,
+        string newDescription
+    )
+    {
+        var def = GetById(definitionId);
+        if (def == null)
+            return false;
+
+        def.UpdateInfo(
+            newName,
+            newColor,
+            newColorIndex,
+            newDescription
+        );
+
+        return true;
+    }
+
     // =========================
     // Placement Control
     // =========================
