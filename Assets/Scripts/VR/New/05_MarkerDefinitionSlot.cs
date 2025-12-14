@@ -21,32 +21,17 @@ public class MarkerDefinitionSlot : MonoBehaviour,
 
     // 씬에서 주입될 참조 (프리팹 인스펙터로 연결 불가한 것들)
     private MarkerSlotSpawner spawner;
-    private MarkerInfoPresenter infoPresenter;
 
     private Coroutine longPressCo;
     private bool isPointerDown;
-    private bool longPressTriggered;
-
-
-    // private void Awake()
-    // {
-    //     infoPresenter = FindAnyObjectByType<MarkerInfoPresenter>();
-    // }
 
     /// <summary>
     /// (중요) 슬롯 생성 직후, 씬 쪽에서 반드시 호출해서 참조를 주입한다.
     /// </summary>
-    public void Initialize(string definitionId, MarkerSlotSpawner spawner, MarkerInfoPresenter info)
+    public void Initialize(string definitionId, MarkerSlotSpawner spawner)
     {
         this.definitionId = definitionId;
         this.spawner = spawner;
-        this.infoPresenter = info;
-
-        ApplyInfo();
-    }
-
-    public void Refresh()
-    {
         ApplyInfo();
     }
 
@@ -71,7 +56,6 @@ public class MarkerDefinitionSlot : MonoBehaviour,
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log($"pointerdown : {longPressTriggered}");
         if (spawner == null)
         {
             Debug.LogError("[MarkerDefinitionSlot] spawner is null. Initialize() was not called.");
@@ -82,8 +66,6 @@ public class MarkerDefinitionSlot : MonoBehaviour,
             return;
 
         isPointerDown = true;
-
-        longPressTriggered = false;
         longPressCo = StartCoroutine(LongPressRoutine());
     }
 
@@ -96,23 +78,6 @@ public class MarkerDefinitionSlot : MonoBehaviour,
             StopCoroutine(longPressCo);
             longPressCo = null;
         }
-        Debug.Log($"pointerup : {longPressTriggered}");
-        // ⭐ 롱프레스가 발생하지 않았다면 → 짧은 탭
-        if (!longPressTriggered)
-        {
-            NotifyTap();
-        }
-    }
-
-    private void NotifyTap()
-    {
-        if (infoPresenter == null)
-        {
-            Debug.LogWarning("[MarkerDefinitionSlot] infoPresenter is null.");
-            return;
-        }
-        // infoPresenter.SetActive(true);
-        infoPresenter.Show(definitionId);
     }
 
     private IEnumerator LongPressRoutine()
@@ -127,7 +92,7 @@ public class MarkerDefinitionSlot : MonoBehaviour,
             t += Time.deltaTime;
             yield return null;
         }
-        longPressTriggered = true;
+
         // 배치 시작 요청 (실제 생성/배치는 spawner가 담당)
         spawner.BeginPlacement(definitionId);
     }

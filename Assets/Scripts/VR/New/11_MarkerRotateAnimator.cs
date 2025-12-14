@@ -141,12 +141,4 @@ public class MarkerRotateAnimator : MonoBehaviour
 
         rotateCo = null;
     }
-
-    public void RotateFavorites()
-    {
-        StopRotate(); // ⭐ 추가
-        var favorites =
-            MarkerInstanceRegistry.Instance.GetFavoriteInstances();
-        SetMultipleTargets(favorites);
-    }
 }

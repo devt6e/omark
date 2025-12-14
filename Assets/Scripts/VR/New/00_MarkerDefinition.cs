@@ -52,30 +52,6 @@ public class MarkerDefinition
     [SerializeField] private MarkerPlacement placement;
 
     // =========================
-    // Favorite
-    // =========================
-    [Header("Favorite")]
-    [SerializeField] private bool isFavorite;
-
-    public bool IsFavorite => isFavorite;
-
-    /// <summary>
-    /// 즐겨찾기 토글
-    /// </summary>
-    public void ToggleFavorite()
-    {
-        isFavorite = !isFavorite;
-    }
-
-    /// <summary>
-    /// 명시적 설정 (필요 시)
-    /// </summary>
-    public void SetFavorite(bool value)
-    {
-        isFavorite = value;
-    }
-
-    // =========================
     // Properties (Read Only)
     // =========================
     public string DefinitionId => definitionId;
@@ -105,25 +81,6 @@ public class MarkerDefinition
         this.colorIndex = colorIndex;
         this.description = description;
         this.placement = null;
-    }
-
-    // =========================
-    // Update
-    // =========================
-    public void UpdateInfo(
-        string newName,
-        Color newColor,
-        int newColorIndex,
-        string newDescription
-    )
-    {
-        displayName = string.IsNullOrWhiteSpace(newName)
-            ? displayName
-            : newName;
-
-        color = newColor;
-        colorIndex = newColorIndex;
-        description = newDescription;
     }
 
     // =========================

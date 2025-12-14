@@ -39,9 +39,6 @@ public class CameraController3D : MonoBehaviour
     private float lastTapTime;
     private Vector2 lastTapPos;
 
-    private int pointerId;
-    private bool startedOverUI;
-
     private Coroutine moveRoutine;
 
     // 회전 누적값

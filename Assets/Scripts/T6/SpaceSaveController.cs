@@ -7,26 +7,16 @@ using System.Text;
 
 public class T6SpaceSaveController : MonoBehaviour
 {
-    [Header("UI")]
-    [SerializeField] private GameObject confirmPopup;
-    [SerializeField] private GameObject resultPopup;
-    [SerializeField] private TextMeshProUGUI resultText;
-    [SerializeField] private Button btnSave;
-    [SerializeField] private TMP_Text txtSpaceName;
-
-    [Header("Logic")]
-    [SerializeField] private T6SpaceSaver saver;
-    [SerializeField] private ApiClient apiClient;
-    [SerializeField] private SpaceApi spaceApi;
+    [Header("References")]
+    public Button btnSave;
+    public T6SpaceSaver saver;
+    public ApiClient apiClient;     // 서버 HTTP 전송
+    public SpaceApi spaceApi;       // 서버 비즈니스 API
+    public TMP_Text txtSpaceName;   // 공간 이름 UI
 
     private void Start()
     {
-        btnSave.onClick.AddListener(OnClickSave);
-    }
-
-    private void OnClickSave()
-    {
-        StartCoroutine(SaveFlow());
+        btnSave.onClick.AddListener(() => StartCoroutine(SaveFlow()));
     }
 
     private IEnumerator SaveFlow()
@@ -34,84 +24,86 @@ public class T6SpaceSaveController : MonoBehaviour
         long envId = T6LoadedSpaceCache.EnvironmentId;
         if (envId <= 0)
         {
-            ShowError("Environment ID 없음");
+            Debug.LogError("Environment ID 없음");
             yield break;
         }
+        Debug.Log("[Saver] ENV ID = " + envId);
 
+        // 1) 이름 읽기
         string spaceName = txtSpaceName.text;
+
+        // 2) SpaceDetail → JSON 생성
         string json = saver.BuildJson(spaceName);
 
-        // 1. Presigned URL 요청
+
+        // 3) Presigned URL 요청
         S3PresignedUrlResponseDto presigned = null;
 
         yield return spaceApi.RequestUploadUrl(
             envId,
             "space_detail.json",
-            onSuccess: dto => presigned = dto,
-            onError: msg => ShowError($"Presigned URL 요청 실패\n{msg}")
+            onSuccess: dto =>
+            {
+                presigned = dto;
+                Debug.Log("[Saver] Presigned URL 획득 성공");
+            },
+            onError: msg =>
+            {
+                Debug.LogError("[Saver] Presigned URL 요청 실패: " + msg);
+            }
         );
 
-        if (presigned == null || string.IsNullOrEmpty(presigned.presignedUploadUrl))
+        if (presigned == null)
         {
-            ShowError("Presigned URL 수신 실패");
+            Debug.LogError("[Saver] presigned == null");
             yield break;
         }
 
-        // 2. S3 업로드
-        yield return UploadToS3(
-            presigned.presignedUploadUrl,
-            json,
-            onFail: err => ShowError($"S3 업로드 실패\n{err}")
-        );
+        // 서버 return
+        // presigned.presignedUploadUrl
+        // presigned.finalFileUrl
+        string uploadUrl = presigned.presignedUploadUrl;
+        string finalUrl  = presigned.finalFileUrl;
 
-        // 3. 환경 이름 업데이트
+        if (string.IsNullOrEmpty(uploadUrl))
+        {
+            Debug.LogError("[Saver] uploadUrl 없음");
+            yield break;
+        }
+
+
+        // 4) S3 PUT 업로드
+        UnityWebRequest req = new UnityWebRequest(uploadUrl, "PUT");
+        req.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
+        req.downloadHandler = new DownloadHandlerBuffer();
+        req.SetRequestHeader("Content-Type", "application/json");
+
+        Debug.Log("[Saver] S3 업로드 시작...");
+        yield return req.SendWebRequest();
+
+        if (req.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("[Saver] S3 업로드 실패: " + req.error);
+            yield break;
+        }
+        Debug.Log("[Saver] S3 업로드 성공");
+
+
+        // 5) 서버 환경 이름 업데이트
         yield return spaceApi.UpdateEnvironment(
             envId,
             spaceName,
             onSuccess: () =>
             {
-                Debug.Log("[Saver] 저장 완료");
-                ShowSuccess();
+                Debug.Log("[Saver] 환경 이름 업데이트 성공");
+                Debug.Log("[Saver] 최종 파일 URL: " + finalUrl);
             },
-            onError: msg => ShowError($"환경 이름 업데이트 실패\n{msg}")
+            onError: (msg) =>
+            {
+                Debug.LogError("[Saver] 환경 이름 업데이트 실패: " + msg);
+            }
         );
-    }
 
-    private IEnumerator UploadToS3(string uploadUrl, string json, System.Action<string> onFail)
-    {
-        using UnityWebRequest req = new UnityWebRequest(uploadUrl, "PUT");
-        req.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
-        req.downloadHandler = new DownloadHandlerBuffer();
-        req.SetRequestHeader("Content-Type", "application/json");
-
-        Debug.Log("[Saver] S3 업로드 시작");
-        yield return req.SendWebRequest();
-
-        if (req.result != UnityWebRequest.Result.Success)
-        {
-            Debug.LogError(req.error);
-            onFail?.Invoke(req.error);
-        }
-        else
-        {
-            Debug.Log("[Saver] S3 업로드 성공");
-        }
-    }
-
-    // ---------------- UI ----------------
-
-    private void ShowError(string message)
-    {
-        Debug.LogError("[Saver] " + message);
-        resultText.text = $"저장에 실패했습니다.\n{message}";
-        confirmPopup.SetActive(false);
-        resultPopup.SetActive(true);
-    }
-
-    private void ShowSuccess()
-    {
-        resultText.text = "저장이 완료되었습니다.";
-        confirmPopup.SetActive(false);
-        resultPopup.SetActive(true);
+        Debug.Log("[Saver] 저장 완료!");
     }
 }

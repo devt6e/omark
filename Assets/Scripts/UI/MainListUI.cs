@@ -442,7 +442,7 @@ public class MainListUI : MonoBehaviour
             T6LoadedSpaceCache.Detail.meta.name = item.txtName.text;
             T6LoadedSpaceCache.EnvironmentId = item.environmentId;
 
-            SceneManager.LoadScene("sc_VR(new)");
+            SceneManager.LoadScene("sc_VR");
             yield break;
         }
 
@@ -468,7 +468,7 @@ public class MainListUI : MonoBehaviour
         T6LoadedSpaceCache.EnvironmentId = item.environmentId;
 
         // 6) VR 씬 로드
-        SceneManager.LoadScene("sc_VR(new)");
+        SceneManager.LoadScene("sc_VR");
     }
 
 
