@@ -102,13 +102,13 @@ public class MarkerDefinitionRepository : MonoBehaviour
     /// <summary>
     /// 마커 정의의 이름 / 설명 수정
     /// </summary>
-    public bool UpdateInfo(string definitionId, string displayName, string description)
+    public bool UpdateInfo(string definitionId, string displayName, string description, int colorIndex, Color color)
     {
         var def = GetById(definitionId);
         if (def == null)
             return false;
 
-        def.UpdateInfo(displayName, description);
+        def.UpdateInfo(displayName, description, colorIndex, color);
         return true;
     }
 
@@ -193,5 +193,12 @@ public class MarkerDefinitionRepository : MonoBehaviour
             if (def != null && def.IsPlaced)
                 yield return def;
         }
+    }
+
+    public void GetDefInfo(string id)
+    {
+        MarkerDefinition def = GetById(id);
+        Debug.Log(
+            $"id : {def.DefinitionId} \nname : {def.DisplayName} \ncolor : {def.Color} \n isFavorite : {def.IsFavorite} ");
     }
 }

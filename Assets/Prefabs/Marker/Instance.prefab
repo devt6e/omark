@@ -55,10 +55,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.4367473
-  m_Height: 1.1768656
+  m_Radius: 0.088
+  m_Height: 0.24
   m_Direction: 1
-  m_Center: {x: 0.04629302, y: 0.088432804, z: 0}
+  m_Center: {x: 0.012, y: 0.018, z: 0}
 --- !u!114 &6922997801634007335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,13 +68,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3963396687132602879}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 513ee071ebd7e614783f8e438303508f, type: 3}
+  m_Script: {fileID: 11500000, guid: 36a96f5c2f7f99342b7008c83ba51178, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MarkerVisual
   renderers:
   - {fileID: 5513505973955391396}
   selectedScaleMultiplier: 1.2
-  selectedYOffset: 0.1
+  selectedYOffset: 0.15
   normalAlpha: 1
   selectedAlpha: 0.85
   previewAlpha: 0.35
@@ -87,11 +87,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3963396687132602879}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0169e63fa9b01f140b86cb898122ce2d, type: 3}
+  m_Script: {fileID: 11500000, guid: f2e73dc9ac158a84c8e455c9e1ab4ea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MarkerInstance
   definitionId: 
-  visual: {fileID: 6922997801634007335}
+  visual: {fileID: 0}
 --- !u!1 &4735385897720273378
 GameObject:
   m_ObjectHideFlags: 0
@@ -199,12 +199,12 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.4367473
-  m_Height: 1.1768656
+  m_Radius: 0.44
+  m_Height: 1.2
   m_Direction: 1
-  m_Center: {x: 0.04629302, y: 0.088432804, z: 0}
+  m_Center: {x: 0.06, y: 0.09, z: 0}
 --- !u!1 &7534152860569118545
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +222,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2615804316446850355
 RectTransform:
   m_ObjectHideFlags: 0

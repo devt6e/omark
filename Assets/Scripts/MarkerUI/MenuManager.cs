@@ -9,16 +9,16 @@ public class MenuManager : MonoBehaviour
 
     [Header("Move and Marker Panel Settings")]
     [SerializeField]
-    private GameObject movePanel; // HierarchyÀÇ move_panelÀ» ¿¬°áÇÒ ÇÊµå
+    private GameObject movePanel; // Hierarchyï¿½ï¿½ move_panelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½
 
     [SerializeField]
-    private GameObject researchPanel; // °Ë»ö¾î ÀÔ·Â ÆÐ³ÎÀ» ¿¬°áÇÒ ÇÊµå
+    private GameObject researchPanel; // ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½
 
     [SerializeField]
-    private TMP_InputField researchInputField; // °Ë»ö¾î ÀÔ·ÂÃ¢ (TMP_InputField)
+    private TMP_InputField researchInputField; // ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½Ã¢ (TMP_InputField)
 
     [SerializeField]
-    private GameObject makrerPanel; // HierarchyÀÇ Makrer ÆÐ³ÎÀ» ¿¬°áÇÒ ÇÊµå
+    private GameObject makrerPanel; // Hierarchyï¿½ï¿½ Makrer ï¿½Ð³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½
 
     [SerializeField]
     private GameObject ImagePanel;
@@ -26,7 +26,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField]
     private GameObject StatisticsPanel;
 
-    // Menu ¹öÆ°¿¡ ¿¬°áÇÒ ÇÔ¼ö: ÆÐ³ÎÀ» È°¼ºÈ­(º¸ÀÌ°Ô) ÇÕ´Ï´Ù.
+    // Menu ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½: ï¿½Ð³ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­(ï¿½ï¿½ï¿½Ì°ï¿½) ï¿½Õ´Ï´ï¿½.
     public void OpenPanel()
     {
         if (hiddenPanel != null)
@@ -36,7 +36,7 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    // move_back ¹öÆ°¿¡ ¿¬°áÇÒ ÇÔ¼ö: ÆÐ³ÎÀ» ºñÈ°¼ºÈ­(¼û±â°Ô) ÇÕ´Ï´Ù.
+    // move_back ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½: ï¿½Ð³ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­(ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½Õ´Ï´ï¿½.
     public void ClosePanel()
     {
         if (hiddenPanel != null)
@@ -48,26 +48,26 @@ public class MenuManager : MonoBehaviour
 
     public void ToggleMovePanel()
     {
-        // ¿¬°áµÈ ¿ÀºêÁ§Æ®°¡ ÀÖ´ÂÁö ´Ù½Ã ÇÑ¹ø È®ÀÎ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½Ñ¹ï¿½ È®ï¿½ï¿½
         if (movePanel == null || makrerPanel == null)
         {
-            Debug.LogError("MovePanel ¶Ç´Â MakrerPanelÀÌ Inspector¿¡ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+            Debug.LogError("MovePanel ï¿½Ç´ï¿½ MakrerPanelï¿½ï¿½ Inspectorï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½.");
             return;
         }
 
-        // 1. movePanelÀÇ ÇöÀç È°¼ºÈ­ »óÅÂ¸¦ ¹ÝÀü½ÃÄÑ »õ·Î¿î »óÅÂ¸¦ °áÁ¤ÇÕ´Ï´Ù.
-        //    (¿¹: ´ÝÇô ÀÖÀ¸¸é true(¿­±â), ¿­·Á ÀÖÀ¸¸é false(´Ý±â))
+        // 1. movePanelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
+        //    (ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ true(ï¿½ï¿½ï¿½ï¿½), ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ false(ï¿½Ý±ï¿½))
         bool isMovePanelOpening = !movePanel.activeSelf;
 
-        // 2. movePanelÀÇ »óÅÂ¸¦ Åä±ÛÇÕ´Ï´Ù.
+        // 2. movePanelï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         movePanel.SetActive(isMovePanelOpening);
 
-        // 3. makrerPanelÀÇ »óÅÂ¸¦ movePanelÀÇ »õ·Î¿î »óÅÂ¿Í Á¤¹Ý´ë·Î ¼³Á¤ÇÕ´Ï´Ù.
-        //    (Áï, movePanelÀÌ ¿­¸®¸é MakrerPanelÀº ´ÝÈ÷°í, movePanelÀÌ ´ÝÈ÷¸é MakrerPanelÀº ¿­¸³´Ï´Ù.)
+        // 3. makrerPanelï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ movePanelï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
+        //    (ï¿½ï¿½, movePanelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MakrerPanelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, movePanelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MakrerPanelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.)
         makrerPanel.SetActive(!isMovePanelOpening);
     }
 
-    // µ¸º¸±â ¹öÆ°¿¡ ¿¬°áÇÒ ÇÔ¼ö
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     public void OpenResearchPanel()
     {
         if (researchPanel != null)
@@ -76,7 +76,7 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    // Ãë¼Ò ¹öÆ°¿¡ ¿¬°áÇÒ ÇÔ¼ö (ÆÐ³Î ºñÈ°¼ºÈ­)
+    // ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ (ï¿½Ð³ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­)
     public void CloseResearchPanel()
     {
         if (researchPanel != null)
@@ -86,7 +86,7 @@ public class MenuManager : MonoBehaviour
 
         if (researchInputField != null)
         {
-            // Input FieldÀÇ ÅØ½ºÆ®¸¦ ºó ¹®ÀÚ¿­·Î ¼³Á¤ÇÕ´Ï´Ù.
+            // Input Fieldï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
             researchInputField.text = string.Empty;
         }
     }

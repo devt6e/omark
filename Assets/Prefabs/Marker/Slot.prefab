@@ -572,10 +572,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5826342058801278636}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87a8f79a8fc35c84b8a69fe958802513, type: 3}
+  m_Script: {fileID: 11500000, guid: 03f6f1e9fb905b6488249be956555f31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MarkerDefinitionSlot
-  nameText: {fileID: 6026181558427600061}
+  txt_name: {fileID: 6026181558427600061}
   colorImages:
   - {fileID: 5363872782215532408}
   - {fileID: 1415412935789593295}
