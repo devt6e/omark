@@ -2643,7 +2643,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &251338075
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8315,6 +8315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f61bc7f3a28d7f342b7691e3762a9e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomManager
+  floorPieces: []
 --- !u!1 &704197440
 GameObject:
   m_ObjectHideFlags: 0
@@ -11600,6 +11601,7 @@ MonoBehaviour:
   furnitureRoot: {fileID: 59657470}
   floorPrefab: {fileID: 6720783277730502145, guid: d025b647c6856ef498260f5dae8e14aa, type: 3}
   furniturePrefab: {fileID: 1211967687509084329, guid: 520ddbd7f4f34e447b9c1bf945846892, type: 3}
+  roomManager: {fileID: 0}
 --- !u!4 &1083759365
 Transform:
   m_ObjectHideFlags: 0

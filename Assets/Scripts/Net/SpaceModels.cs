@@ -17,16 +17,6 @@ public class VirtualEnvironmentRequestDto
     public string name;
 }
 
-// // 3. [응답] 공간 정보 (구버전)
-// [Serializable]
-// public class VirtualEnvironmentResponseDto
-// {
-//     public long id;
-//     public string name;
-//     public string s3FileUrl;
-//     public long userId;
-// }
-
 // 3. [응답] 공간 정보 (신버전, ★ 중요: 파일 리스트 포함됨)
 [Serializable]
 public class VirtualEnvironmentResponseDto

@@ -20,6 +20,7 @@ public class SpaceSaveCollector : MonoBehaviour
         CollectMeta(dto);
         CollectFloors(dto);
         CollectFurnitures(dto);
+        CollectMarkers(dto);
 
         return dto;
     }
@@ -70,7 +71,7 @@ public class SpaceSaveCollector : MonoBehaviour
         foreach (var piece in floors)
         {
             if (piece == null) continue;
-
+            // roomManager.RegisterPiece(piece);
             dto.floors.Add(piece.ToT6Data());
         }
     }
@@ -100,4 +101,41 @@ public class SpaceSaveCollector : MonoBehaviour
             });
         }
     }
+
+    private void CollectMarkers(SpaceSaveFileDto file)
+    {
+        var repo = MarkerDefinitionRepository.Instance;
+        if (repo == null)
+            return;
+
+        var all = repo.GetAll();
+        if (all == null)
+            return;
+
+        foreach (var def in all)
+        {
+            if (def == null)
+                continue;
+
+            var dto = new SpaceMarkerDto
+            {
+                id = def.DefinitionId,
+                name = def.DisplayName,
+                description = def.Description,
+                colorIndex = def.ColorIndex,
+                color = def.Color,
+                isFavorite = def.IsFavorite,
+                placement = def.IsPlaced
+                    ? new SpaceMarkerPlacementDto
+                    {
+                        position = def.Placement.position,
+                        rotation = def.Placement.rotation
+                    }
+                    : null
+            };
+
+            file.markers.Add(dto);
+        }
+    }
+
 }

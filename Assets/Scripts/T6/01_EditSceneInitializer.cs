@@ -118,9 +118,10 @@ public class EditSceneInitializer : MonoBehaviour
         // 6. 공간 생성
         // =========================
         spaceBuilder.Build(spaceData);
-
+        // SPACE.json 로드 + SpaceBuilder 완료 후
         Debug.Log("[EditInit] 공간 초기화 완료");
     }
+
 
     // ---------------------------
     // S3 JSON 다운로드 유틸

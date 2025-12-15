@@ -159,6 +159,7 @@ public class MainListUI : MonoBehaviour
 
         // ✅ 반드시 필요
         item.SetOpenEditorAction(OnClickOpenEditor);
+        item.SetOpenVRAction(OnClickOpenVR);
     }
 
 
@@ -183,6 +184,7 @@ public class MainListUI : MonoBehaviour
 
         // ✅ 반드시 필요
         item.SetOpenEditorAction(OnClickOpenEditor);
+        item.SetOpenVRAction(OnClickOpenVR);
     }
 
     // ===============================================================
@@ -397,6 +399,28 @@ public class MainListUI : MonoBehaviour
         // 2️⃣ 편집 씬 로드
         SceneManager.LoadScene("sc_Edit");
     }
+
+
+    // ===============================================================
+    // Open VR Scene
+    // ===============================================================
+    private void OnClickOpenVR(RoomItem item)
+    {
+        Debug.Log("[MainListUI] Open VR: " + item.environmentId);
+
+        // 1️⃣ 캐시 세팅 (메타만)
+        LoadedSpaceCache.EnvironmentId = item.environmentId;
+        LoadedSpaceCache.Summary = new T6SpaceSummary(
+            item.environmentId,
+            item.txtName.text,
+            item.s3FileUrl,
+            System.DateTime.Now.ToString("yyyy-MM-dd HH:mm")
+        );
+
+        // 2️⃣ VR 씬 로드
+        SceneManager.LoadScene("sc_VR(new)");
+    }
+
 
     // private IEnumerator LoadAndOpenEditor(RoomItem item)
     // {

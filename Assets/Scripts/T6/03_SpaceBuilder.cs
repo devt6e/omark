@@ -17,6 +17,9 @@ public class SpaceBuilder : MonoBehaviour
     [SerializeField] private GameObject floorPrefab;
     [SerializeField] private GameObject furniturePrefab;
 
+    // [Header("Refs")]
+    // [SerializeField] private RoomManager roomManager;
+
     // 생성된 오브젝트 추적 (Clear용)
     private readonly List<GameObject> spawnedObjects = new();
 
@@ -83,11 +86,10 @@ public class SpaceBuilder : MonoBehaviour
                 Destroy(go);
                 continue;
             }
-
             // DTO → FloorPiece 주입
             piece.FromT6Data(data);
-
             spawnedObjects.Add(go);
+            RoomManager.Instance.RegisterPiece(piece);
         }
     }
 

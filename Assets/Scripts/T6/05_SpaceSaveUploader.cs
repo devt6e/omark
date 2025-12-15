@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
 using System.Text;
+using System.IO;
 
 /// <summary>
 /// SPACE.json 저장을 담당하는 업로더.
@@ -23,6 +24,7 @@ public class SpaceSaveUploader : MonoBehaviour
     public void Save()
     {
         StartCoroutine(SaveRoutine());
+
         
     }
 
@@ -93,6 +95,7 @@ public class SpaceSaveUploader : MonoBehaviour
         }
 
         Debug.Log("[Save] SPACE.json 업로드 완료");
+        SaveToPersistentPath(dto);
 
         // // =========================
         // // 5. 캐시 메타 갱신 (선택)
@@ -102,5 +105,22 @@ public class SpaceSaveUploader : MonoBehaviour
         //     // 서버 응답 구조에 따라 URL이 자동 갱신될 수도 있음
         //     Debug.Log("[Save] 저장 완료");
         // }
+    }
+    private void SaveToPersistentPath(SpaceSaveFileDto spaceData)
+    {
+        if (spaceData == null)
+            return;
+
+        long envId = LoadedSpaceCache.EnvironmentId;
+
+        string path = Path.Combine(
+            Application.persistentDataPath,
+            $"space_{envId}.json"
+        );
+
+        string json = JsonUtility.ToJson(spaceData, true);
+        File.WriteAllText(path, json);
+
+        Debug.Log("[Save] SPACE.json saved locally: " + path);
     }
 }

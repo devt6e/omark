@@ -1,36 +1,23 @@
 using UnityEngine;
 
-/// <summary>
-/// 씬 시작 시 Repository에 저장된 placement 정보를 기반으로
-/// MarkerInstance를 복원하는 로더.
-/// 
-/// - Definition 중심
-/// - Instance는 언제든 재생성 가능
-/// - 판단 로직 없음
-/// </summary>
 public class MarkerInstanceLoader : MonoBehaviour
 {
-    // =========================
-    // Prefab / Refs
-    // =========================
     [Header("Prefab")]
     [SerializeField] private MarkerInstance markerPrefab;
 
     [Header("Optional Parent")]
     [SerializeField] private Transform markerRoot;
 
-    // =========================
-    // Unity Lifecycle
-    // =========================
+    [Header("Options")]
+    [SerializeField] private bool loadOnStart = false;
+
     private void Start()
     {
-        LoadPlacedMarkers();
+        if (loadOnStart)
+            LoadPlacedMarkers();
     }
 
-    // =========================
-    // Load Logic
-    // =========================
-    private void LoadPlacedMarkers()
+    public void LoadPlacedMarkers()
     {
         var repo = MarkerDefinitionRepository.Instance;
         if (repo == null)
@@ -52,8 +39,7 @@ public class MarkerInstanceLoader : MonoBehaviour
             : Instantiate(markerPrefab);
 
         instance.Initialize(def.DefinitionId);
-
-        // 확정된 placement 반영
         instance.ApplyPlacement(def.Placement);
+        MarkerInstanceRegistry.Instance.Register(instance);
     }
 }

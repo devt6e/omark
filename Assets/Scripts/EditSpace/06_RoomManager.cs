@@ -6,7 +6,8 @@ public class RoomManager : MonoBehaviour
     public static RoomManager Instance;
 
     // 현재 공간에 존재하는 모든 바닥 조각들
-    private List<FloorPiece> floorPieces = new List<FloorPiece>();
+    [Header("Pieces(Runtime)")]
+    [SerializeField] private List<FloorPiece> floorPieces = new List<FloorPiece>();
 
     private void Awake()
     {

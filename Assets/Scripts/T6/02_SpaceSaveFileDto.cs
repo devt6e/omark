@@ -30,6 +30,8 @@ public class SpaceSaveFileDto
     /// </summary>
     public List<T6FurnitureData> furnitures = new List<T6FurnitureData>();
 
+    public List<SpaceMarkerDto> markers = new List<SpaceMarkerDto>();
+
     // ❌ markers는 포함하지 않음 (MARKER.json으로 분리)
 }
 
@@ -76,6 +78,29 @@ public class T6FurnitureData
     /// 가구 크기 (localScale 의미)
     /// </summary>
     public Vector3 size;
+}
+
+[Serializable]
+public class SpaceMarkerDto
+{
+    public string id;
+    public string name;
+    public string description;
+
+    public int colorIndex;
+    public Color color;
+
+    public bool isFavorite;
+
+    // null 가능
+    public SpaceMarkerPlacementDto placement;
+}
+
+[Serializable]
+public class SpaceMarkerPlacementDto
+{
+    public Vector3 position;
+    public Quaternion rotation;
 }
 
 /// <summary>

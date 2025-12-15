@@ -12,14 +12,12 @@ public class MarkerSlotSpawner : MonoBehaviour
     [SerializeField] private MarkerMoveController moveController;
 
     [SerializeField] private MarkerInfoPanel infoPanel;
-
     [SerializeField] private MarkerFilterController filterController;
 
     [Header("Slot Map(Runtime)")]
     [SerializeField] private Dictionary<string, MarkerDefinitionSlot> slotMap;
 
-    // 1 Definition = 1 MarkerInstance 규칙을 위한 잠금(락)
-    private readonly HashSet<string> lockedDefinitions = new HashSet<string>();  
+    private readonly HashSet<string> lockedDefinitions = new HashSet<string>();
 
     public static MarkerSlotSpawner Current { get; private set; }
 
@@ -34,9 +32,49 @@ public class MarkerSlotSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// 새 Definition이 생겼을 때 슬롯을 자동 생성한다.
-    /// 여기서 슬롯에 (defId, spawner) 참조를 "주입"한다.
+    /// ✅ 로드 후: Repository 기준으로 슬롯을 통째로 재생성한다.
+    /// - 배치된 정의는 잠금 처리(1 Definition = 1 Instance 규칙)
     /// </summary>
+    public void BuildAllFromRepository()
+    {
+        ClearSlots();
+        lockedDefinitions.Clear();
+
+        var repo = MarkerDefinitionRepository.Instance;
+        if (repo == null) return;
+
+        var all = repo.GetAll();
+        if (all == null) return;
+
+        for (int i = 0; i < all.Count; i++)
+        {
+            var def = all[i];
+            if (def == null || string.IsNullOrEmpty(def.DefinitionId))
+                continue;
+
+            SpawnSlot(def.DefinitionId);
+
+            // 배치된 마커는 이미 인스턴스가 복원될 것이므로 슬롯 잠금
+            if (def.IsPlaced)
+                lockedDefinitions.Add(def.DefinitionId);
+        }
+
+        // 로드 직후 필터 반영
+        ApplyFilter();
+    }
+
+    private void ClearSlots()
+    {
+        if (slotRoot != null)
+        {
+            for (int i = slotRoot.childCount - 1; i >= 0; i--)
+            {
+                Destroy(slotRoot.GetChild(i).gameObject);
+            }
+        }
+        slotMap.Clear();
+    }
+
     public MarkerDefinitionSlot SpawnSlot(string definitionId)
     {
         var slot = Instantiate(slotPrefab, slotRoot);
@@ -45,16 +83,11 @@ public class MarkerSlotSpawner : MonoBehaviour
         return slot;
     }
 
-    /// <summary>
-    /// 슬롯이 “배치 시작”을 요청하면 호출된다.
-    /// 실제 MarkerInstance 생성 및 BeginPlaceNew 호출은 여기서 한다.
-    /// </summary>
     public void BeginPlacement(string definitionId)
     {
         if (IsDefinitionLocked(definitionId))
             return;
 
-        // Definition 존재 확인 (안전)
         var repo = MarkerDefinitionRepository.Instance;
         if (repo == null || repo.GetById(definitionId) == null)
         {
@@ -62,28 +95,21 @@ public class MarkerSlotSpawner : MonoBehaviour
             return;
         }
 
-        // 1 Definition = 1 Instance 잠금
         lockedDefinitions.Add(definitionId);
 
-        // 마커 인스턴스 생성 + 초기화 + 배치 시작
         var instance = Instantiate(markerPrefab);
         instance.Initialize(definitionId);
         MarkerInstanceRegistry.Instance.Register(instance);
-        // (선택) 인벤토리 스크롤 차단
+
         if (InventoryScroll.Instance != null)
             InventoryScroll.Instance.SetScroll(false);
 
-        // 이동 컨트롤러로 배치 진입
         moveController.BeginPlaceNew(instance);
     }
 
     public bool IsDefinitionLocked(string definitionId)
         => lockedDefinitions.Contains(definitionId);
 
-    /// <summary>
-    /// 배치 실패/취소/삭제 등으로 다시 발사 가능하게 만들 때 호출
-    /// (MoveController 쪽에서 상황에 맞게 호출해줘야 함)
-    /// </summary>
     public void UnlockDefinition(string definitionId)
     {
         lockedDefinitions.Remove(definitionId);
@@ -129,7 +155,6 @@ public class MarkerSlotSpawner : MonoBehaviour
 
     private void ApplyFilter()
     {
-        // Debug.Log("Call ApplyFilter");
         var registry = MarkerInstanceRegistry.Instance;
         var repo = MarkerDefinitionRepository.Instance;
 
@@ -138,19 +163,14 @@ public class MarkerSlotSpawner : MonoBehaviour
             return;
 
         bool favoriteOnly = filterController != null && filterController.FavoriteOnly;
-        string keyword = filterController != null
-            ? filterController.SearchKeyword
-            : string.Empty;
-
+        string keyword = filterController != null ? filterController.SearchKeyword : string.Empty;
         keyword = keyword?.ToLowerInvariant();
 
         foreach (var pair in slotMap)
         {
             string defId = pair.Key;
             MarkerDefinitionSlot slot = pair.Value;
-
-            if (slot == null)
-                continue;
+            if (slot == null) continue;
 
             var def = repo.GetById(defId);
             if (def == null)
@@ -161,11 +181,9 @@ public class MarkerSlotSpawner : MonoBehaviour
 
             bool visible = true;
 
-            // 즐겨찾기 필터
             if (favoriteOnly && !def.IsFavorite)
                 visible = false;
 
-            // 검색 필터
             if (visible && !string.IsNullOrEmpty(keyword))
             {
                 string name = def.DisplayName?.ToLowerInvariant() ?? string.Empty;
@@ -175,28 +193,23 @@ public class MarkerSlotSpawner : MonoBehaviour
 
             slot.gameObject.SetActive(visible);
 
-            if (visible && (favoriteOnly ||!string.IsNullOrEmpty(keyword)))
+            if (visible && (favoriteOnly || !string.IsNullOrEmpty(keyword)))
             {
-                // 배치된 정의만 회전 대상으로
                 if (def.IsPlaced && registry != null)
                 {
                     var instance = registry.Get(def.DefinitionId);
                     if (instance != null)
-                    {
                         rotateTargets.Add(instance);
-                    }
                 }
             }
         }
+
         if (MarkerRotateAnimator.Instance != null)
         {
-            Debug.Log(rotateTargets.Count);
             if (rotateTargets.Count > 0)
                 MarkerRotateAnimator.Instance.SetMultipleTargets(rotateTargets);
             else
                 MarkerRotateAnimator.Instance.StopRotate();
         }
     }
-
-
 }
