@@ -20,7 +20,7 @@ public class AuthService : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            onError?.Invoke("º¸¾È Áú¹® ¸ñ·ÏÀ» ºÒ·¯¿ÀÁö ¸øÇß½À´Ï´Ù.");
+            onError?.Invoke("ë³´ì•ˆ ì§ˆë¬¸ ëª©ë¡ì„ ë¶ˆëŸ¬ì˜¤ëŠ” ë° ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
             yield break;
         }
 
@@ -42,7 +42,7 @@ public class AuthService : MonoBehaviour
         {
             string msg = res != null && !string.IsNullOrEmpty(res.message)
                 ? res.message
-                : "º¸¾È Áú¹® ¸ñ·ÏÀÌ ºñ¾î ÀÖ½À´Ï´Ù.";
+                : "ë³´ì•ˆ ì§ˆë¬¸ ëª©ë¡ì´ ë¹„ì–´ ìˆìŠµë‹ˆë‹¤.";
             onError?.Invoke(msg);
         }
     }
@@ -62,7 +62,7 @@ public class AuthService : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            onError?.Invoke("È¸¿ø°¡ÀÔ ¿äÃ»¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
+            onError?.Invoke("íšŒì›ê°€ì… ìš”ì²­ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
             yield break;
         }
 
@@ -84,7 +84,7 @@ public class AuthService : MonoBehaviour
         {
             string msg = res != null && !string.IsNullOrEmpty(res.message)
                 ? res.message
-                : "È¸¿ø°¡ÀÔ¿¡ ½ÇÆĞÇß½À´Ï´Ù.";
+                : "íšŒì›ê°€ì…ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.";
             onError?.Invoke(msg);
         }
     }
@@ -110,7 +110,7 @@ public class AuthService : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            done(false, "·Î±×ÀÎ ¿äÃ»¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
+            done(false, "ë¡œê·¸ì¸ ìš”ì²­ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
             yield break;
         }
 
@@ -141,7 +141,7 @@ public class AuthService : MonoBehaviour
         {
             string msg = res != null && !string.IsNullOrEmpty(res.message)
                 ? res.message
-                : "·Î±×ÀÎ¿¡ ½ÇÆĞÇß½À´Ï´Ù.";
+                : "ë¡œê·¸ì¸ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.";
             done(false, msg);
         }
     }
@@ -185,7 +185,7 @@ public class AuthService : MonoBehaviour
         {
             string msg = res != null && !string.IsNullOrEmpty(res.message)
                 ? res.message
-                : "ÀÌ¹Ì »ç¿ë ÁßÀÎ ¾ÆÀÌµğÀÔ´Ï´Ù.";
+                : "ì´ë¯¸ ì‚¬ìš© ì¤‘ì¸ ì´ë©”ì¼ì…ë‹ˆë‹¤.";
             done(false, msg);
         }
     }
@@ -211,7 +211,7 @@ public class AuthService : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            done(false, "ÅäÅ« °»½Å ¿äÃ»¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
+            done(false, "í† í° ê°±ì‹  ìš”ì²­ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
             yield break;
         }
 
@@ -239,7 +239,7 @@ public class AuthService : MonoBehaviour
         {
             string msg = res != null && !string.IsNullOrEmpty(res.message)
                 ? res.message
-                : "ÅäÅ« °»½Å¿¡ ½ÇÆĞÇß½À´Ï´Ù.";
+                : "í† í° ê°±ì‹ ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.";
             done(false, msg);
         }
     }
@@ -264,7 +264,7 @@ public class AuthService : MonoBehaviour
 
         if (!ok || string.IsNullOrEmpty(body))
         {
-            done(false, "¼­¹ö ·Î±×¾Æ¿ô ¿äÃ»¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
+            done(false, "ì„œë²„ ë¡œê·¸ì•„ì›ƒ ìš”ì²­ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
             yield break;
         }
 
@@ -286,7 +286,7 @@ public class AuthService : MonoBehaviour
         {
             string msg = res != null && !string.IsNullOrEmpty(res.message)
                 ? res.message
-                : "·Î±×¾Æ¿ô Ã³¸® Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.";
+                : "ë¡œê·¸ì•„ì›ƒ ì²˜ë¦¬ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.";
             done(false, msg);
         }
     }

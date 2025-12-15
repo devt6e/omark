@@ -142,8 +142,7 @@ public class MainListUI : MonoBehaviour
 
         string nowDate = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 
-        // SPACE 파일 찾기
-        EnvironmentFileDto spaceFile = null;
+        EnvironmentFileDto spaceFile = null;    
         if (env.files != null)
             spaceFile = env.files.Find(f => f.fileType == "SPACE");
 
@@ -158,8 +157,8 @@ public class MainListUI : MonoBehaviour
             OpenConfirmPopup(DeleteMode.Single);
         });
 
+        // ✅ 반드시 필요
         item.SetOpenEditorAction(OnClickOpenEditor);
-        item.SetOpenVRAction(OnClickOpenVR);
     }
 
 
@@ -182,8 +181,8 @@ public class MainListUI : MonoBehaviour
             OpenConfirmPopup(DeleteMode.Single);
         });
 
+        // ✅ 반드시 필요
         item.SetOpenEditorAction(OnClickOpenEditor);
-        item.SetOpenVRAction(OnClickOpenVR);
     }
 
     // ===============================================================
@@ -376,100 +375,103 @@ public class MainListUI : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(listContent as RectTransform);
         Canvas.ForceUpdateCanvases();
     }
+
+
+
     // ===============================================================
     // Open Edit Scene
     // ===============================================================
     private void OnClickOpenEditor(RoomItem item)
     {
-        if (string.IsNullOrEmpty(item.s3FileUrl))
-        {
-            Debug.Log("새 공간 → 빈 SpaceDetail 생성");
+        Debug.Log("[MainListUI] Open Editor: " + item.environmentId);
 
-            T6LoadedSpaceCache.Detail = new T6SpaceDetail();
-            T6LoadedSpaceCache.Detail.meta.name = item.txtName.text;
-            T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+        // 1️⃣ 캐시 세팅 (메타만)
+        LoadedSpaceCache.EnvironmentId = item.environmentId;
+        LoadedSpaceCache.Summary = new T6SpaceSummary(
+            item.environmentId,
+            item.txtName.text,
+            item.s3FileUrl,
+            System.DateTime.Now.ToString("yyyy-MM-dd HH:mm")
+        );
 
-            SceneManager.LoadScene("sc_Edit");
-            return;
-        }
-
-        StartCoroutine(LoadAndOpenEditor(item));
-    }
-
-    private IEnumerator LoadAndOpenEditor(RoomItem item)
-    {
-        string url = item.s3FileUrl;
-
-        var req = UnityEngine.Networking.UnityWebRequest.Get(url);
-        yield return req.SendWebRequest();
-
-        if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
-        {
-            Debug.LogError("JSON Load Failed: " + req.error);
-            yield break;
-        }
-
-        string json = req.downloadHandler.text;
-
-        Debug.Log("=== RAW JSON ===");
-        Debug.Log(json);
-        
-        var detail = T6SpaceDetailSerializer.FromJson(json);
-        T6LoadedSpaceCache.Detail = detail;
-        T6LoadedSpaceCache.EnvironmentId = item.environmentId;
-
-        detail.meta.name = item.txtName.text;
-
+        // 2️⃣ 편집 씬 로드
         SceneManager.LoadScene("sc_Edit");
     }
 
-    // ===============================================================
-    // Open Edit Scene
-    // ===============================================================
-    private void OnClickOpenVR(RoomItem item)
-    {
-        StartCoroutine(LoadAndOpenVR(item));
-    }
+    // private IEnumerator LoadAndOpenEditor(RoomItem item)
+    // {
+    //     string url = item.s3FileUrl;
 
-    private IEnumerator LoadAndOpenVR(RoomItem item)
-    {
-        // 1) s3FileUrl이 없는 경우 (새 공간)
-        if (string.IsNullOrEmpty(item.s3FileUrl))
-        {
-            Debug.Log("새 공간 → 빈 SpaceDetail 생성 (VR)");
+    //     var req = UnityEngine.Networking.UnityWebRequest.Get(url);
+    //     yield return req.SendWebRequest();
 
-            T6LoadedSpaceCache.Detail = new T6SpaceDetail();
-            T6LoadedSpaceCache.Detail.meta.name = item.txtName.text;
-            T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+    //     if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
+    //     {
+    //         Debug.LogError("JSON Load Failed: " + req.error);
+    //         yield break;
+    //     }
 
-            SceneManager.LoadScene("sc_VR(new)");
-            yield break;
-        }
+    //     string json = req.downloadHandler.text;
 
-        // 2) JSON 다운로드
-        var req = UnityEngine.Networking.UnityWebRequest.Get(item.s3FileUrl);
-        yield return req.SendWebRequest();
+    //     Debug.Log("=== RAW JSON ===");
+    //     Debug.Log(json);
+        
+    //     var detail = SpaceDetailSerializer.FromJson(json);
+    //     LoadedSpaceCache.Detail = detail;
+    //     LoadedSpaceCache.EnvironmentId = item.environmentId;
 
-        if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
-        {
-            Debug.LogError("VR JSON Load Failed: " + req.error);
-            yield break;
-        }
+    //     detail.meta.name = item.txtName.text;
 
-        // 3) JSON → SpaceDetail
-        string json = req.downloadHandler.text;
-        var detail = T6SpaceDetailSerializer.FromJson(json);
+    //     SceneManager.LoadScene("sc_Edit");
+    // }
 
-        // 4) ★ 서버 이름 → JSON meta.name 동기화 (B 전략 핵심)
-        detail.meta.name = item.txtName.text;
+    // // ===============================================================
+    // // Open VR Scene
+    // // ===============================================================
+    // private void OnClickOpenVR(RoomItem item)
+    // {
+    //     StartCoroutine(LoadAndOpenVR(item));
+    // }
 
-        // 5) Cache 저장
-        T6LoadedSpaceCache.Detail = detail;
-        T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+    // private IEnumerator LoadAndOpenVR(RoomItem item)
+    // {
+    //     // 1) s3FileUrl이 없는 경우 (새 공간)
+    //     if (string.IsNullOrEmpty(item.s3FileUrl))
+    //     {
+    //         Debug.Log("새 공간 → 빈 SpaceDetail 생성 (VR)");
 
-        // 6) VR 씬 로드
-        SceneManager.LoadScene("sc_VR(new)");
-    }
+    //         T6LoadedSpaceCache.Detail = new T6SpaceDetail();
+    //         T6LoadedSpaceCache.Detail.meta.name = item.txtName.text;
+    //         T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+
+    //         SceneManager.LoadScene("sc_VR(new)");
+    //         yield break;
+    //     }
+
+    //     // 2) JSON 다운로드
+    //     var req = UnityEngine.Networking.UnityWebRequest.Get(item.s3FileUrl);
+    //     yield return req.SendWebRequest();
+
+    //     if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
+    //     {
+    //         Debug.LogError("VR JSON Load Failed: " + req.error);
+    //         yield break;
+    //     }
+
+    //     // 3) JSON → SpaceDetail
+    //     string json = req.downloadHandler.text;
+    //     var detail = T6SpaceDetailSerializer.FromJson(json);
+
+    //     // 4) ★ 서버 이름 → JSON meta.name 동기화 (B 전략 핵심)
+    //     detail.meta.name = item.txtName.text;
+
+    //     // 5) Cache 저장
+    //     T6LoadedSpaceCache.Detail = detail;
+    //     T6LoadedSpaceCache.EnvironmentId = item.environmentId;
+
+    //     // 6) VR 씬 로드
+    //     SceneManager.LoadScene("sc_VR(new)");
+    // }
 
 
 }

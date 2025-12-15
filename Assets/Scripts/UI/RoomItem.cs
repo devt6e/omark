@@ -47,17 +47,17 @@ public class RoomItem : MonoBehaviour
         onOpenEditor?.Invoke(this);
     }
 
+    public void SetOpenEditorAction(System.Action<RoomItem> callback)
+    {
+        onOpenEditor = callback;
+    }
+
     public void SetTexts(string name, string date)
     {
         txtName.text = name;
         txtDate.text = date;
     }
     
-    public void SetOpenEditorAction(System.Action<RoomItem> callback)
-    {
-        onOpenEditor = callback;
-    }
-
     public void SetDeleteAction(System.Action<RoomItem> callback)
     {
         onDelete = callback;

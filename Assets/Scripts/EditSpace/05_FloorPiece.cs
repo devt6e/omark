@@ -3,7 +3,7 @@ using System;
 
 public class FloorPiece : MonoBehaviour
 {
-    public static FloorPiece Instance {get; private set;}
+    // public static FloorPiece Instance {get; private set;}
     // 저장용 ID
     public string pieceId;
 
@@ -21,7 +21,7 @@ public class FloorPiece : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        // Instance = this;
         if (string.IsNullOrEmpty(pieceId))
             pieceId = Guid.NewGuid().ToString();
     }
