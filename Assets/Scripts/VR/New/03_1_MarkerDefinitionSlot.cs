@@ -10,6 +10,7 @@ public class MarkerDefinitionSlot : MonoBehaviour,
     [Header("UI")]
     [SerializeField] private TMP_Text txt_name;
     [SerializeField] private GameObject[] colorImages;
+    [SerializeField] private Image iconImage;
 
     [Header("Definition")]
     [SerializeField] private string definitionId;
@@ -143,4 +144,22 @@ public class MarkerDefinitionSlot : MonoBehaviour,
     }
 
     public void Refresh() { ApplyInfo(); }
+
+    /// <summary>
+    /// 슬롯 대표 이미지 교체
+    /// (커스텀 마커 이미지 갱신용)
+    /// </summary>
+    public void SetIcon(Sprite sprite)
+    {
+        if (iconImage == null)
+        {
+            Debug.LogWarning("[MarkerDefinitionSlot] iconImage not assigned");
+            return;
+        }
+
+        iconImage.sprite = sprite;
+        iconImage.enabled = sprite != null;
+        iconImage.preserveAspect = true;
+    }
+
 }

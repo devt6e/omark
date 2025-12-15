@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class MarkerSlotSpawner : MonoBehaviour
 {
+    [Header("Root")]
+    [SerializeField] private Transform markerRoot;
+
     [Header("UI")]
     [SerializeField] private Transform slotRoot;
     [SerializeField] private MarkerDefinitionSlot slotPrefab;
@@ -98,6 +101,7 @@ public class MarkerSlotSpawner : MonoBehaviour
         lockedDefinitions.Add(definitionId);
 
         var instance = Instantiate(markerPrefab);
+        instance.transform.SetParent(markerRoot, false);
         instance.Initialize(definitionId);
         MarkerInstanceRegistry.Instance.Register(instance);
 

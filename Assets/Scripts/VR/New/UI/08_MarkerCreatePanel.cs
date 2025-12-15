@@ -58,7 +58,7 @@ public class MarkerCreatePanel : MonoBehaviour
         if (string.IsNullOrWhiteSpace(name))
             name = "마커";
         if (selectedColorIndex < 0)
-            selectedColorIndex = 4;
+            selectedColorIndex = 0;
 
         // 1. Definition 생성
         MarkerDefinition def =

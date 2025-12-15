@@ -97,6 +97,7 @@ public class SpaceSaveUploader : MonoBehaviour
         Debug.Log("[Save] SPACE.json 업로드 완료");
         SaveToPersistentPath(dto);
 
+        Debug.Log(done);
         // // =========================
         // // 5. 캐시 메타 갱신 (선택)
         // // =========================
