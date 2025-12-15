@@ -68,7 +68,11 @@ public class MarkerDefinitionSlot : MonoBehaviour,
         }
 
         if (spawner.IsDefinitionLocked(definitionId))
+        {
+            OpenInfoPanel();
+            MarkerRotateAnimator.Instance.SetSingleTarget(MarkerInstanceRegistry.Instance.Get(definitionId));
             return;
+        }
 
         isPointerDown = true;
         longPressTriggered = false;

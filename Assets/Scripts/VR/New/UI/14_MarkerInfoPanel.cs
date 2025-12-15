@@ -92,6 +92,7 @@ public class MarkerInfoPanel : MonoBehaviour
     private void Close()
     {
         currentDefinitionId = null;
+        MarkerRotateAnimator.Instance.StopRotate();
         DeleteCheckPanelHide();
         inventory.SetActive(true);
         gameObject.SetActive(false);
