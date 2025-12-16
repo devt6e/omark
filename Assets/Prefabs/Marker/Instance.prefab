@@ -92,6 +92,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MarkerInstance
   definitionId: 
   visual: {fileID: 0}
+  modelRoot: {fileID: 8022298648601984179}
 --- !u!1 &4735385897720273378
 GameObject:
   m_ObjectHideFlags: 0

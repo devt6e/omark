@@ -15,7 +15,20 @@ public class MarkerPlacement
         this.rotation = rotation;
     }
 }
+#endregion
+#region Custom
+[Serializable]
+public class MarkerCustomizing
+{
+    public string IconImagePath;                 // 저장용 (png, jpg)
+    public string ModelGlbPath;                  // 저장용 (glb)
 
+    public MarkerCustomizing(string IconImagePath, string ModelGlbPath)
+    {
+        this.IconImagePath = IconImagePath;
+        this.ModelGlbPath = ModelGlbPath;
+    }
+}
 #endregion
 
 [Serializable]
@@ -33,6 +46,7 @@ public class MarkerDefinition
 
     [Header("Placement (nullable)")]
     [SerializeField] private MarkerPlacement placement;
+    [SerializeField] private MarkerCustomizing customizing;
 
     public string DefinitionId => definitionId;
     public string DisplayName => displayName;
@@ -43,6 +57,8 @@ public class MarkerDefinition
 
     public bool IsPlaced => placement != null;
     public MarkerPlacement Placement => placement;
+    public bool IsCustomized => customizing != null;
+    public MarkerCustomizing Customizing => customizing;
 
     // ✅ 신규 생성(클라이언트에서 생성) : GUID
     public MarkerDefinition(string displayName, Color color, int colorIndex, string description = "")
@@ -53,6 +69,7 @@ public class MarkerDefinition
         this.colorIndex = colorIndex;
         this.description = description;
         this.placement = null;
+        this.customizing = null;
     }
 
     // ✅ 로드(서버/파일에서 복원) : 고정 ID 사용
@@ -65,6 +82,7 @@ public class MarkerDefinition
         this.description = description;
         this.isFavorite = isFavorite;
         this.placement = placement;
+        this.customizing = customizing;
     }
 
     public void SetPlacement(Vector3 position, Quaternion rotation)
@@ -75,6 +93,16 @@ public class MarkerDefinition
     public void ClearPlacement()
     {
         placement = null;
+    }
+
+    public void SetCustomizing(string iconImagePath, string modelGlbPath)
+    {
+        customizing = new MarkerCustomizing(iconImagePath, modelGlbPath);
+    }
+
+    public void ClearCustomizing()
+    {
+        customizing = null;
     }
 
     public void UpdateInfo(string displayName, string description, int colorIndex, Color color)

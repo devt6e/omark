@@ -169,4 +169,17 @@ public class MarkerDefinitionRepository : MonoBehaviour
         definitions = newDefs ?? new List<MarkerDefinition>();
         BuildLookup();
     }
+
+    // ===== 커스텀 마커 리소스 설정 =====
+    public void SetCustomMarkerAssets(string definitionId,string iconImagePath = null,string modelGlbPath = null)
+    {
+        MarkerDefinition def = GetById(definitionId);
+        Debug.Log($"Repo : def = {def==null}");
+        if (def == null)
+            return;
+
+        if (!string.IsNullOrEmpty(iconImagePath) && !string.IsNullOrEmpty(modelGlbPath))
+            def.SetCustomizing(iconImagePath, modelGlbPath);
+        Debug.Log($"Repo : {GetById(definitionId).IsCustomized}");
+    }
 }

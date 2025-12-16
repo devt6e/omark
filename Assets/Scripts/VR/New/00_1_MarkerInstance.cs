@@ -1,4 +1,5 @@
 using UnityEngine;
+using GLTFast;
 
 /// <summary>
 /// MarkerDefinition을 공간에 표현하는 인스턴스.
@@ -21,6 +22,8 @@ public class MarkerInstance : MonoBehaviour
     [Header("Visual")]
     [SerializeField] private MarkerVisual visual;
 
+
+    [SerializeField] private Transform modelRoot; // 모델이 붙을 자리
     // =========================
     // State
     // =========================
@@ -73,6 +76,10 @@ public class MarkerInstance : MonoBehaviour
 
         // Debug.Log($"[MarkerInstance.Initialize] color : {def.Color}");
         
+        if(def.IsCustomized)
+        {
+            LoadCustomGlb(def.Customizing.ModelGlbPath);
+        }
         // 색상 적용
         visual.SetBaseColor(def.Color);
 
@@ -187,4 +194,34 @@ public class MarkerInstance : MonoBehaviour
             visual.SetNormal();
     }
 
+    
+    private async void LoadCustomGlb(string glbPath)
+    {
+        // 기존 모델 제거
+        foreach (Transform child in modelRoot)
+            Destroy(child.gameObject);
+
+        var gltf = new GltfImport();
+
+        bool loaded = await gltf.Load(glbPath);
+        if (!loaded)
+        {
+            Debug.LogError($"GLB 로드 실패: {glbPath}");
+            return;
+        }
+
+        bool instantiated =
+            await gltf.InstantiateMainSceneAsync(modelRoot);
+
+        if (!instantiated)
+        {
+            Debug.LogError("GLB 인스턴스 실패");
+            return;
+        }
+
+        // 위치 보정
+        modelRoot.transform.GetChild(0).localPosition = new Vector3(0.1f, -0.15f, -0.15f);
+        modelRoot.transform.GetChild(0).localScale = Vector3.one * 0.4f;
+        modelRoot.transform.GetChild(0).localRotation = Quaternion.Euler(0, 0, 0);
+    }
 }

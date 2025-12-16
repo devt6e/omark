@@ -8,9 +8,12 @@ using System.Threading.Tasks;
 
 public class MarkerAICustom : MonoBehaviour
 {
+    public static MarkerAICustom Instance{get; private set;}
     [Header("UI")]
     public Button uploadButton;
     public Image previewImage;
+    public GameObject restrictionPanel;
+    public Button restrictionOkay;
 
     [Header("Model Parent")]
     public Transform modelParent;
@@ -19,17 +22,30 @@ public class MarkerAICustom : MonoBehaviour
     public string serverUrl;
     
     private string accessToken;
+    private string savedImagePath;
+    private string glbPath;
 
+    public Transform GetCustom() => modelParent;
     private void Start()
     {
         uploadButton.onClick.AddListener(OnClickCreateCustomMarker);
+        restrictionOkay.onClick.AddListener(OnClickOkay);
         accessToken = PlayerPrefs.GetString("ACCESS_TOKEN", null);
+        Instance = this;
     }
 
     private void OnClickCreateCustomMarker()
     {
-        CustomMarkerManager.Instance.ReplaceCustomMarker();
-        PickImageFromGallery();
+        if(CustomMarkerManager.Instance.isFirst)
+        {
+            CustomMarkerManager.Instance.isFirst = false;
+            CustomMarkerManager.Instance.ReplaceCustomMarker();
+            PickImageFromGallery();
+        }
+        else
+        {
+            restrictionPanel.SetActive(true);
+        }
     }
 
     private void PickImageFromGallery()
@@ -39,7 +55,7 @@ public class MarkerAICustom : MonoBehaviour
             if (string.IsNullOrEmpty(path))
                 return;
 
-            string savedImagePath = ImageCopyUtil.CopyToPersistentPath(path, "custom_marker_icon.png");
+            savedImagePath = ImageCopyUtil.CopyToPersistentPath(path, "custom_marker_icon.png");
 
             Texture2D tex = NativeGallery.LoadImageAtPath(savedImagePath, 1024);
             if (tex == null)
@@ -87,7 +103,7 @@ public class MarkerAICustom : MonoBehaviour
         File.WriteAllBytes(glbPath, request.downloadHandler.data);
 
         Debug.Log("GLB 저장 완료: " + glbPath);
-
+        MarkerDefinitionRepository.Instance.SetCustomMarkerAssets(CustomMarkerManager.Instance.GetDefID, savedImagePath, glbPath);
         // 👉 GLB 로드는 async 메서드로 분리
         LoadGlbAsync(glbPath);
     }
@@ -115,10 +131,15 @@ public class MarkerAICustom : MonoBehaviour
         }
 
         // 위치 보정
-        modelParent.localPosition = Vector3.zero;
-        modelParent.localScale = Vector3.one * 3f;
-        modelParent.localRotation = Quaternion.Euler(0, -90f, 0);
+        modelParent.transform.GetChild(0).localPosition = new Vector3(0.1f, -0.15f, -0.15f);
+        modelParent.transform.GetChild(0).localScale = Vector3.one * 0.4f;
+        modelParent.transform.GetChild(0).localRotation = Quaternion.Euler(0, -90f, 0);
 
         Debug.Log("커스텀 마커 GLB 표시 완료");
+    }
+
+    public void OnClickOkay()
+    {
+        restrictionPanel.SetActive(false);
     }
 }

@@ -17,6 +17,8 @@ public class CustomMarkerManager : MonoBehaviour
     private MarkerDefinitionSlot currentCustomSlot;
     // 현재 커스텀 마커 정의 ID
     private string currentCustomDefinitionId;
+    public bool isFirst = true;
+    public string GetDefID => currentCustomDefinitionId;
 
     private void Awake()
     {
@@ -45,9 +47,6 @@ public class CustomMarkerManager : MonoBehaviour
         // 2. 슬롯 자동 생성
         MarkerDefinitionSlot slot =
             slotSpawner.SpawnSlot(def.DefinitionId);
-
-        // 3. 즉시 배치 시작
-        slot.BeginPlacementFromCode();
 
         currentCustomSlot = slot;
         currentCustomDefinitionId = def.DefinitionId;

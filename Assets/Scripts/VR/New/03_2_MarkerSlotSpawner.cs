@@ -23,6 +23,7 @@ public class MarkerSlotSpawner : MonoBehaviour
     private readonly HashSet<string> lockedDefinitions = new HashSet<string>();
 
     public static MarkerSlotSpawner Current { get; private set; }
+    private bool isFirstCustom = true;
 
     private void Awake()
     {
@@ -99,8 +100,16 @@ public class MarkerSlotSpawner : MonoBehaviour
         }
 
         lockedDefinitions.Add(definitionId);
-
+        Debug.Log($"spawner : {repo.GetById(definitionId).IsCustomized}");
         var instance = Instantiate(markerPrefab);
+        if (repo.GetById(definitionId).IsCustomized && isFirstCustom)
+        {
+            Debug.Log("first custom");
+            foreach (Transform child in instance.transform)
+                Destroy(child.gameObject);
+            MarkerAICustom.Instance.GetCustom().SetParent(instance.transform, false);
+            isFirstCustom = false;
+        }
         instance.transform.SetParent(markerRoot, false);
         instance.Initialize(definitionId);
         MarkerInstanceRegistry.Instance.Register(instance);
